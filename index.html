@@ -2,1683 +2,2325 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta
+    name="viewport"
+    content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"
+>
 <title>Spaceboards</title>
 <style>
-*{box-sizing:border-box}
-html,body{
-margin:0;
-width:100%;
-height:100%;
-font-family:Arial,sans-serif;
-color:#111;
-background:#fafafa;
-overflow:hidden
+* {
+    box-sizing: border-box;
 }
-button,input{font:inherit}
-button{
-border:1px solid #bbb;
-background:#fff;
-border-radius:7px;
-padding:8px 13px;
-cursor:pointer
+html,
+body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    font-family: Arial, sans-serif;
+    color: #111;
+    background: #fafafa;
+    overflow: hidden;
 }
-button:hover{background:#f1f1f1}
-.topbar{
-height:58px;
-display:flex;
-align-items:center;
-gap:7px;
-padding:8px 12px;
-background:#fff;
-border-bottom:1px solid #ddd;
-position:relative;
-z-index:20
+button,
+input {
+    font: inherit;
 }
-.logo{
-font-weight:bold;
-margin-left:7px
+button {
+    border: 1px solid #bbb;
+    background: #fff;
+    border-radius: 7px;
+    padding: 8px 13px;
+    cursor: pointer;
 }
-.spacer{flex:1}
-.search,.add-friend{
-padding:9px 10px;
-border:1px solid #bbb;
-border-radius:7px
+button:hover {
+    background: #f1f1f1;
 }
-.search{width:200px}
-.add-friend{width:150px}
-.friends{
-display:flex;
-align-items:center;
-gap:5px;
-max-width:220px;
-overflow-x:auto
+/* =========================================================
+   TOP BAR
+========================================================= */
+.topbar {
+    height: 58px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 12px;
+    background: #fff;
+    border-bottom: 1px solid #ddd;
+    position: relative;
+    z-index: 20;
 }
-.friend{
-padding:6px 9px;
-border:1px solid #ddd;
-border-radius:15px;
-background:#f7f7f7;
-white-space:nowrap;
-font-size:12px
+.logo {
+    font-weight: bold;
+    margin-left: 7px;
 }
-/* FRIEND REQUESTS */
-#requestsPanel{
-position:fixed;
-top:65px;
-right:12px;
-width:300px;
-max-height:400px;
-overflow:auto;
-background:#fff;
-border:1px solid #ccc;
-border-radius:10px;
-box-shadow:0 8px 30px #0003;
-z-index:150;
-display:none;
-padding:12px
+.spacer {
+    flex: 1;
 }
-#requestsPanel h3{
-margin:3px 0 12px
+.search,
+.add-friend {
+    padding: 9px 10px;
+    border: 1px solid #bbb;
+    border-radius: 7px;
 }
-.request{
-display:flex;
-align-items:center;
-justify-content:space-between;
-gap:8px;
-padding:9px 0;
-border-bottom:1px solid #eee
+.search {
+    width: 200px;
 }
-.request-email{
-font-size:13px;
-overflow:hidden;
-text-overflow:ellipsis
+.add-friend {
+    width: 150px;
 }
-.request-actions{
-display:flex;
-gap:5px
+.friends {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    max-width: 220px;
+    overflow-x: auto;
 }
-.request-actions button{
-padding:6px 8px;
-font-size:12px
+.friend {
+    padding: 6px 9px;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    background: #f7f7f7;
+    white-space: nowrap;
+    font-size: 12px;
 }
-/* WORKSPACE */
-#workspace{
-position:absolute;
-top:58px;
-left:0;
-right:0;
-bottom:0;
-overflow:hidden;
-background:#fafafa;
-touch-action:none;
-cursor:grab
+/* =========================================================
+   FRIEND REQUESTS
+========================================================= */
+#requestsPanel {
+    position: fixed;
+    top: 65px;
+    right: 12px;
+    width: 300px;
+    max-height: 400px;
+    overflow: auto;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 8px 30px #0003;
+    z-index: 150;
+    display: none;
+    padding: 12px;
 }
-#workspace:active{
-cursor:grabbing
+#requestsPanel h3 {
+    margin: 3px 0 12px;
 }
-#world{
-position:absolute;
-width:1px;
-height:1px;
-transform-origin:0 0
+.request {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 9px 0;
+    border-bottom: 1px solid #eee;
 }
-/* BOX */
-.board{
-position:absolute;
-background:#fff;
-border:1px solid #aaa;
-border-radius:10px;
-box-shadow:0 2px 10px #00000012
+.request-email {
+    font-size: 13px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
-.board.private{
-border-style:dashed
+.request-actions {
+    display: flex;
+    gap: 5px;
 }
-.board.selected{
-outline:2px solid #222
+.request-actions button {
+    padding: 6px 8px;
+    font-size: 12px;
 }
-.board-title{
-position:absolute;
-top:-31px;
-left:8px;
-font-size:14px;
-font-weight:bold;
-white-space:nowrap
+/* =========================================================
+   WORKSPACE
+========================================================= */
+#workspace {
+    position: absolute;
+    top: 58px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    background: #fafafa;
+    touch-action: none;
+    cursor: grab;
 }
-.visibility{
-position:absolute;
-top:-31px;
-right:8px;
-font-size:11px;
-color:#666
+#workspace:active {
+    cursor: grabbing;
 }
-.board-inner{
-width:100%;
-height:100%;
-padding:14px;
-overflow:auto;
-border-radius:10px
+#world {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    transform-origin: 0 0;
 }
-/* ADD URL BUTTON */
-.add-url{
-display:block;
-margin-bottom:10px;
-width:100%;
-padding:7px;
-font-size:12px;
-background:#f8f8f8
+/* =========================================================
+   BOX
+========================================================= */
+.board {
+    position: absolute;
+    background: #fff;
+    border: 1px solid #aaa;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px #00000012;
 }
-/* URL ITEMS */
-.item{
-display:inline-flex;
-align-items:center;
-gap:8px;
-max-width:100%;
-margin:4px;
-padding:7px 9px;
-background:#fff;
-border:1px solid #ddd;
-border-radius:7px;
-cursor:pointer;
-word-break:break-word
+.board.private {
+    border-style: dashed;
 }
-.item:hover{
-background:#f5f5f5
+.board.selected {
+    outline: 2px solid #222;
 }
-.item img{
-width:34px;
-height:34px;
-object-fit:cover;
-border-radius:5px
+.board-title {
+    position: absolute;
+    top: -31px;
+    left: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    white-space: nowrap;
 }
-.resize{
-position:absolute;
-width:12px;
-height:12px;
-right:-6px;
-bottom:-6px;
-background:#fff;
-border:1px solid #777;
-border-radius:3px;
-cursor:nwse-resize
+.visibility {
+    position: absolute;
+    top: -31px;
+    right: 8px;
+    font-size: 11px;
+    color: #666;
 }
-/* MODALS */
-.modal-bg{
-position:fixed;
-inset:0;
-background:#0008;
-display:none;
-align-items:center;
-justify-content:center;
-z-index:100
+.board-inner {
+    width: 100%;
+    height: 100%;
+    padding: 14px;
+    overflow: auto;
+    border-radius: 10px;
 }
-.modal{
-width:min(440px,92vw);
-background:#fff;
-border-radius:12px;
-padding:20px;
-box-shadow:0 15px 50px #0004
+/* =========================================================
+   ADD URL
+========================================================= */
+.add-url {
+    display: block;
+    margin-bottom: 10px;
+    width: 100%;
+    padding: 7px;
+    font-size: 12px;
+    background: #f8f8f8;
 }
-.modal h2{
-margin-top:0
+/* =========================================================
+   URL ITEMS
+========================================================= */
+.item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    max-width: 100%;
+    margin: 4px;
+    padding: 7px 9px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 7px;
+    cursor: pointer;
+    word-break: break-word;
 }
-.modal input{
-width:100%;
-padding:10px;
-margin:5px 0 12px;
-border:1px solid #aaa;
-border-radius:7px
+.item:hover {
+    background: #f5f5f5;
 }
-.modal-actions{
-display:flex;
-justify-content:flex-end;
-gap:8px
+.item img {
+    width: 34px;
+    height: 34px;
+    object-fit: cover;
+    border-radius: 5px;
 }
-.choice{
-display:flex;
-gap:10px;
-margin:15px 0
+/* =========================================================
+   RESIZE
+========================================================= */
+.resize {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    right: -6px;
+    bottom: -6px;
+    background: #fff;
+    border: 1px solid #777;
+    border-radius: 3px;
+    cursor: nwse-resize;
 }
-.choice button{
-flex:1;
-padding:14px
+/* =========================================================
+   MODALS
+========================================================= */
+.modal-bg {
+    position: fixed;
+    inset: 0;
+    background: #0008;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
 }
-/* LOGIN */
-.auth{
-position:fixed;
-inset:0;
-background:#fff;
-display:flex;
-align-items:center;
-justify-content:center;
-z-index:500
+.modal {
+    width: min(440px, 92vw);
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 15px 50px #0004;
 }
-.auth-box{
-width:min(400px,92vw);
-border:1px solid #ddd;
-border-radius:12px;
-padding:25px;
-box-shadow:0 5px 30px #0001
+.modal h2 {
+    margin-top: 0;
 }
-.auth-box input{
-width:100%;
-padding:11px;
-margin:6px 0 10px;
-border:1px solid #aaa;
-border-radius:7px
+.modal input {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0 12px;
+    border: 1px solid #aaa;
+    border-radius: 7px;
 }
-.auth-error{
-color:#c00;
-font-size:13px;
-min-height:20px
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
 }
-/* MENU */
-.menu{
-position:fixed;
-display:none;
-min-width:160px;
-background:#fff;
-border:1px solid #aaa;
-border-radius:7px;
-box-shadow:0 5px 20px #0003;
-z-index:200
+.choice {
+    display: flex;
+    gap: 10px;
+    margin: 15px 0;
 }
-.menu div{
-padding:10px 13px;
-cursor:pointer
+.choice button {
+    flex: 1;
+    padding: 14px;
 }
-.menu div:hover{
-background:#eee
+/* =========================================================
+   LOGIN
+========================================================= */
+.auth {
+    position: fixed;
+    inset: 0;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 500;
 }
-.hint{
-position:fixed;
-left:12px;
-bottom:12px;
-background:#fff;
-border:1px solid #ddd;
-border-radius:8px;
-padding:8px 10px;
-font-size:12px;
-color:#555;
-z-index:10
+.auth-box {
+    width: min(400px, 92vw);
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 5px 30px #0001;
 }
-@media(max-width:900px){
-.search{width:130px}
-.add-friend{width:110px}
-.friends{max-width:150px}
+.auth-box input {
+    width: 100%;
+    padding: 11px;
+    margin: 6px 0 10px;
+    border: 1px solid #aaa;
+    border-radius: 7px;
 }
-@media(max-width:600px){
-.logo{display:none}
-.search{width:90px}
-.add-friend{width:95px}
-.friends{display:none}
-.topbar button{
-padding:7px
+.auth-error {
+    color: #c00;
+    font-size: 13px;
+    min-height: 20px;
+    margin-bottom: 5px;
 }
-#requestsPanel{
-right:6px;
-width:290px
+/* =========================================================
+   MENU
+========================================================= */
+.menu {
+    position: fixed;
+    display: none;
+    min-width: 160px;
+    background: #fff;
+    border: 1px solid #aaa;
+    border-radius: 7px;
+    box-shadow: 0 5px 20px #0003;
+    z-index: 200;
 }
+.menu div {
+    padding: 10px 13px;
+    cursor: pointer;
+}
+.menu div:hover {
+    background: #eee;
+}
+/* =========================================================
+   HINT
+========================================================= */
+.hint {
+    position: fixed;
+    left: 12px;
+    bottom: 12px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 12px;
+    color: #555;
+    z-index: 10;
+}
+/* =========================================================
+   MOBILE
+========================================================= */
+@media(max-width:900px) {
+    .search {
+        width: 130px;
+    }
+    .add-friend {
+        width: 110px;
+    }
+    .friends {
+        max-width: 150px;
+    }
+}
+@media(max-width:600px) {
+    .logo {
+        display: none;
+    }
+    .search {
+        width: 90px;
+    }
+    .add-friend {
+        width: 95px;
+    }
+    .friends {
+        display: none;
+    }
+    .topbar button {
+        padding: 7px;
+    }
+    #requestsPanel {
+        right: 6px;
+        width: 290px;
+    }
+    .hint {
+        display: none;
+    }
 }
 </style>
 </head>
 <body>
-<!-- LOGIN -->
-<div class="auth" id="authScreen">
-<div class="auth-box">
-<h1>Spaceboards</h1>
-<p>Create an account or log in.</p>
-<input
-id="authEmail"
-type="email"
-placeholder="Email"
->
-<input
-id="authPassword"
-type="password"
-placeholder="Password"
->
+<!-- =========================================================
+     LOGIN
+========================================================= -->
 <div
-class="auth-error"
-id="authError">
+    class="auth"
+    id="authScreen"
+>
+    <div class="auth-box">
+        <h1>Spaceboards</h1>
+        <p>
+            Create an account or log in.
+        </p>
+        <input
+            id="authEmail"
+            type="email"
+            placeholder="Email"
+        >
+        <input
+            id="authPassword"
+            type="password"
+            placeholder="Password"
+        >
+        <div
+            class="auth-error"
+            id="authError"
+        ></div>
+        <button id="loginButton">
+            Log in
+        </button>
+        <button id="signupButton">
+            Create account
+        </button>
+    </div>
 </div>
-<button id="loginButton">
-Log in
-</button>
-<button id="signupButton">
-Create account
-</button>
-</div>
-</div>
-<!-- TOP BAR -->
+<!-- =========================================================
+     TOP BAR
+========================================================= -->
 <header class="topbar">
-<div class="logo">
-Spaceboards
-</div>
-<button id="newBtn">
-New
-</button>
-<button id="shareBtn">
-Share
-</button>
-<input
-id="addFriendInput"
-class="add-friend"
-placeholder="Add friends"
->
-<button id="addFriendBtn">
-Add
-</button>
-<button id="friendRequestsBtn">
-Friend requests
-</button>
-<div
-class="friends"
-id="friendsList">
-</div>
-<div class="spacer"></div>
-<input
-id="search"
-class="search"
-placeholder="Search"
->
-<button id="logoutBtn">
-Logout
-</button>
+    <div class="logo">
+        Spaceboards
+    </div>
+    <button id="newBtn">
+        New
+    </button>
+    <button id="shareBtn">
+        Share
+    </button>
+    <input
+        id="addFriendInput"
+        class="add-friend"
+        placeholder="Add friends"
+    >
+    <button id="addFriendBtn">
+        Add
+    </button>
+    <button id="friendRequestsBtn">
+        Friend requests
+    </button>
+    <div
+        class="friends"
+        id="friendsList"
+    ></div>
+    <div class="spacer"></div>
+    <input
+        id="search"
+        class="search"
+        placeholder="Search"
+    >
+    <button id="logoutBtn">
+        Logout
+    </button>
 </header>
-<!-- FRIEND REQUEST PANEL -->
+<!-- =========================================================
+     FRIEND REQUEST PANEL
+========================================================= -->
 <div id="requestsPanel">
-<h3>
-Friend requests
-</h3>
-<div id="requestsList">
-Loading...
+    <h3>
+        Friend requests
+    </h3>
+    <div id="requestsList">
+        Loading...
+    </div>
 </div>
-</div>
-<!-- WORKSPACE -->
+<!-- =========================================================
+     WORKSPACE
+========================================================= -->
 <main id="workspace">
-<div id="world"></div>
+    <div id="world"></div>
 </main>
 <div class="hint">
-Pinch with two fingers to zoom • Drag empty space to move
+    Pinch with two fingers to zoom
+    •
+    Drag empty space to move
 </div>
-<!-- CONTEXT MENU -->
+<!-- =========================================================
+     CONTEXT MENU
+========================================================= -->
 <div
-class="menu"
-id="menu">
-<div id="renameOpt">
-Rename
+    class="menu"
+    id="menu"
+>
+    <div id="renameOpt">
+        Rename
+    </div>
+    <div id="visibilityOpt">
+        Change visibility
+    </div>
+    <div id="deleteOpt">
+        Delete
+    </div>
 </div>
-<div id="visibilityOpt">
-Change visibility
-</div>
-<div id="deleteOpt">
-Delete
-</div>
-</div>
-<!-- MODAL -->
+<!-- =========================================================
+     MODAL
+========================================================= -->
 <div
-class="modal-bg"
-id="modalBg">
-<div
-class="modal"
-id="modal">
+    class="modal-bg"
+    id="modalBg"
+>
+    <div
+        class="modal"
+        id="modal"
+    ></div>
 </div>
-</div>
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
 <script type="module">
 import {
-createClient
+    createClient
 }
 from
 "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 /* =========================================================
-SUPABASE
+   SUPABASE
 ========================================================= */
 const SUPABASE_URL =
-"https://uqpivlamfwbjoqvordcm.supabase.co";
+    "https://uqpivlamfwbjoqvordcm.supabase.co";
 const SUPABASE_KEY =
-"sb_publishable_8CryzR2sR-y5nHprgLWJlA_Wfy_mTrj";
+    "sb_publishable_8CryzR2sR-y5nHprgLWJlA_Wfy_mTrj";
 const supabase =
-createClient(
-SUPABASE_URL,
-SUPABASE_KEY
-);
+    createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
 /* =========================================================
-STATE
+   STATE
 ========================================================= */
-let user=null;
-let boards=[];
-let friends=[];
-let selectedBoard=null;
-let menuBoard=null;
-let moving=null;
-let resizing=null;
-let panX=80;
-let panY=80;
-let zoom=1;
-let pointers=new Map();
-let pinchStartDistance=null;
-let pinchStartZoom=1;
-let pinchStartCenter=null;
-let pinchStartPanX=0;
-let pinchStartPanY=0;
-let panning=null;
+let user = null;
+let boards = [];
+let friends = [];
+let selectedBoard = null;
+let menuBoard = null;
+let moving = null;
+let resizing = null;
+let panX = 80;
+let panY = 80;
+let zoom = 1;
+let pointers = new Map();
+let pinchStartDistance = null;
+let pinchStartZoom = 1;
+let pinchStartCenter = null;
+let pinchStartPanX = 0;
+let pinchStartPanY = 0;
+let panning = null;
 /* =========================================================
-HELPERS
+   HELPERS
 ========================================================= */
-function escapeHTML(value){
-return String(value)
-.replace(/&/g,"&amp;")
-.replace(/</g,"&lt;")
-.replace(/>/g,"&gt;")
-.replace(/"/g,"&quot;")
-.replace(/'/g,"&#039;");
+function escapeHTML(value) {
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
-function openModal(html){
-document.getElementById("modal")
-.innerHTML=html;
-document.getElementById("modalBg")
-.style.display="flex";
+function openModal(html) {
+    document.getElementById("modal")
+        .innerHTML = html;
+    document.getElementById("modalBg")
+        .style.display = "flex";
 }
-function closeModal(){
-document.getElementById("modalBg")
-.style.display="none";
+function closeModal() {
+    document.getElementById("modalBg")
+        .style.display = "none";
 }
-window.closeModal=closeModal;
+window.closeModal = closeModal;
 /* =========================================================
-AUTH
+   LOGIN
 ========================================================= */
-document.getElementById("loginButton").onclick=
-async()=>{
-const email=
-document.getElementById("authEmail")
-.value.trim();
-const password=
-document.getElementById("authPassword")
-.value;
-document.getElementById("authError")
-.textContent="";
-const {error}=
-await supabase.auth.signInWithPassword({
-email,
-password
-});
-if(error){
-document.getElementById("authError")
-.textContent=error.message;
-}
-};
-document.getElementById("signupButton").onclick=
-async()=>{
-const email=
-document.getElementById("authEmail")
-.value.trim();
-const password=
-document.getElementById("authPassword")
-.value;
-document.getElementById("authError")
-.textContent="";
-if(!email||!password){
-document.getElementById("authError")
-.textContent=
-"Enter an email and password.";
-return;
-}
-const {error}=
-await supabase.auth.signUp({
-email,
-password
-});
-if(error){
-document.getElementById("authError")
-.textContent=
-error.message;
-}else{
-document.getElementById("authError")
-.textContent=
-"Account created. Check your email if confirmation is required.";
-}
-};
-/* =========================================================
-LOGOUT
-========================================================= */
-document.getElementById("logoutBtn").onclick=
-async()=>{
-await supabase.auth.signOut();
-};
-/* =========================================================
-SESSION
-========================================================= */
-supabase.auth.onAuthStateChange(
-async(event,session)=>{
-user=session?.user||null;
-if(user){
-document.getElementById("authScreen")
-.style.display="none";
-await loadFriends();
-await loadBoards();
-await loadFriendRequests();
-}else{
-document.getElementById("authScreen")
-.style.display="flex";
-boards=[];
-friends=[];
-render();
-renderFriends();
-}
-});
-const {data:sessionData}=
-await supabase.auth.getSession();
-if(sessionData.session){
-user=sessionData.session.user;
-document.getElementById("authScreen")
-.style.display="none";
-await loadFriends();
-await loadBoards();
-await loadFriendRequests();
-}
-/* =========================================================
-FRIENDS
-========================================================= */
-async function loadFriends(){
-if(!user)return;
-const {data:requests,error}=
-await supabase
-.from("friend_requests")
-.select("*")
-.or(
-`sender_id.eq.${user.id},receiver_id.eq.${user.id}`
-);
-if(error){
-console.error(error);
-return;
-}
-const accepted=
-requests.filter(
-r=>r.status==="accepted"
-);
-const ids=
-accepted.map(
-r=>
-r.sender_id===user.id
-?r.receiver_id
-:r.sender_id
-);
-if(!ids.length){
-friends=[];
-renderFriends();
-return;
-}
-const {data:profiles}=
-await supabase
-.from("profiles")
-.select("id,email")
-.in("id",ids);
-friends=profiles||[];
-renderFriends();
-}
-function renderFriends(){
-const container=
-document.getElementById("friendsList");
-container.innerHTML="";
-friends.forEach(friend=>{
-const el=
-document.createElement("div");
-el.className="friend";
-el.textContent=friend.email;
-container.appendChild(el);
-});
-}
-/* =========================================================
-ADD FRIEND
-========================================================= */
-document.getElementById("addFriendBtn").onclick=
-async()=>{
-const email=
-document.getElementById("addFriendInput")
-.value
-.trim()
-.toLowerCase();
-if(!email){
-alert("Enter your friend's email.");
-return;
-}
-if(email===user.email.toLowerCase()){
-alert("You cannot add yourself.");
-return;
-}
-const {data:profile,error}=
-await supabase
-.from("profiles")
-.select("id,email")
-.eq("email",email)
-.maybeSingle();
-if(error){
-alert(error.message);
-return;
-}
-if(!profile){
-alert("No user with that email was found.");
-return;
-}
-const {error:requestError}=
-await supabase
-.from("friend_requests")
-.insert({
-sender_id:user.id,
-receiver_id:profile.id,
-status:"pending"
-});
-if(requestError){
-if(requestError.code==="23505"){
-alert("A request already exists.");
-}else{
-alert(requestError.message);
-}
-return;
-}
-document.getElementById("addFriendInput")
-.value="";
-alert("Friend request sent.");
-};
-/* =========================================================
-FRIEND REQUESTS
-========================================================= */
-document.getElementById("friendRequestsBtn")
-.onclick=
-async()=>{
-const panel=
-document.getElementById("requestsPanel");
-if(panel.style.display==="block"){
-panel.style.display="none";
-return;
-}
-panel.style.display="block";
-await loadFriendRequests();
-};
-async function loadFriendRequests(){
-if(!user)return;
-const list=
-document.getElementById("requestsList");
-list.innerHTML="Loading...";
-const {data:requests,error}=
-await supabase
-.from("friend_requests")
-.select("*")
-.eq("receiver_id",user.id)
-.eq("status","pending");
-if(error){
-list.innerHTML=
-`<div style="color:#c00">
-${escapeHTML(error.message)}
-</div>`;
-return;
-}
-if(!requests||requests.length===0){
-list.innerHTML=
-"<p style='font-size:13px;color:#666'>No pending requests.</p>";
-return;
-}
-const senderIds=
-requests.map(
-r=>r.sender_id
-);
-const {data:profiles}=
-await supabase
-.from("profiles")
-.select("id,email")
-.in("id",senderIds);
-list.innerHTML="";
-requests.forEach(request=>{
-const sender=
-(profiles||[])
-.find(
-p=>p.id===request.sender_id
-);
-const row=
-document.createElement("div");
-row.className="request";
-row.innerHTML=`
-<div class="request-email">
-${escapeHTML(
-sender?.email||"Unknown user"
-)}
-</div>
-<div class="request-actions">
-<button
-data-action="accept"
-data-id="${request.id}">
-Accept
-</button>
-<button
-data-action="decline"
-data-id="${request.id}">
-Decline
-</button>
-</div>
-`;
-list.appendChild(row);
-});
-}
-document.getElementById("requestsList")
-.addEventListener(
-"click",
-async event=>{
-const button=
-event.target.closest("button");
-if(!button)return;
-const requestId=
-button.dataset.id;
-const action=
-button.dataset.action;
-if(action==="accept"){
-const {error}=
-await supabase
-.from("friend_requests")
-.update({
-status:"accepted"
-})
-.eq("id",requestId)
-.eq("receiver_id",user.id);
-if(error){
-alert(error.message);
-return;
-}
-await loadFriends();
-await loadFriendRequests();
-}
-if(action==="decline"){
-const {error}=
-await supabase
-.from("friend_requests")
-.delete()
-.eq("id",requestId)
-.eq("receiver_id",user.id);
-if(error){
-alert(error.message);
-return;
-}
-await loadFriendRequests();
-}
-});
-/* =========================================================
-LOAD BOARDS
-========================================================= */
-async function loadBoards(){
-if(!user)return;
-const {data,error}=
-await supabase
-.from("boxes")
-.select(`
-id,
-owner_id,
-title,
-x,
-y,
-width,
-height,
-visibility,
-box_items(
-id,
-title,
-url,
-image
-)
-`)
-.order("created_at");
-if(error){
-console.error(error);
-alert(error.message);
-return;
-}
-boards=
-(data||[]).map(b=>({
-...b,
-w:b.width,
-h:b.height,
-items:Array.isArray(b.box_items)
-?b.box_items
-:[]
-}));
-render();
-}
-/* =========================================================
-NEW BOX
-========================================================= */
-document.getElementById("newBtn").onclick=
-()=>{
-openModal(`
-<h2>New box</h2>
-<p>Who should be able to see this box?</p>
-<div class="choice">
-<button id="publicBox">
-Public
-</button>
-<button id="privateBox">
-Private
-</button>
-</div>
-<div class="modal-actions">
-<button onclick="closeModal()">
-Cancel
-</button>
-</div>
-`);
-document.getElementById("publicBox")
-.onclick=
-()=>createBox("public");
-document.getElementById("privateBox")
-.onclick=
-()=>createBox("private");
-};
-async function createBox(visibility){
-closeModal();
-const {data,error}=
-await supabase
-.from("boxes")
-.insert({
-owner_id:user.id,
-title:"New board",
-x:120,
-y:120,
-width:430,
-height:270,
-visibility
-})
-.select()
-.single();
-if(error){
-alert(error.message);
-return;
-}
-const board={
-...data,
-w:data.width,
-h:data.height,
-items:[]
-};
-boards.push(board);
-selectedBoard=data.id;
-render();
-}
-/* =========================================================
-ADD URL
-========================================================= */
-async function addURLToBoard(board){
-openModal(`
-<h2>Add URL</h2>
-<input
-id="itemTitle"
-placeholder="Name (optional)"
->
-<input
-id="itemURL"
-placeholder="https://example.com"
->
-<input
-id="itemImage"
-placeholder="Image URL (optional)"
->
-<div class="modal-actions">
-<button onclick="closeModal()">
-Cancel
-</button>
-<button id="addItemButton">
-Add
-</button>
-</div>
-`);
-document.getElementById("addItemButton")
-.onclick=async()=>{
-let url=
-document.getElementById("itemURL")
-.value
-.trim();
-if(!url){
-alert("Enter a URL.");
-return;
-}
-if(!/^https?:\/\//i.test(url)){
-url="https://"+url;
-}
-const title=
-document.getElementById("itemTitle")
-.value
-.trim();
-const image=
-document.getElementById("itemImage")
-.value
-.trim();
-/*
-IMPORTANT FIX:
-We insert the new item without touching
-the existing items.
-*/
-const {error:insertError}=
-await supabase
-.from("box_items")
-.insert({
-box_id:board.id,
-title:title||url,
-url:url,
-image:image||null
-});
-if(insertError){
-alert(insertError.message);
-return;
-}
-/*
-IMPORTANT FIX:
-Reload ALL items for this box from Supabase.
-This guarantees that URL 1 stays when URL 2
-is added, URL 3 stays when URL 4 is added, etc.
-*/
-const {data:items,error:loadError}=
-await supabase
-.from("box_items")
-.select("*")
-.eq("box_id",board.id)
-.order("id");
-if(loadError){
-alert(loadError.message);
-return;
-}
-board.items=items||[];
-closeModal();
-render();
-};
-}
-/* =========================================================
-RENDER
-========================================================= */
-function render(){
-const world=
-document.getElementById("world");
-world.style.transform=
-`translate(${panX}px,${panY}px) scale(${zoom})`;
-world.innerHTML="";
-boards.forEach(board=>{
-const element=
-document.createElement("section");
-element.className=
-"board "+
-(
-board.visibility==="private"
-?"private "
-:""
-)+
-(
-selectedBoard===board.id
-?"selected"
-:""
-);
-element.dataset.id=board.id;
-element.style.left=
-board.x+"px";
-element.style.top=
-board.y+"px";
-element.style.width=
-board.w+"px";
-element.style.height=
-board.h+"px";
-element.innerHTML=`
-<div class="board-title">
-${escapeHTML(board.title)}
-</div>
-<div class="visibility">
-${
-board.visibility==="public"
-?"Public"
-:"Private"
-}
-</div>
-<div class="board-inner">
-${
-board.owner_id===user?.id
-?`
-<button
-class="add-url"
-data-add-url="${board.id}">
-+ Add URL
-</button>
-`
-:""
-}
-${
-board.items.map(item=>`
-<div
-class="item"
-data-item="${item.id}">
-${
-item.image
-?`
-<img
-src="${escapeHTML(item.image)}"
-alt="">
-`
-:""
-}
-<span>
-${escapeHTML(
-item.title||item.url
-)}
-</span>
-</div>
-`).join("")
-}
-</div>
-${
-board.owner_id===user?.id
-?`<div class="resize"></div>`
-:""
-}
-`;
-/* SELECT */
-element.addEventListener(
-"click",
-event=>{
-if(event.target.closest(".item"))
-return;
-if(event.target.closest(".add-url"))
-return;
-selectedBoard=board.id;
-render();
-});
-/* ADD URL BUTTON */
-const addButton=
-element.querySelector(".add-url");
-if(addButton){
-addButton.addEventListener(
-"click",
-event=>{
-event.stopPropagation();
-addURLToBoard(board);
-});
-}
-/* CONTEXT MENU */
-element.addEventListener(
-"contextmenu",
-event=>{
-if(board.owner_id!==user?.id)
-return;
-event.preventDefault();
-showMenu(
-event.clientX,
-event.clientY,
-board.id
-);
-});
-/* OPEN URL */
-element
-.querySelector(".board-inner")
-.addEventListener(
-"click",
-event=>{
-const item=
-event.target.closest(".item");
-if(!item)return;
-const itemData=
-board.items.find(
-i=>String(i.id)===String(item.dataset.item)
-);
-if(itemData?.url){
-window.open(
-itemData.url,
-"_blank"
-);
-}
-});
-/* MOVE / RESIZE */
-if(board.owner_id===user?.id){
-element.addEventListener(
-"pointerdown",
-event=>{
-if(event.pointerType==="touch")
-return;
-if(event.target.closest(".resize")){
-resizing={
-id:board.id,
-startX:event.clientX,
-startY:event.clientY,
-width:board.w,
-height:board.h
-};
-element.setPointerCapture(
-event.pointerId
-);
-return;
-}
-if(event.target.closest(".item"))
-return;
-if(event.target.closest(".add-url"))
-return;
-moving={
-id:board.id,
-startX:event.clientX,
-startY:event.clientY,
-x:board.x,
-y:board.y
-};
-element.setPointerCapture(
-event.pointerId
-);
-});
-element.addEventListener(
-"pointermove",
-event=>{
-if(
-resizing?.id===board.id
-){
-board.w=
-Math.max(
-150,
-resizing.width+
-(event.clientX-resizing.startX)/zoom
-);
-board.h=
-Math.max(
-100,
-resizing.height+
-(event.clientY-resizing.startY)/zoom
-);
-render();
-return;
-}
-if(
-moving?.id===board.id
-){
-board.x=
-moving.x+
-(event.clientX-moving.startX)/zoom;
-board.y=
-moving.y+
-(event.clientY-moving.startY)/zoom;
-render();
-}
-});
-element.addEventListener(
-"pointerup",
-async()=>{
-if(moving){
-await supabase
-.from("boxes")
-.update({
-x:board.x,
-y:board.y
-})
-.eq("id",board.id);
-}
-if(resizing){
-await supabase
-.from("boxes")
-.update({
-width:board.w,
-height:board.h
-})
-.eq("id",board.id);
-}
-moving=null;
-resizing=null;
-});
-}
-world.appendChild(element);
-});
-}
-/* =========================================================
-DESKTOP PAN
-========================================================= */
-document.getElementById("workspace")
-.addEventListener(
-"pointerdown",
-event=>{
-if(event.pointerType==="touch")
-return;
-if(event.target.closest(".board"))
-return;
-panning={
-x:event.clientX,
-y:event.clientY,
-panX,
-panY
-};
-});
-document.addEventListener(
-"pointermove",
-event=>{
-if(!panning)return;
-panX=
-panning.panX+
-event.clientX-panning.x;
-panY=
-panning.panY+
-event.clientY-panning.y;
-render();
-});
-document.addEventListener(
-"pointerup",
-()=>{
-panning=null;
-});
-/* =========================================================
-TOUCH PAN + PINCH ZOOM
-========================================================= */
-const workspace=
-document.getElementById("workspace");
-function distance(a,b){
-return Math.hypot(
-a.clientX-b.clientX,
-a.clientY-b.clientY
-);
-}
-function midpoint(a,b){
-return{
-x:(a.clientX+b.clientX)/2,
-y:(a.clientY+b.clientY)/2
-};
-}
-workspace.addEventListener(
-"pointerdown",
-event=>{
-if(event.pointerType!=="touch")
-return;
-pointers.set(
-event.pointerId,
-event
-);
-if(pointers.size===1){
-if(!event.target.closest(".board")){
-panning={
-x:event.clientX,
-y:event.clientY,
-panX,
-panY
-};
-}
-}
-if(pointers.size===2){
-panning=null;
-const pts=
-[...pointers.values()];
-pinchStartDistance=
-distance(
-pts[0],
-pts[1]
-);
-pinchStartZoom=zoom;
-pinchStartCenter=
-midpoint(
-pts[0],
-pts[1]
-);
-pinchStartPanX=panX;
-pinchStartPanY=panY;
-}
-});
-workspace.addEventListener(
-"pointermove",
-event=>{
-if(event.pointerType!=="touch")
-return;
-if(!pointers.has(event.pointerId))
-return;
-pointers.set(
-event.pointerId,
-event
-);
-if(
-pointers.size===1 &&
-panning
-){
-panX=
-panning.panX+
-event.clientX-panning.x;
-panY=
-panning.panY+
-event.clientY-panning.y;
-render();
-return;
-}
-if(pointers.size===2){
-const pts=
-[...pointers.values()];
-const currentDistance=
-distance(
-pts[0],
-pts[1]
-);
-if(!pinchStartDistance)
-return;
-let newZoom=
-pinchStartZoom*
-(
-currentDistance/
-pinchStartDistance
-);
-newZoom=
-Math.max(
-0.25,
-Math.min(
-3,
-newZoom
-)
-);
-const center=
-midpoint(
-pts[0],
-pts[1]
-);
-const rect=
-workspace.getBoundingClientRect();
-const worldX=
-(
-pinchStartCenter.x-
-rect.left-
-pinchStartPanX
-)/
-pinchStartZoom;
-const worldY=
-(
-pinchStartCenter.y-
-rect.top-
-pinchStartPanY
-)/
-pinchStartZoom;
-panX=
-center.x-
-rect.left-
-worldX*newZoom;
-panY=
-center.y-
-rect.top-
-worldY*newZoom;
-zoom=newZoom;
-render();
-}
-});
-function endTouch(event){
-if(event.pointerType!=="touch")
-return;
-pointers.delete(
-event.pointerId
-);
-if(pointers.size<2){
-pinchStartDistance=null;
-}
-if(pointers.size===0){
-panning=null;
-}
-}
-workspace.addEventListener(
-"pointerup",
-endTouch
-);
-workspace.addEventListener(
-"pointercancel",
-endTouch
-);
-/* =========================================================
-WHEEL ZOOM
-========================================================= */
-workspace.addEventListener(
-"wheel",
-event=>{
-event.preventDefault();
-const rect=
-workspace.getBoundingClientRect();
-const mouseX=
-event.clientX-rect.left;
-const mouseY=
-event.clientY-rect.top;
-const worldX=
-(mouseX-panX)/zoom;
-const worldY=
-(mouseY-panY)/zoom;
-const factor=
-event.deltaY<0
-?1.1
-:0.9;
-zoom=
-Math.max(
-0.25,
-Math.min(
-3,
-zoom*factor
-)
-);
-panX=
-mouseX-worldX*zoom;
-panY=
-mouseY-worldY*zoom;
-render();
-},
-{passive:false}
-);
-/* =========================================================
-CONTEXT MENU
-========================================================= */
-function showMenu(x,y,id){
-menuBoard=id;
-const menu=
-document.getElementById("menu");
-menu.style.display="block";
-menu.style.left=x+"px";
-menu.style.top=y+"px";
-}
-function hideMenu(){
-document.getElementById("menu")
-.style.display="none";
-}
-document.addEventListener(
-"pointerdown",
-event=>{
-if(!event.target.closest("#menu"))
-hideMenu();
-});
-/* =========================================================
-RENAME
-========================================================= */
-document.getElementById("renameOpt")
-.onclick=
-()=>{
-hideMenu();
-const board=
-boards.find(
-b=>b.id===menuBoard
-);
-if(!board)return;
-openModal(`
-<h2>Rename box</h2>
-<input
-id="renameInput"
-value="${escapeHTML(board.title)}">
-<div class="modal-actions">
-<button onclick="closeModal()">
-Cancel
-</button>
-<button id="renameSave">
-Save
-</button>
-</div>
-`);
-document.getElementById("renameSave")
-.onclick=
-async()=>{
-const title=
-document.getElementById("renameInput")
-.value
-.trim()||
-"Untitled";
-const {error}=
-await supabase
-.from("boxes")
-.update({title})
-.eq("id",board.id);
-if(error){
-alert(error.message);
-return;
-}
-board.title=title;
-closeModal();
-render();
-};
-};
-/* =========================================================
-VISIBILITY
-========================================================= */
-document.getElementById("visibilityOpt")
-.onclick=
-async()=>{
-hideMenu();
-const board=
-boards.find(
-b=>b.id===menuBoard
-);
-if(!board)return;
-const newVisibility=
-board.visibility==="public"
-?"private"
-:"public";
-const {error}=
-await supabase
-.from("boxes")
-.update({
-visibility:newVisibility
-})
-.eq("id",board.id);
-if(error){
-alert(error.message);
-return;
-}
-board.visibility=
-newVisibility;
-render();
-};
-/* =========================================================
-DELETE
-========================================================= */
-document.getElementById("deleteOpt")
-.onclick=
-async()=>{
-hideMenu();
-const board=
-boards.find(
-b=>b.id===menuBoard
-);
-if(!board)return;
-if(!confirm("Delete this box?"))
-return;
-const {error}=
-await supabase
-.from("boxes")
-.delete()
-.eq("id",board.id);
-if(error){
-alert(error.message);
-return;
-}
-boards=
-boards.filter(
-b=>b.id!==board.id
-);
-render();
-};
-/* =========================================================
-SEARCH
-========================================================= */
-document.getElementById("search")
-.addEventListener(
-"input",
-event=>{
-const query=
-event.target.value
-.toLowerCase()
-.trim();
-document
-.querySelectorAll(".board")
-.forEach(element=>{
-const board=
-boards.find(
-b=>b.id===element.dataset.id
-);
-if(!board)return;
-const matches=
-!query||
-board.title
-.toLowerCase()
-.includes(query)||
-board.items.some(
-item=>
-(item.title||"")
-.toLowerCase()
-.includes(query)
-);
-element.style.opacity=
-matches?"1":"0.2";
-});
-});
-/* =========================================================
-SHARE
-========================================================= */
-
-document.getElementById("shareBtn").onclick = async () => {
-
-    const shareData = {
-        title: "Spaceboards",
-        text: "Check out my Spaceboards!",
-        url: window.location.href
+document.getElementById("loginButton")
+    .onclick = async () => {
+        const email =
+            document.getElementById("authEmail")
+                .value
+                .trim();
+        const password =
+            document.getElementById("authPassword")
+                .value;
+        const errorBox =
+            document.getElementById("authError");
+        errorBox.textContent = "";
+        if (!email || !password) {
+            errorBox.textContent =
+                "Enter your email and password.";
+            return;
+        }
+        const { error } =
+            await supabase.auth
+                .signInWithPassword({
+                    email,
+                    password
+                });
+        if (error) {
+            errorBox.textContent =
+                error.message;
+        }
     };
-
+/* =========================================================
+   CREATE ACCOUNT
+========================================================= */
+document.getElementById("signupButton")
+    .onclick = async () => {
+        const email =
+            document.getElementById("authEmail")
+                .value
+                .trim();
+        const password =
+            document.getElementById("authPassword")
+                .value;
+        const errorBox =
+            document.getElementById("authError");
+        errorBox.textContent = "";
+        if (!email || !password) {
+            errorBox.textContent =
+                "Enter an email and password.";
+            return;
+        }
+        if (password.length < 6) {
+            errorBox.textContent =
+                "Password must be at least 6 characters.";
+            return;
+        }
+        const { data, error } =
+            await supabase.auth
+                .signUp({
+                    email,
+                    password
+                });
+        if (error) {
+            errorBox.textContent =
+                error.message;
+            return;
+        }
+        if (!data.session) {
+            errorBox.textContent =
+                "Account created. Check your email if confirmation is required.";
+        }
+    };
+/* =========================================================
+   LOGOUT
+========================================================= */
+document.getElementById("logoutBtn")
+    .onclick = async () => {
+        await supabase.auth.signOut();
+    };
+/* =========================================================
+   SESSION
+========================================================= */
+async function startApp(session) {
+    user = session?.user || null;
+    if (!user) {
+        document.getElementById("authScreen")
+            .style.display = "flex";
+        boards = [];
+        friends = [];
+        render();
+        renderFriends();
+        return;
+    }
+    document.getElementById("authScreen")
+        .style.display = "none";
+    await loadFriends();
+    await loadBoards();
+    await loadFriendRequests();
+}
+supabase.auth.onAuthStateChange(
+    async (event, session) => {
+        await startApp(session);
+    }
+);
+const { data: sessionData } =
+    await supabase.auth.getSession();
+await startApp(
+    sessionData.session
+);
+/* =========================================================
+   FRIENDS
+========================================================= */
+async function loadFriends() {
+    if (!user) return;
+    const { data: requests, error } =
+        await supabase
+            .from("friend_requests")
+            .select("*")
+            .or(
+                `sender_id.eq.${user.id},receiver_id.eq.${user.id}`
+            );
+    if (error) {
+        console.error(error);
+        return;
+    }
+    const accepted =
+        (requests || [])
+            .filter(
+                r => r.status === "accepted"
+            );
+    const ids =
+        accepted.map(
+            r =>
+                r.sender_id === user.id
+                    ? r.receiver_id
+                    : r.sender_id
+        );
+    if (!ids.length) {
+        friends = [];
+        renderFriends();
+        return;
+    }
+    const { data: profiles } =
+        await supabase
+            .from("profiles")
+            .select("id,email")
+            .in("id", ids);
+    friends =
+        profiles || [];
+    renderFriends();
+}
+function renderFriends() {
+    const container =
+        document.getElementById(
+            "friendsList"
+        );
+    container.innerHTML = "";
+    friends.forEach(
+        friend => {
+            const el =
+                document.createElement("div");
+            el.className =
+                "friend";
+            el.textContent =
+                friend.email;
+            container.appendChild(el);
+        }
+    );
+}
+/* =========================================================
+   ADD FRIEND
+========================================================= */
+document.getElementById("addFriendBtn")
+    .onclick = async () => {
+        if (!user) return;
+        const input =
+            document.getElementById(
+                "addFriendInput"
+            );
+        const email =
+            input.value
+                .trim()
+                .toLowerCase();
+        if (!email) {
+            alert(
+                "Enter your friend's email."
+            );
+            return;
+        }
+        if (
+            email ===
+            user.email.toLowerCase()
+        ) {
+            alert(
+                "You cannot add yourself."
+            );
+            return;
+        }
+        const { data: profile, error } =
+            await supabase
+                .from("profiles")
+                .select("id,email")
+                .eq("email", email)
+                .maybeSingle();
+        if (error) {
+            alert(error.message);
+            return;
+        }
+        if (!profile) {
+            alert(
+                "No user with that email was found."
+            );
+            return;
+        }
+        const { error: requestError } =
+            await supabase
+                .from("friend_requests")
+                .insert({
+                    sender_id: user.id,
+                    receiver_id: profile.id,
+                    status: "pending"
+                });
+        if (requestError) {
+            if (
+                requestError.code ===
+                "23505"
+            ) {
+                alert(
+                    "A friend request already exists."
+                );
+            } else {
+                alert(
+                    requestError.message
+                );
+            }
+            return;
+        }
+        input.value = "";
+        alert(
+            "Friend request sent."
+        );
+    };
+/* =========================================================
+   FRIEND REQUESTS
+========================================================= */
+document.getElementById(
+    "friendRequestsBtn"
+).onclick = async () => {
+    const panel =
+        document.getElementById(
+            "requestsPanel"
+        );
+    if (
+        panel.style.display ===
+        "block"
+    ) {
+        panel.style.display =
+            "none";
+        return;
+    }
+    panel.style.display =
+        "block";
+    await loadFriendRequests();
+};
+async function loadFriendRequests() {
+    if (!user) return;
+    const list =
+        document.getElementById(
+            "requestsList"
+        );
+    list.innerHTML =
+        "Loading...";
+    const { data: requests, error } =
+        await supabase
+            .from("friend_requests")
+            .select("*")
+            .eq("receiver_id", user.id)
+            .eq("status", "pending");
+    if (error) {
+        list.innerHTML =
+            `<div style="color:#c00">
+                ${escapeHTML(error.message)}
+             </div>`;
+        return;
+    }
+    if (
+        !requests ||
+        requests.length === 0
+    ) {
+        list.innerHTML =
+            "<p style='font-size:13px;color:#666'>No pending requests.</p>";
+        return;
+    }
+    const senderIds =
+        requests.map(
+            r => r.sender_id
+        );
+    const { data: profiles } =
+        await supabase
+            .from("profiles")
+            .select("id,email")
+            .in("id", senderIds);
+    list.innerHTML = "";
+    requests.forEach(
+        request => {
+            const sender =
+                (profiles || [])
+                    .find(
+                        p =>
+                            p.id ===
+                            request.sender_id
+                    );
+            const row =
+                document.createElement(
+                    "div"
+                );
+            row.className =
+                "request";
+            row.innerHTML = `
+                <div class="request-email">
+                    ${escapeHTML(
+                        sender?.email ||
+                        "Unknown user"
+                    )}
+                </div>
+                <div class="request-actions">
+                    <button
+                        data-action="accept"
+                        data-id="${request.id}">
+                        Accept
+                    </button>
+                    <button
+                        data-action="decline"
+                        data-id="${request.id}">
+                        Decline
+                    </button>
+                </div>
+            `;
+            list.appendChild(row);
+        }
+    );
+}
+document.getElementById(
+    "requestsList"
+).addEventListener(
+    "click",
+    async event => {
+        const button =
+            event.target.closest(
+                "button"
+            );
+        if (!button) return;
+        const requestId =
+            button.dataset.id;
+        const action =
+            button.dataset.action;
+        if (action === "accept") {
+            const { error } =
+                await supabase
+                    .from("friend_requests")
+                    .update({
+                        status: "accepted"
+                    })
+                    .eq("id", requestId)
+                    .eq(
+                        "receiver_id",
+                        user.id
+                    );
+            if (error) {
+                alert(
+                    error.message
+                );
+                return;
+            }
+            await loadFriends();
+            await loadFriendRequests();
+        }
+        if (action === "decline") {
+            const { error } =
+                await supabase
+                    .from("friend_requests")
+                    .delete()
+                    .eq("id", requestId)
+                    .eq(
+                        "receiver_id",
+                        user.id
+                    );
+            if (error) {
+                alert(
+                    error.message
+                );
+                return;
+            }
+            await loadFriendRequests();
+        }
+    }
+);
+/* =========================================================
+   LOAD BOARDS
+========================================================= */
+async function loadBoards() {
+    if (!user) return;
+    const { data, error } =
+        await supabase
+            .from("boxes")
+            .select(`
+                id,
+                owner_id,
+                title,
+                x,
+                y,
+                width,
+                height,
+                visibility,
+                box_items(
+                    id,
+                    title,
+                    url,
+                    image
+                )
+            `)
+            .order("created_at");
+    if (error) {
+        console.error(error);
+        alert(
+            error.message
+        );
+        return;
+    }
+    boards =
+        (data || [])
+            .map(
+                board => ({
+                    ...board,
+                    x:
+                        Number(board.x) ||
+                        0,
+                    y:
+                        Number(board.y) ||
+                        0,
+                    w:
+                        Number(board.width) ||
+                        430,
+                    h:
+                        Number(board.height) ||
+                        270,
+                    items:
+                        Array.isArray(
+                            board.box_items
+                        )
+                            ? board.box_items
+                            : []
+                })
+            );
+    render();
+}
+/* =========================================================
+   NEW BOX BUTTON
+========================================================= */
+document.getElementById("newBtn")
+    .onclick = () => {
+        openModal(`
+            <h2>New box</h2>
+            <p>
+                Who should be able to see this box?
+            </p>
+            <div class="choice">
+                <button id="publicBox">
+                    Public
+                </button>
+                <button id="privateBox">
+                    Private
+                </button>
+            </div>
+            <div class="modal-actions">
+                <button id="cancelNewBox">
+                    Cancel
+                </button>
+            </div>
+        `);
+        document.getElementById(
+            "publicBox"
+        ).onclick =
+            () =>
+                createBox(
+                    "public"
+                );
+        document.getElementById(
+            "privateBox"
+        ).onclick =
+            () =>
+                createBox(
+                    "private"
+                );
+        document.getElementById(
+            "cancelNewBox"
+        ).onclick =
+            closeModal;
+    };
+/* =========================================================
+   CREATE BOX
+   NEW BOXES GO NEXT TO THE PREVIOUS BOX
+========================================================= */
+async function createBox(
+    visibility
+) {
+    if (!user) return;
+    const BOX_WIDTH =
+        430;
+    const BOX_HEIGHT =
+        270;
+    const GAP =
+        30;
+    let newX =
+        120;
+    let newY =
+        120;
+    /*
+        Find the rightmost existing box.
+        The new box is placed 30px to its right.
+    */
+    if (boards.length > 0) {
+        let rightmostEdge =
+            -Infinity;
+        boards.forEach(
+            board => {
+                const rightEdge =
+                    Number(board.x) +
+                    Number(board.w);
+                if (
+                    rightEdge >
+                    rightmostEdge
+                ) {
+                    rightmostEdge =
+                        rightEdge;
+                }
+            }
+        );
+        newX =
+            rightmostEdge +
+            GAP;
+    }
+    const { data, error } =
+        await supabase
+            .from("boxes")
+            .insert({
+                owner_id:
+                    user.id,
+                title:
+                    "New board",
+                x:
+                    newX,
+                y:
+                    newY,
+                width:
+                    BOX_WIDTH,
+                height:
+                    BOX_HEIGHT,
+                visibility:
+                    visibility
+            })
+            .select()
+            .single();
+    if (error) {
+        alert(
+            error.message
+        );
+        return;
+    }
+    const board = {
+        ...data,
+        x:
+            Number(data.x),
+        y:
+            Number(data.y),
+        w:
+            Number(data.width),
+        h:
+            Number(data.height),
+        items: []
+    };
+    /*
+        IMPORTANT:
+        We only ADD the new board.
+        We never replace the old boards.
+    */
+    boards.push(
+        board
+    );
+    selectedBoard =
+        board.id;
+    closeModal();
+    render();
+}
+/* =========================================================
+   ADD URL
+========================================================= */
+async function addURLToBoard(
+    board
+) {
+    openModal(`
+        <h2>
+            Add URL
+        </h2>
+        <input
+            id="itemTitle"
+            placeholder="Name (optional)"
+        >
+        <input
+            id="itemURL"
+            placeholder="https://example.com"
+        >
+        <input
+            id="itemImage"
+            placeholder="Image URL (optional)"
+        >
+        <div class="modal-actions">
+            <button id="cancelAddURL">
+                Cancel
+            </button>
+            <button id="addItemButton">
+                Add
+            </button>
+        </div>
+    `);
+    document.getElementById(
+        "cancelAddURL"
+    ).onclick =
+        closeModal;
+    document.getElementById(
+        "addItemButton"
+    ).onclick =
+        async () => {
+            let url =
+                document.getElementById(
+                    "itemURL"
+                )
+                .value
+                .trim();
+            if (!url) {
+                alert(
+                    "Enter a URL."
+                );
+                return;
+            }
+            if (
+                !/^https?:\/\//i
+                    .test(url)
+            ) {
+                url =
+                    "https://" +
+                    url;
+            }
+            const title =
+                document.getElementById(
+                    "itemTitle"
+                )
+                .value
+                .trim();
+            const image =
+                document.getElementById(
+                    "itemImage"
+                )
+                .value
+                .trim();
+            /*
+                INSERT creates a new row.
+                It does NOT replace existing URLs.
+            */
+            const {
+                data: newItem,
+                error: insertError
+            } =
+                await supabase
+                    .from("box_items")
+                    .insert({
+                        box_id:
+                            board.id,
+                        title:
+                            title || url,
+                        url:
+                            url,
+                        image:
+                            image || null
+                    })
+                    .select()
+                    .single();
+            if (insertError) {
+                alert(
+                    insertError.message
+                );
+                return;
+            }
+            /*
+                Add the new URL to the existing
+                local list instead of replacing it.
+            */
+            board.items.push(
+                newItem
+            );
+            closeModal();
+            render();
+        };
+}
+/* =========================================================
+   RENDER
+========================================================= */
+function render() {
+    const world =
+        document.getElementById(
+            "world"
+        );
+    if (!world) return;
+    world.style.transform =
+        `translate(${panX}px,${panY}px) scale(${zoom})`;
+    world.innerHTML =
+        "";
+    boards.forEach(
+        board => {
+            const element =
+                document.createElement(
+                    "section"
+                );
+            element.className =
+                "board " +
+                (
+                    board.visibility ===
+                    "private"
+                        ? "private "
+                        : ""
+                ) +
+                (
+                    selectedBoard ===
+                    board.id
+                        ? "selected"
+                        : ""
+                );
+            element.dataset.id =
+                board.id;
+            element.style.left =
+                board.x + "px";
+            element.style.top =
+                board.y + "px";
+            element.style.width =
+                board.w + "px";
+            element.style.height =
+                board.h + "px";
+            element.innerHTML = `
+                <div class="board-title">
+                    ${escapeHTML(
+                        board.title
+                    )}
+                </div>
+                <div class="visibility">
+                    ${
+                        board.visibility ===
+                        "public"
+                            ? "Public"
+                            : "Private"
+                    }
+                </div>
+                <div class="board-inner">
+                    ${
+                        board.owner_id ===
+                        user?.id
+                            ? `
+                                <button
+                                    class="add-url"
+                                    data-add-url="${board.id}">
+                                    + Add URL
+                                </button>
+                              `
+                            : ""
+                    }
+                    ${
+                        (board.items || [])
+                            .map(
+                                item => `
+                                    <div
+                                        class="item"
+                                        data-item="${item.id}">
+                                        ${
+                                            item.image
+                                                ? `
+                                                    <img
+                                                        src="${escapeHTML(item.image)}"
+                                                        alt="">
+                                                  `
+                                                : ""
+                                        }
+                                        <span>
+                                            ${escapeHTML(
+                                                item.title ||
+                                                item.url
+                                            )}
+                                        </span>
+                                    </div>
+                                `
+                            )
+                            .join("")
+                    }
+                </div>
+                ${
+                    board.owner_id ===
+                    user?.id
+                        ? `
+                            <div
+                                class="resize">
+                            </div>
+                          `
+                        : ""
+                }
+            `;
+            /* SELECT */
+            element.addEventListener(
+                "click",
+                event => {
+                    if (
+                        event.target.closest(
+                            ".item"
+                        )
+                    ) {
+                        return;
+                    }
+                    if (
+                        event.target.closest(
+                            ".add-url"
+                        )
+                    ) {
+                        return;
+                    }
+                    selectedBoard =
+                        board.id;
+                    render();
+                }
+            );
+            /* ADD URL */
+            const addButton =
+                element.querySelector(
+                    ".add-url"
+                );
+            if (addButton) {
+                addButton.addEventListener(
+                    "click",
+                    event => {
+                        event.stopPropagation();
+                        addURLToBoard(
+                            board
+                        );
+                    }
+                );
+            }
+            /* CONTEXT MENU */
+            element.addEventListener(
+                "contextmenu",
+                event => {
+                    if (
+                        board.owner_id !==
+                        user?.id
+                    ) {
+                        return;
+                    }
+                    event.preventDefault();
+                    showMenu(
+                        event.clientX,
+                        event.clientY,
+                        board.id
+                    );
+                }
+            );
+            /* OPEN URL */
+            element
+                .querySelector(
+                    ".board-inner"
+                )
+                .addEventListener(
+                    "click",
+                    event => {
+                        const item =
+                            event.target.closest(
+                                ".item"
+                            );
+                        if (!item)
+                            return;
+                        const itemData =
+                            board.items.find(
+                                i =>
+                                    String(i.id) ===
+                                    String(
+                                        item.dataset.item
+                                    )
+                            );
+                        if (
+                            itemData?.url
+                        ) {
+                            window.open(
+                                itemData.url,
+                                "_blank"
+                            );
+                        }
+                    }
+                );
+            /* MOVE / RESIZE */
+            if (
+                board.owner_id ===
+                user?.id
+            ) {
+                element.addEventListener(
+                    "pointerdown",
+                    event => {
+                        if (
+                            event.pointerType ===
+                            "touch"
+                        ) {
+                            return;
+                        }
+                        if (
+                            event.target.closest(
+                                ".item"
+                            ) ||
+                            event.target.closest(
+                                ".add-url"
+                            )
+                        ) {
+                            return;
+                        }
+                        if (
+                            event.target.closest(
+                                ".resize"
+                            )
+                        ) {
+                            resizing = {
+                                id:
+                                    board.id,
+                                startX:
+                                    event.clientX,
+                                startY:
+                                    event.clientY,
+                                width:
+                                    board.w,
+                                height:
+                                    board.h
+                            };
+                            element.setPointerCapture(
+                                event.pointerId
+                            );
+                            return;
+                        }
+                        moving = {
+                            id:
+                                board.id,
+                            startX:
+                                event.clientX,
+                            startY:
+                                event.clientY,
+                            x:
+                                board.x,
+                            y:
+                                board.y
+                        };
+                        element.setPointerCapture(
+                            event.pointerId
+                        );
+                    }
+                );
+                element.addEventListener(
+                    "pointermove",
+                    event => {
+                        if (
+                            resizing?.id ===
+                            board.id
+                        ) {
+                            board.w =
+                                Math.max(
+                                    150,
+                                    resizing.width +
+                                    (
+                                        event.clientX -
+                                        resizing.startX
+                                    ) /
+                                    zoom
+                                );
+                            board.h =
+                                Math.max(
+                                    100,
+                                    resizing.height +
+                                    (
+                                        event.clientY -
+                                        resizing.startY
+                                    ) /
+                                    zoom
+                                );
+                            render();
+                            return;
+                        }
+                        if (
+                            moving?.id ===
+                            board.id
+                        ) {
+                            board.x =
+                                moving.x +
+                                (
+                                    event.clientX -
+                                    moving.startX
+                                ) /
+                                zoom;
+                            board.y =
+                                moving.y +
+                                (
+                                    event.clientY -
+                                    moving.startY
+                                ) /
+                                zoom;
+                            render();
+                        }
+                    }
+                );
+                element.addEventListener(
+                    "pointerup",
+                    async () => {
+                        if (moving) {
+                            await supabase
+                                .from("boxes")
+                                .update({
+                                    x:
+                                        board.x,
+                                    y:
+                                        board.y
+                                })
+                                .eq(
+                                    "id",
+                                    board.id
+                                );
+                        }
+                        if (resizing) {
+                            await supabase
+                                .from("boxes")
+                                .update({
+                                    width:
+                                        board.w,
+                                    height:
+                                        board.h
+                                })
+                                .eq(
+                                    "id",
+                                    board.id
+                                );
+                        }
+                        moving =
+                            null;
+                        resizing =
+                            null;
+                    }
+                );
+            }
+            world.appendChild(
+                element
+            );
+        }
+    );
+}
+/* =========================================================
+   DESKTOP PAN
+========================================================= */
+document.getElementById(
+    "workspace"
+)
+.addEventListener(
+    "pointerdown",
+    event => {
+        if (
+            event.pointerType ===
+            "touch"
+        ) {
+            return;
+        }
+        if (
+            event.target.closest(
+                ".board"
+            )
+        ) {
+            return;
+        }
+        panning = {
+            x:
+                event.clientX,
+            y:
+                event.clientY,
+            panX,
+            panY
+        };
+    }
+);
+document.addEventListener(
+    "pointermove",
+    event => {
+        if (!panning)
+            return;
+        panX =
+            panning.panX +
+            event.clientX -
+            panning.x;
+        panY =
+            panning.panY +
+            event.clientY -
+            panning.y;
+        render();
+    }
+);
+document.addEventListener(
+    "pointerup",
+    () => {
+        panning =
+            null;
+    }
+);
+/* =========================================================
+   TOUCH / PINCH
+========================================================= */
+const workspace =
+    document.getElementById(
+        "workspace"
+    );
+function distance(a, b) {
+    return Math.hypot(
+        a.clientX -
+        b.clientX,
+        a.clientY -
+        b.clientY
+    );
+}
+function midpoint(a, b) {
+    return {
+        x:
+            (
+                a.clientX +
+                b.clientX
+            ) / 2,
+        y:
+            (
+                a.clientY +
+                b.clientY
+            ) / 2
+    };
+}
+workspace.addEventListener(
+    "pointerdown",
+    event => {
+        if (
+            event.pointerType !==
+            "touch"
+        ) {
+            return;
+        }
+        pointers.set(
+            event.pointerId,
+            event
+        );
+        if (
+            pointers.size ===
+            1
+        ) {
+            if (
+                !event.target.closest(
+                    ".board"
+                )
+            ) {
+                panning = {
+                    x:
+                        event.clientX,
+                    y:
+                        event.clientY,
+                    panX,
+                    panY
+                };
+            }
+        }
+        if (
+            pointers.size ===
+            2
+        ) {
+            panning =
+                null;
+            const pts =
+                [
+                    ...pointers.values()
+                ];
+            pinchStartDistance =
+                distance(
+                    pts[0],
+                    pts[1]
+                );
+            pinchStartZoom =
+                zoom;
+            pinchStartCenter =
+                midpoint(
+                    pts[0],
+                    pts[1]
+                );
+            pinchStartPanX =
+                panX;
+            pinchStartPanY =
+                panY;
+        }
+    }
+);
+workspace.addEventListener(
+    "pointermove",
+    event => {
+        if (
+            event.pointerType !==
+            "touch"
+        ) {
+            return;
+        }
+        if (
+            !pointers.has(
+                event.pointerId
+            )
+        ) {
+            return;
+        }
+        pointers.set(
+            event.pointerId,
+            event
+        );
+        if (
+            pointers.size === 1 &&
+            panning
+        ) {
+            panX =
+                panning.panX +
+                event.clientX -
+                panning.x;
+            panY =
+                panning.panY +
+                event.clientY -
+                panning.y;
+            render();
+            return;
+        }
+        if (
+            pointers.size ===
+            2
+        ) {
+            const pts =
+                [
+                    ...pointers.values()
+                ];
+            const currentDistance =
+                distance(
+                    pts[0],
+                    pts[1]
+                );
+            if (
+                !pinchStartDistance
+            ) {
+                return;
+            }
+            let newZoom =
+                pinchStartZoom *
+                (
+                    currentDistance /
+                    pinchStartDistance
+                );
+            newZoom =
+                Math.max(
+                    0.25,
+                    Math.min(
+                        3,
+                        newZoom
+                    )
+                );
+            const center =
+                midpoint(
+                    pts[0],
+                    pts[1]
+                );
+            const rect =
+                workspace
+                    .getBoundingClientRect();
+            const worldX =
+                (
+                    pinchStartCenter.x -
+                    rect.left -
+                    pinchStartPanX
+                ) /
+                pinchStartZoom;
+            const worldY =
+                (
+                    pinchStartCenter.y -
+                    rect.top -
+                    pinchStartPanY
+                ) /
+                pinchStartZoom;
+            panX =
+                center.x -
+                rect.left -
+                worldX *
+                newZoom;
+            panY =
+                center.y -
+                rect.top -
+                worldY *
+                newZoom;
+            zoom =
+                newZoom;
+            render();
+        }
+    }
+);
+function endTouch(event) {
+    if (
+        event.pointerType !==
+        "touch"
+    ) {
+        return;
+    }
+    pointers.delete(
+        event.pointerId
+    );
+    if (
+        pointers.size < 2
+    ) {
+        pinchStartDistance =
+            null;
+    }
+    if (
+        pointers.size === 0
+    ) {
+        panning =
+            null;
+    }
+}
+workspace.addEventListener(
+    "pointerup",
+    endTouch
+);
+workspace.addEventListener(
+    "pointercancel",
+    endTouch
+);
+/* =========================================================
+   WHEEL ZOOM
+========================================================= */
+workspace.addEventListener(
+    "wheel",
+    event => {
+        event.preventDefault();
+        const rect =
+            workspace
+                .getBoundingClientRect();
+        const mouseX =
+            event.clientX -
+            rect.left;
+        const mouseY =
+            event.clientY -
+            rect.top;
+        const worldX =
+            (
+                mouseX -
+                panX
+            ) /
+            zoom;
+        const worldY =
+            (
+                mouseY -
+                panY
+            ) /
+            zoom;
+        const factor =
+            event.deltaY < 0
+                ? 1.1
+                : 0.9;
+        zoom =
+            Math.max(
+                0.25,
+                Math.min(
+                    3,
+                    zoom *
+                    factor
+                )
+            );
+        panX =
+            mouseX -
+            worldX *
+            zoom;
+        panY =
+            mouseY -
+            worldY *
+            zoom;
+        render();
+    },
+    {
+        passive: false
+    }
+);
+/* =========================================================
+   CONTEXT MENU
+========================================================= */
+function showMenu(
+    x,
+    y,
+    id
+) {
+    menuBoard =
+        id;
+    const menu =
+        document.getElementById(
+            "menu"
+        );
+    menu.style.display =
+        "block";
+    menu.style.left =
+        x + "px";
+    menu.style.top =
+        y + "px";
+}
+function hideMenu() {
+    document.getElementById(
+        "menu"
+    )
+    .style.display =
+        "none";
+}
+document.addEventListener(
+    "pointerdown",
+    event => {
+        if (
+            !event.target.closest(
+                "#menu"
+            )
+        ) {
+            hideMenu();
+        }
+    }
+);
+/* =========================================================
+   RENAME
+========================================================= */
+document.getElementById(
+    "renameOpt"
+)
+.onclick = () => {
+    hideMenu();
+    const board =
+        boards.find(
+            b =>
+                b.id ===
+                menuBoard
+        );
+    if (!board)
+        return;
+    openModal(`
+        <h2>
+            Rename box
+        </h2>
+        <input
+            id="renameInput"
+            value="${escapeHTML(
+                board.title
+            )}"
+        >
+        <div class="modal-actions">
+            <button id="renameCancel">
+                Cancel
+            </button>
+            <button id="renameSave">
+                Save
+            </button>
+        </div>
+    `);
+    document.getElementById(
+        "renameCancel"
+    ).onclick =
+        closeModal;
+    document.getElementById(
+        "renameSave"
+    ).onclick =
+        async () => {
+            const title =
+                document.getElementById(
+                    "renameInput"
+                )
+                .value
+                .trim() ||
+                "Untitled";
+            const { error } =
+                await supabase
+                    .from("boxes")
+                    .update({
+                        title
+                    })
+                    .eq(
+                        "id",
+                        board.id
+                    );
+            if (error) {
+                alert(
+                    error.message
+                );
+                return;
+            }
+            board.title =
+                title;
+            closeModal();
+            render();
+        };
+};
+/* =========================================================
+   VISIBILITY
+========================================================= */
+document.getElementById(
+    "visibilityOpt"
+)
+.onclick = async () => {
+    hideMenu();
+    const board =
+        boards.find(
+            b =>
+                b.id ===
+                menuBoard
+        );
+    if (!board)
+        return;
+    const newVisibility =
+        board.visibility ===
+        "public"
+            ? "private"
+            : "public";
+    const { error } =
+        await supabase
+            .from("boxes")
+            .update({
+                visibility:
+                    newVisibility
+            })
+            .eq(
+                "id",
+                board.id
+            );
+    if (error) {
+        alert(
+            error.message
+        );
+        return;
+    }
+    board.visibility =
+        newVisibility;
+    render();
+};
+/* =========================================================
+   DELETE
+========================================================= */
+document.getElementById(
+    "deleteOpt"
+)
+.onclick = async () => {
+    hideMenu();
+    const board =
+        boards.find(
+            b =>
+                b.id ===
+                menuBoard
+        );
+    if (!board)
+        return;
+    if (
+        !confirm(
+            "Delete this box?"
+        )
+    ) {
+        return;
+    }
+    const { error } =
+        await supabase
+            .from("boxes")
+            .delete()
+            .eq(
+                "id",
+                board.id
+            );
+    if (error) {
+        alert(
+            error.message
+        );
+        return;
+    }
+    boards =
+        boards.filter(
+            b =>
+                b.id !==
+                board.id
+        );
+    if (
+        selectedBoard ===
+        board.id
+    ) {
+        selectedBoard =
+            null;
+    }
+    render();
+};
+/* =========================================================
+   SEARCH
+========================================================= */
+document.getElementById(
+    "search"
+)
+.addEventListener(
+    "input",
+    event => {
+        const query =
+            event.target.value
+                .toLowerCase()
+                .trim();
+        document
+            .querySelectorAll(
+                ".board"
+            )
+            .forEach(
+                element => {
+                    const board =
+                        boards.find(
+                            b =>
+                                String(
+                                    b.id
+                                ) ===
+                                String(
+                                    element.dataset.id
+                                )
+                        );
+                    if (!board)
+                        return;
+                    const matches =
+                        !query ||
+                        String(
+                            board.title ||
+                            ""
+                        )
+                        .toLowerCase()
+                        .includes(
+                            query
+                        ) ||
+                        (
+                            board.items ||
+                            []
+                        )
+                        .some(
+                            item =>
+                                String(
+                                    item.title ||
+                                    ""
+                                )
+                                .toLowerCase()
+                                .includes(
+                                    query
+                                ) ||
+                                String(
+                                    item.url ||
+                                    ""
+                                )
+                                .toLowerCase()
+                                .includes(
+                                    query
+                                )
+                        );
+                    element.style.opacity =
+                        matches
+                            ? "1"
+                            : "0.2";
+                }
+            );
+    }
+);
+/* =========================================================
+   SHARE
+========================================================= */
+document.getElementById(
+    "shareBtn"
+)
+.onclick = async () => {
+    const shareData = {
+        title:
+            "Spaceboards",
+        text:
+            "Check out my Spaceboards!",
+        url:
+            window.location.href
+    };
     try {
-
-        if (navigator.share) {
-
-            await navigator.share(shareData);
-
+        if (
+            navigator.share
+        ) {
+            await navigator.share(
+                shareData
+            );
         } else {
-
-            await navigator.clipboard.writeText(
+            await navigator.clipboard
+                .writeText(
+                    window.location.href
+                );
+            alert(
+                "Website link copied to clipboard."
+            );
+        }
+    } catch (error) {
+        if (
+            error.name ===
+            "AbortError"
+        ) {
+            return;
+        }
+        try {
+            await navigator.clipboard
+                .writeText(
+                    window.location.href
+                );
+            alert(
+                "Website link copied to clipboard."
+            );
+        } catch (e) {
+            prompt(
+                "Copy this link:",
                 window.location.href
             );
-
-            alert("Website link copied to clipboard.");
-
         }
-
-    } catch (error) {
-
-        if (error.name !== "AbortError") {
-
-            try {
-
-                await navigator.clipboard.writeText(
-                    window.location.href
-                );
-
-                alert("Website link copied to clipboard.");
-
-            } catch (e) {
-
-                prompt(
-                    "Copy this link:",
-                    window.location.href
-                );
-
-            }
-
-        }
-
     }
-
 };
-document.getElementById("modalBg")
-.addEventListener(
-"click",
-event=>{
-if(event.target.id==="modalBg")
-closeModal();
-});
 /* =========================================================
-INITIAL
+   CLOSE MODAL
+========================================================= */
+document.getElementById(
+    "modalBg"
+)
+.addEventListener(
+    "click",
+    event => {
+        if (
+            event.target.id ===
+            "modalBg"
+        ) {
+            closeModal();
+        }
+    }
+);
+/* =========================================================
+   INITIAL
 ========================================================= */
 render();
 </script>
