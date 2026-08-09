@@ -419,7 +419,10 @@ width:290px
 
 <body>
 
+<!-- AUTH -->
+
 <div class="auth" id="authScreen">
+
 <div class="auth-box">
 
 <h1>Spaceboards</h1>
@@ -440,7 +443,6 @@ id="authNickname"
 type="text"
 placeholder="Nickname"
 autocomplete="nickname"
-style="display:none"
 >
 
 <input
@@ -461,7 +463,11 @@ Create account
 </button>
 
 </div>
+
 </div>
+
+
+<!-- TOP BAR -->
 
 <header class="topbar">
 
@@ -511,6 +517,9 @@ Logout
 
 </header>
 
+
+<!-- FRIEND REQUESTS -->
+
 <div id="requestsPanel">
 
 <h3>Friend requests</h3>
@@ -521,13 +530,22 @@ Loading...
 
 </div>
 
+
+<!-- WORKSPACE -->
+
 <main id="workspace">
+
 <div id="world"></div>
+
 </main>
+
 
 <div class="hint">
 Pinch with two fingers to zoom • Drag empty space to move
 </div>
+
+
+<!-- CONTEXT MENU -->
 
 <div id="contextMenu" class="menu">
 
@@ -541,8 +559,13 @@ Delete
 
 </div>
 
+
+<!-- MODAL -->
+
 <div id="modalBackground" class="modal-bg">
+
 <div id="modal" class="modal"></div>
+
 </div>
 
 
@@ -582,7 +605,6 @@ let boards=[];
 let friends=[];
 let selectedBoardId=null;
 let contextBoardId=null;
-
 let moving=null;
 let resizing=null;
 let panning=null;
@@ -605,7 +627,7 @@ HELPERS
 
 function escapeHTML(value){
 
-return String(value ?? "")
+return String(value)
 .replace(/&/g,"&amp;")
 .replace(/</g,"&lt;")
 .replace(/>/g,"&gt;")
@@ -650,6 +672,17 @@ AUTH
 let signupMode=false;
 
 
+/*
+IMPORTANT:
+
+The nickname is ALWAYS visible.
+
+The nickname is NOT used to authenticate.
+
+Only email + password are sent to Supabase
+during login.
+*/
+
 function updateAuthUI(){
 
 const nickname=
@@ -665,10 +698,12 @@ const signupButton=
 document.getElementById("signupButton");
 
 
-if(signupMode){
-
 nickname.style.display="block";
 nickname.required=true;
+nickname.placeholder="Nickname";
+
+
+if(signupMode){
 
 description.textContent=
 "Create a new Spaceboards account.";
@@ -680,13 +715,11 @@ signupButton.textContent=
 
 }else{
 
-nickname.style.display="none";
-nickname.required=false;
-
 description.textContent=
 "Log in to Spaceboards.";
 
-loginButton.style.display="inline-block";
+loginButton.style.display=
+"inline-block";
 
 signupButton.textContent=
 "Create account";
@@ -701,19 +734,24 @@ LOGIN
 ========================================================= */
 
 document.getElementById("loginButton")
-.addEventListener("click",async()=>{
+.addEventListener(
+"click",
+async()=>{
 
 const email=
 document.getElementById("authEmail")
-.value.trim()
+.value
+.trim()
 .toLowerCase();
+
+const nickname=
+document.getElementById("authNickname")
+.value
+.trim();
 
 const password=
 document.getElementById("authPassword")
 .value;
-
-const nicknameInput=
-document.getElementById("authNickname");
 
 const errorBox=
 document.getElementById("authError");
@@ -721,10 +759,15 @@ document.getElementById("authError");
 errorBox.textContent="";
 
 
-if(!email||!password){
+/*
+Nickname is required on the page,
+but it is NOT sent to Supabase as a credential.
+*/
+
+if(!email||!nickname||!password){
 
 errorBox.textContent=
-"Enter your email and password.";
+"Enter your email, nickname and password.";
 
 return;
 
@@ -732,14 +775,14 @@ return;
 
 
 /*
-Nickname is deliberately NOT used
-for authentication or verification.
+ONLY EMAIL + PASSWORD AUTHENTICATE.
 */
 
 const {error}=
 await supabase.auth.signInWithPassword({
 
 email:email,
+
 password:password
 
 });
@@ -754,22 +797,6 @@ return;
 
 }
 
-
-/*
-After authentication, load the nickname
-from the user's profile.
-*/
-
-await loadCurrentProfile();
-
-
-/*
-The nickname entered here is never
-used as a password or credential.
-*/
-
-nicknameInput.value="";
-
 });
 
 
@@ -778,7 +805,10 @@ CREATE ACCOUNT
 ========================================================= */
 
 document.getElementById("signupButton")
-.addEventListener("click",async()=>{
+.addEventListener(
+"click",
+async()=>{
+
 
 if(!signupMode){
 
@@ -793,12 +823,14 @@ return;
 
 const email=
 document.getElementById("authEmail")
-.value.trim()
+.value
+.trim()
 .toLowerCase();
 
 const nickname=
 document.getElementById("authNickname")
-.value.trim();
+.value
+.trim();
 
 const password=
 document.getElementById("authPassword")
@@ -852,13 +884,22 @@ return;
 
 /* CHECK NICKNAME */
 
-const {data:existingNickname}=
-
+const {
+data:existingNickname,
+error:nicknameError
+}=
 await supabase
 .from("profiles")
 .select("id")
 .ilike("nickname",nickname)
 .maybeSingle();
+
+
+if(nicknameError){
+
+console.error(nicknameError);
+
+}
 
 
 if(existingNickname){
@@ -871,12 +912,16 @@ return;
 }
 
 
-/* CREATE AUTH USER */
+/* CREATE AUTH ACCOUNT */
 
-const {data,error}=
+const {
+data,
+error
+}=
 await supabase.auth.signUp({
 
 email:email,
+
 password:password
 
 });
@@ -894,13 +939,17 @@ return;
 
 if(data?.user){
 
-const {error:profileError}=
+const {
+error:profileError
+}=
 await supabase
 .from("profiles")
 .upsert({
 
 id:data.user.id,
+
 email:email,
+
 nickname:nickname
 
 },{
@@ -930,13 +979,74 @@ errorBox.textContent=
 
 
 /* =========================================================
-SESSION
+ENTER KEY
+========================================================= */
+
+document.getElementById("authEmail")
+.addEventListener(
+"keydown",
+event=>{
+
+if(event.key==="Enter"){
+
+document.getElementById("authNickname")
+.focus();
+
+}
+
+});
+
+
+document.getElementById("authNickname")
+.addEventListener(
+"keydown",
+event=>{
+
+if(event.key==="Enter"){
+
+document.getElementById("authPassword")
+.focus();
+
+}
+
+});
+
+
+document.getElementById("authPassword")
+.addEventListener(
+"keydown",
+event=>{
+
+if(event.key==="Enter"){
+
+if(signupMode){
+
+document.getElementById("signupButton")
+.click();
+
+}else{
+
+document.getElementById("loginButton")
+.click();
+
+}
+
+}
+
+});
+
+
+/* =========================================================
+AUTH STATE
 ========================================================= */
 
 supabase.auth.onAuthStateChange(
+
 async(event,session)=>{
 
-user=session?.user||null;
+user=
+session?.user||null;
+
 
 if(user){
 
@@ -944,8 +1054,11 @@ document.getElementById("authScreen")
 .style.display="none";
 
 await loadCurrentProfile();
+
 await loadFriends();
+
 await loadBoards();
+
 await loadFriendRequests();
 
 }else{
@@ -954,11 +1067,15 @@ document.getElementById("authScreen")
 .style.display="flex";
 
 boards=[];
+
 friends=[];
+
 selectedBoardId=null;
+
 currentProfile=null;
 
 render();
+
 renderFriends();
 
 }
@@ -967,25 +1084,28 @@ renderFriends();
 
 
 /* =========================================================
-FORCE LOGIN EVERY TIME PAGE OPENS
+IMPORTANT:
+DO NOT AUTOMATICALLY LOG IN
 ========================================================= */
 
 /*
-Supabase normally restores the previous session.
+We deliberately do NOT call getSession()
+and automatically enter the website.
 
-We immediately sign it out on a fresh page load,
-so the website asks for credentials again.
+Instead, every time this page loads,
+the user sees the login screen first.
 */
 
-const initialSession=
-await supabase.auth.getSession();
+document.getElementById("authScreen")
+.style.display="flex";
 
+user=null;
 
-if(initialSession.data.session){
+currentProfile=null;
 
-await supabase.auth.signOut();
+boards=[];
 
-}
+friends=[];
 
 
 /* =========================================================
@@ -997,7 +1117,10 @@ async function loadCurrentProfile(){
 if(!user)return;
 
 
-const {data,error}=
+const {
+data,
+error
+}=
 await supabase
 .from("profiles")
 .select("id,email,nickname")
@@ -1008,6 +1131,7 @@ await supabase
 if(error){
 
 console.error(error);
+
 return;
 
 }
@@ -1018,19 +1142,19 @@ currentProfile=data;
 
 if(!currentProfile){
 
-const fallbackNickname=
-user.email?.split("@")[0]||
-"User";
-
-
-const {data:newProfile,error:newError}=
+const {
+data:newProfile,
+error:newError
+}=
 await supabase
 .from("profiles")
 .upsert({
 
 id:user.id,
+
 email:user.email?.toLowerCase()||"",
-nickname:fallbackNickname
+
+nickname:user.email?.split("@")[0]||"User"
 
 },{
 onConflict:"id"
@@ -1055,9 +1179,34 @@ LOGOUT
 ========================================================= */
 
 document.getElementById("logoutButton")
-.addEventListener("click",async()=>{
+.addEventListener(
+"click",
+async()=>{
 
 await supabase.auth.signOut();
+
+user=null;
+
+currentProfile=null;
+
+boards=[];
+
+friends=[];
+
+selectedBoardId=null;
+
+document.getElementById("authScreen")
+.style.display="flex";
+
+document.getElementById("authEmail").value="";
+document.getElementById("authNickname").value="";
+document.getElementById("authPassword").value="";
+
+signupMode=false;
+
+updateAuthUI();
+
+render();
 
 });
 
@@ -1071,7 +1220,10 @@ async function loadFriends(){
 if(!user)return;
 
 
-const {data,error}=
+const {
+data,
+error
+}=
 await supabase
 .from("friend_requests")
 .select("*")
@@ -1083,13 +1235,15 @@ await supabase
 if(error){
 
 console.error(error);
+
 return;
 
 }
 
 
 const accepted=
-(data||[]).filter(
+(data||[])
+.filter(
 r=>r.status==="accepted"
 );
 
@@ -1106,13 +1260,18 @@ r.sender_id===user.id
 if(!ids.length){
 
 friends=[];
+
 renderFriends();
+
 return;
 
 }
 
 
-const {data:profiles,error:profilesError}=
+const {
+data:profiles,
+error:profilesError
+}=
 await supabase
 .from("profiles")
 .select("id,email,nickname")
@@ -1122,6 +1281,7 @@ await supabase
 if(profilesError){
 
 console.error(profilesError);
+
 return;
 
 }
@@ -1169,26 +1329,25 @@ ADD FRIEND
 ========================================================= */
 
 document.getElementById("addFriendButton")
-.addEventListener("click",async()=>{
+.addEventListener(
+"click",
+async()=>{
 
 const input=
 document.getElementById("addFriendInput");
 
 const email=
-input.value.trim().toLowerCase();
+input.value
+.trim()
+.toLowerCase();
 
 
 if(!email){
 
-showError("Enter your friend's email.");
-return;
+showError(
+"Enter your friend's email."
+);
 
-}
-
-
-if(!user){
-
-showError("You must be logged in.");
 return;
 
 }
@@ -1196,13 +1355,19 @@ return;
 
 if(email===user.email.toLowerCase()){
 
-showError("You cannot add yourself.");
+showError(
+"You cannot add yourself."
+);
+
 return;
 
 }
 
 
-const {data:profile,error}=
+const {
+data:profile,
+error
+}=
 await supabase
 .from("profiles")
 .select("id,email,nickname")
@@ -1213,6 +1378,7 @@ await supabase
 if(error){
 
 showError(error.message);
+
 return;
 
 }
@@ -1220,7 +1386,10 @@ return;
 
 if(!profile){
 
-showError("No user with that email was found.");
+showError(
+"No user with that email was found."
+);
+
 return;
 
 }
@@ -1237,16 +1406,27 @@ await supabase
 
 if(existing&&existing.length){
 
-if(existing.some(r=>r.status==="accepted")){
+if(existing.some(
+request=>request.status==="accepted"
+)){
 
-showError("You are already friends with this user.");
+showError(
+"You are already friends with this user."
+);
+
 return;
 
 }
 
-if(existing.some(r=>r.status==="pending")){
 
-showError("A friend request already exists.");
+if(existing.some(
+request=>request.status==="pending"
+)){
+
+showError(
+"A friend request already exists."
+);
+
 return;
 
 }
@@ -1254,13 +1434,17 @@ return;
 }
 
 
-const {error:insertError}=
+const {
+error:insertError
+}=
 await supabase
 .from("friend_requests")
 .insert({
 
 sender_id:user.id,
+
 receiver_id:profile.id,
+
 status:"pending"
 
 });
@@ -1268,7 +1452,10 @@ status:"pending"
 
 if(insertError){
 
-showError(insertError.message);
+showError(
+insertError.message
+);
+
 return;
 
 }
@@ -1276,7 +1463,9 @@ return;
 
 input.value="";
 
-showError("Friend request sent.");
+showError(
+"Friend request sent."
+);
 
 });
 
@@ -1286,7 +1475,9 @@ FRIEND REQUESTS
 ========================================================= */
 
 document.getElementById("friendRequestsButton")
-.addEventListener("click",async()=>{
+.addEventListener(
+"click",
+async()=>{
 
 const panel=
 document.getElementById("requestsPanel");
@@ -1295,6 +1486,7 @@ document.getElementById("requestsPanel");
 if(panel.style.display==="block"){
 
 panel.style.display="none";
+
 return;
 
 }
@@ -1318,7 +1510,10 @@ document.getElementById("requestsList");
 list.innerHTML="Loading...";
 
 
-const {data:requests,error}=
+const {
+data:requests,
+error
+}=
 await supabase
 .from("friend_requests")
 .select("*")
@@ -1349,7 +1544,9 @@ return;
 
 
 const ids=
-requests.map(r=>r.sender_id);
+requests.map(
+request=>request.sender_id
+);
 
 
 const {data:profiles}=
@@ -1366,7 +1563,10 @@ requests.forEach(request=>{
 
 const sender=
 (profiles||[])
-.find(p=>p.id===request.sender_id);
+.find(
+profile=>
+profile.id===request.sender_id
+);
 
 
 const row=
@@ -1377,7 +1577,10 @@ row.className="request";
 row.innerHTML=`
 
 <div class="request-nickname">
-${escapeHTML(sender?.nickname||"Unknown user")}
+${escapeHTML(
+sender?.nickname||
+"Unknown user"
+)}
 </div>
 
 <div class="request-actions">
@@ -1395,6 +1598,7 @@ Decline
 </button>
 
 </div>
+
 `;
 
 list.appendChild(row);
@@ -1409,7 +1613,9 @@ REQUEST ACTIONS
 ========================================================= */
 
 document.getElementById("requestsList")
-.addEventListener("click",async event=>{
+.addEventListener(
+"click",
+async event=>{
 
 const button=
 event.target.closest("button");
@@ -1417,8 +1623,11 @@ event.target.closest("button");
 if(!button)return;
 
 
-const id=button.dataset.id;
-const action=button.dataset.action;
+const id=
+button.dataset.id;
+
+const action=
+button.dataset.action;
 
 
 if(action==="accept"){
@@ -1436,12 +1645,14 @@ status:"accepted"
 if(error){
 
 showError(error.message);
+
 return;
 
 }
 
 
 await loadFriends();
+
 await loadFriendRequests();
 
 }
@@ -1460,6 +1671,7 @@ await supabase
 if(error){
 
 showError(error.message);
+
 return;
 
 }
@@ -1481,7 +1693,10 @@ async function loadBoards(){
 if(!user)return;
 
 
-const {data,error}=
+const {
+data,
+error
+}=
 await supabase
 .from("boxes")
 .select(`
@@ -1501,7 +1716,7 @@ title,
 url,
 image,
 visibility,
-nickname
+owner_id
 )
 `)
 .order("created_at");
@@ -1510,14 +1725,17 @@ nickname
 if(error){
 
 console.error(error);
+
 showError(error.message);
+
 return;
 
 }
 
 
 boards=
-(data||[]).map(box=>{
+(data||[])
+.map(box=>{
 
 const items=
 Array.isArray(box.box_items)
@@ -1530,12 +1748,16 @@ return{
 ...box,
 
 w:Number(box.width)||430,
+
 h:Number(box.height)||270,
 
 items:items.filter(
 item=>
 item.visibility==="public"||
-String(box.owner_id)===String(user.id)
+String(item.owner_id)===
+String(user.id)||
+String(box.owner_id)===
+String(user.id)
 )
 
 };
@@ -1553,14 +1775,18 @@ NEW BOX
 ========================================================= */
 
 document.getElementById("newBoxButton")
-.addEventListener("click",async()=>{
+.addEventListener(
+"click",
+async()=>{
 
 if(!user)return;
 
 
 const ownBoards=
 boards.filter(
-b=>String(b.owner_id)===String(user.id)
+b=>
+String(b.owner_id)===
+String(user.id)
 );
 
 
@@ -1579,22 +1805,32 @@ Number(previous.x)+
 Number(previous.w)+
 40;
 
-y=Number(previous.y);
+y=
+Number(previous.y);
 
 }
 
 
-const {data,error}=
+const {
+data,
+error
+}=
 await supabase
 .from("boxes")
 .insert({
 
 owner_id:user.id,
+
 title:"New box",
+
 x:x,
+
 y:y,
+
 width:430,
+
 height:270,
+
 visibility:"public"
 
 })
@@ -1605,6 +1841,7 @@ visibility:"public"
 if(error){
 
 showError(error.message);
+
 return;
 
 }
@@ -1615,7 +1852,9 @@ boards.push({
 ...data,
 
 w:Number(data.width)||430,
+
 h:Number(data.height)||270,
+
 items:[]
 
 });
@@ -1633,20 +1872,27 @@ NEW URL
 ========================================================= */
 
 document.getElementById("newUrlButton")
-.addEventListener("click",()=>{
+.addEventListener(
+"click",
+()=>{
 
 if(!user)return;
 
 
 const ownBoxes=
 boards.filter(
-board=>String(board.owner_id)===String(user.id)
+board=>
+String(board.owner_id)===
+String(user.id)
 );
 
 
 if(!ownBoxes.length){
 
-showError("Create a box first.");
+showError(
+"Create a box first."
+);
+
 return;
 
 }
@@ -1660,7 +1906,7 @@ ownBoxes[ownBoxes.length-1]
 
 
 /* =========================================================
-ADD URL MODAL
+URL MODAL
 ========================================================= */
 
 function openURLModal(board){
@@ -1735,20 +1981,26 @@ async function saveURL(board,visibility){
 
 let url=
 document.getElementById("urlAddress")
-.value.trim();
+.value
+.trim();
 
 const title=
 document.getElementById("urlTitle")
-.value.trim();
+.value
+.trim();
 
 const image=
 document.getElementById("urlImage")
-.value.trim();
+.value
+.trim();
 
 
 if(!url){
 
-showError("Enter a URL.");
+showError(
+"Enter a URL."
+);
+
 return;
 
 }
@@ -1762,38 +2014,24 @@ url="https://"+url;
 
 
 /*
-THIS IS THE IMPORTANT FIX.
+IMPORTANT:
+Save the user who created the URL.
 
-The nickname is copied from the current profile
-and stored directly on the URL.
-
-It is NOT a credential.
-It is NOT used to authenticate.
-It is ONLY displayed above the URL.
+This lets us reliably find the nickname
+later without relying on the box owner.
 */
 
-const nickname=
-currentProfile?.nickname||
-"";
-
-
-if(!nickname){
-
-showError(
-"Your nickname could not be loaded. Please log out and log in again."
-);
-
-return;
-
-}
-
-
-const {data,error}=
+const {
+data,
+error
+}=
 await supabase
 .from("box_items")
 .insert({
 
 box_id:board.id,
+
+owner_id:user.id,
 
 title:title||url,
 
@@ -1801,9 +2039,7 @@ url:url,
 
 image:image||null,
 
-visibility:visibility,
-
-nickname:nickname
+visibility:visibility
 
 })
 .select()
@@ -1812,10 +2048,7 @@ nickname:nickname
 
 if(error){
 
-showError(
-"Could not save URL: "+
-error.message
-);
+showError(error.message);
 
 return;
 
@@ -1838,7 +2071,9 @@ DELETE URL
 async function deleteURL(board,itemId){
 
 const confirmed=
-confirm("Delete this URL?");
+confirm(
+"Delete this URL?"
+);
 
 
 if(!confirmed)return;
@@ -1855,8 +2090,7 @@ await supabase
 if(error){
 
 showError(
-"Could not delete URL: "+
-error.message
+"Could not delete URL: "+error.message
 );
 
 return;
@@ -1867,7 +2101,8 @@ return;
 board.items=
 board.items.filter(
 item=>
-String(item.id)!==String(itemId)
+String(item.id)!==
+String(itemId)
 );
 
 
@@ -1884,13 +2119,19 @@ async function deleteBoard(board){
 
 if(!user){
 
-showError("You must be logged in.");
+showError(
+"You must be logged in."
+);
+
 return;
 
 }
 
 
-if(String(board.owner_id)!==String(user.id)){
+if(
+String(board.owner_id)!==
+String(user.id)
+){
 
 showError(
 "You can only delete your own boxes."
@@ -1901,12 +2142,18 @@ return;
 }
 
 
-if(!confirm(
+const confirmed=
+confirm(
 "Delete this box and all of its URLs?"
-))return;
+);
 
 
-const {error:itemError}=
+if(!confirmed)return;
+
+
+const {
+error:itemError
+}=
 await supabase
 .from("box_items")
 .delete()
@@ -1925,7 +2172,10 @@ return;
 }
 
 
-const {data:deleted,error:boxError}=
+const {
+data:deleted,
+error:boxError
+}=
 await supabase
 .from("boxes")
 .delete()
@@ -1949,7 +2199,7 @@ return;
 if(!deleted||deleted.length===0){
 
 showError(
-"Supabase did not allow this box to be deleted. Check your DELETE policy."
+"Supabase did not allow this box to be deleted."
 );
 
 return;
@@ -1959,11 +2209,16 @@ return;
 
 boards=
 boards.filter(
-b=>String(b.id)!==String(board.id)
+b=>
+String(b.id)!==
+String(board.id)
 );
 
 
-if(String(selectedBoardId)===String(board.id)){
+if(
+String(selectedBoardId)===
+String(board.id)
+){
 
 selectedBoardId=null;
 
@@ -2000,7 +2255,8 @@ document.createElement("section");
 element.className=
 "board"+
 (
-String(selectedBoardId)===String(board.id)
+String(selectedBoardId)===
+String(board.id)
 ?" selected"
 :""
 );
@@ -2088,11 +2344,15 @@ alt=""
 
 <div class="item-content">
 
-<div class="item-nickname">
-${escapeHTML(
-item.nickname||
-"Unknown"
-)}
+<div
+class="item-nickname"
+data-item-owner-id="${escapeHTML(
+item.owner_id||
+board.owner_id
+)}">
+
+Loading...
+
 </div>
 
 <div class="item-title">
@@ -2138,16 +2398,30 @@ owner
 `;
 
 
-/* =========================================================
-BOARD CLICK
-========================================================= */
+/*
+Load the nickname belonging to the URL creator.
+*/
 
-element.addEventListener("click",event=>{
+loadItemOwnerNicknames(element);
 
-if(event.target.closest(".trash-button"))return;
-if(event.target.closest(".item-trash"))return;
-if(event.target.closest(".add-url"))return;
-if(event.target.closest(".resize"))return;
+
+/* BOARD CLICK */
+
+element.addEventListener(
+"click",
+event=>{
+
+if(event.target.closest(".trash-button"))
+return;
+
+if(event.target.closest(".item-trash"))
+return;
+
+if(event.target.closest(".add-url"))
+return;
+
+if(event.target.closest(".resize"))
+return;
 
 selectedBoardId=board.id;
 
@@ -2156,12 +2430,12 @@ render();
 });
 
 
-/* =========================================================
-DELETE BOARD
-========================================================= */
+/* DELETE BOX */
 
 const deleteBoardButton=
-element.querySelector("[data-delete-board]");
+element.querySelector(
+"[data-delete-board]"
+);
 
 
 if(deleteBoardButton){
@@ -2171,6 +2445,7 @@ deleteBoardButton.addEventListener(
 async event=>{
 
 event.preventDefault();
+
 event.stopPropagation();
 
 await deleteBoard(board);
@@ -2180,12 +2455,12 @@ await deleteBoard(board);
 }
 
 
-/* =========================================================
-ADD URL
-========================================================= */
+/* ADD URL */
 
 const addButton=
-element.querySelector("[data-add-url]");
+element.querySelector(
+"[data-add-url]"
+);
 
 
 if(addButton){
@@ -2195,6 +2470,7 @@ addButton.addEventListener(
 event=>{
 
 event.preventDefault();
+
 event.stopPropagation();
 
 openURLModal(board);
@@ -2204,9 +2480,7 @@ openURLModal(board);
 }
 
 
-/* =========================================================
-DELETE URL
-========================================================= */
+/* DELETE URL */
 
 element
 .querySelectorAll("[data-delete-item]")
@@ -2217,6 +2491,7 @@ button.addEventListener(
 async event=>{
 
 event.preventDefault();
+
 event.stopPropagation();
 
 await deleteURL(
@@ -2229,9 +2504,7 @@ button.dataset.deleteItem
 });
 
 
-/* =========================================================
-OPEN URL
-========================================================= */
+/* OPEN URL */
 
 element
 .querySelectorAll(".item")
@@ -2244,11 +2517,15 @@ event=>{
 if(event.target.closest(".item-trash"))
 return;
 
-const url=item.dataset.url;
+const url=
+item.dataset.url;
 
 if(url){
 
-window.open(url,"_blank");
+window.open(
+url,
+"_blank"
+);
 
 }
 
@@ -2257,9 +2534,7 @@ window.open(url,"_blank");
 });
 
 
-/* =========================================================
-CONTEXT MENU
-========================================================= */
+/* CONTEXT MENU */
 
 element.addEventListener(
 "contextmenu",
@@ -2285,9 +2560,7 @@ event.clientY+"px";
 });
 
 
-/* =========================================================
-MOVE / RESIZE
-========================================================= */
+/* MOVE + RESIZE */
 
 if(owner){
 
@@ -2313,9 +2586,13 @@ if(event.target.closest(".resize")){
 resizing={
 
 id:board.id,
+
 startX:event.clientX,
+
 startY:event.clientY,
+
 width:board.w,
+
 height:board.h
 
 };
@@ -2332,9 +2609,13 @@ return;
 moving={
 
 id:board.id,
+
 startX:event.clientX,
+
 startY:event.clientY,
+
 x:board.x,
+
 y:board.y
 
 };
@@ -2401,6 +2682,7 @@ await supabase
 .update({
 
 x:board.x,
+
 y:board.y
 
 })
@@ -2417,6 +2699,7 @@ await supabase
 .update({
 
 width:board.w,
+
 height:board.h
 
 })
@@ -2427,6 +2710,7 @@ height:board.h
 
 
 moving=null;
+
 resizing=null;
 
 });
@@ -2435,6 +2719,132 @@ resizing=null;
 
 
 world.appendChild(element);
+
+});
+
+}
+
+
+/* =========================================================
+LOAD URL OWNER NICKNAMES
+========================================================= */
+
+async function loadItemOwnerNicknames(boardElement){
+
+const nicknameElements=
+boardElement.querySelectorAll(
+"[data-item-owner-id]"
+);
+
+
+if(!nicknameElements.length)
+return;
+
+
+const ids=
+[...nicknameElements]
+.map(element=>
+element.dataset.itemOwnerId
+)
+.filter(Boolean);
+
+
+const uniqueIds=
+[...new Set(ids)];
+
+
+if(!uniqueIds.length)
+return;
+
+
+/*
+If the URL belongs to the currently logged-in user,
+we already know the nickname.
+*/
+
+nicknameElements.forEach(element=>{
+
+if(
+user&&
+String(element.dataset.itemOwnerId)===
+String(user.id)
+){
+
+element.textContent=
+currentProfile?.nickname||
+"";
+
+}
+
+});
+
+
+const otherIds=
+uniqueIds.filter(
+id=>
+!user||
+String(id)!==
+String(user.id)
+);
+
+
+if(!otherIds.length)
+return;
+
+
+const {
+data,
+error
+}=
+await supabase
+.from("profiles")
+.select("id,nickname")
+.in("id",otherIds);
+
+
+if(error){
+
+console.error(
+"Could not load URL owner nicknames:",
+error
+);
+
+return;
+
+}
+
+
+const profileMap=
+new Map(
+(data||[]).map(
+profile=>[
+String(profile.id),
+profile.nickname
+]
+)
+);
+
+
+nicknameElements.forEach(element=>{
+
+const id=
+String(element.dataset.itemOwnerId);
+
+
+if(user&&id===String(user.id)){
+
+element.textContent=
+currentProfile?.nickname||
+"";
+
+return;
+
+}
+
+
+element.textContent=
+profileMap.get(id)||
+"Unknown";
 
 });
 
@@ -2463,8 +2873,11 @@ return;
 panning={
 
 x:event.clientX,
+
 y:event.clientY,
+
 panX:panX,
+
 panY:panY
 
 };
@@ -2502,7 +2915,7 @@ panning=null;
 
 
 /* =========================================================
-TOUCH
+TOUCH PAN + PINCH
 ========================================================= */
 
 function distance(a,b){
@@ -2520,6 +2933,7 @@ function midpoint(a,b){
 return{
 
 x:(a.clientX+b.clientX)/2,
+
 y:(a.clientY+b.clientY)/2
 
 };
@@ -2551,8 +2965,11 @@ if(!event.target.closest(".board")){
 panning={
 
 x:event.clientX,
+
 y:event.clientY,
+
 panX:panX,
+
 panY:panY
 
 };
@@ -2569,16 +2986,22 @@ panning=null;
 const points=
 [...pointers.values()];
 
-
 pinchStartDistance=
-distance(points[0],points[1]);
+distance(
+points[0],
+points[1]
+);
 
 pinchStartZoom=zoom;
 
 pinchStartCenter=
-midpoint(points[0],points[1]);
+midpoint(
+points[0],
+points[1]
+);
 
 pinchStartPanX=panX;
+
 pinchStartPanY=panY;
 
 }
@@ -2606,7 +3029,10 @@ clientY:event.clientY
 );
 
 
-if(pointers.size===1&&panning){
+if(
+pointers.size===1&&
+panning
+){
 
 panX=
 panning.panX+
@@ -2631,26 +3057,39 @@ const points=
 [...pointers.values()];
 
 const currentDistance=
-distance(points[0],points[1]);
+distance(
+points[0],
+points[1]
+);
 
 
-if(!pinchStartDistance)return;
+if(!pinchStartDistance)
+return;
 
 
 let newZoom=
 pinchStartZoom*
-(currentDistance/pinchStartDistance);
+(
+currentDistance/
+pinchStartDistance
+);
 
 
 newZoom=
 Math.max(
 0.25,
-Math.min(3,newZoom)
+Math.min(
+3,
+newZoom
+)
 );
 
 
 const center=
-midpoint(points[0],points[1]);
+midpoint(
+points[0],
+points[1]
+);
 
 
 const rect=
@@ -2702,7 +3141,9 @@ if(event.pointerType!=="touch")
 return;
 
 
-pointers.delete(event.pointerId);
+pointers.delete(
+event.pointerId
+);
 
 
 if(pointers.size<2){
@@ -2726,6 +3167,7 @@ workspace.addEventListener(
 endTouch
 );
 
+
 workspace.addEventListener(
 "pointercancel",
 endTouch
@@ -2733,7 +3175,7 @@ endTouch
 
 
 /* =========================================================
-WHEEL ZOOM
+MOUSE WHEEL ZOOM
 ========================================================= */
 
 workspace.addEventListener(
@@ -2742,29 +3184,40 @@ event=>{
 
 event.preventDefault();
 
+
 const rect=
 workspace.getBoundingClientRect();
+
 
 const mouseX=
 event.clientX-rect.left;
 
+
 const mouseY=
 event.clientY-rect.top;
+
 
 const worldX=
 (mouseX-panX)/zoom;
 
+
 const worldY=
 (mouseY-panY)/zoom;
 
+
 const factor=
-event.deltaY<0?1.1:0.9;
+event.deltaY<0
+?1.1
+:0.9;
 
 
 zoom=
 Math.max(
 0.25,
-Math.min(3,zoom*factor)
+Math.min(
+3,
+zoom*factor
+)
 );
 
 
@@ -2816,14 +3269,19 @@ document.getElementById("contextMenu")
 
 const board=
 boards.find(
-b=>String(b.id)===String(contextBoardId)
+b=>
+String(b.id)===
+String(contextBoardId)
 );
 
 
 if(!board)return;
 
 
-if(String(board.owner_id)!==String(user.id)){
+if(
+String(board.owner_id)!==
+String(user.id)
+){
 
 showError(
 "You can only rename your own boxes."
@@ -2867,7 +3325,8 @@ document.getElementById("renameSave")
 
 const title=
 document.getElementById("renameInput")
-.value.trim();
+.value
+.trim();
 
 
 if(!title)return;
@@ -2886,6 +3345,7 @@ title:title
 if(error){
 
 showError(error.message);
+
 return;
 
 }
@@ -2917,7 +3377,9 @@ document.getElementById("contextMenu")
 
 const board=
 boards.find(
-b=>String(b.id)===String(contextBoardId)
+b=>
+String(b.id)===
+String(contextBoardId)
 );
 
 
@@ -2951,7 +3413,9 @@ document
 
 const board=
 boards.find(
-b=>String(b.id)===String(element.dataset.id)
+b=>
+String(b.id)===
+String(element.dataset.id)
 );
 
 
@@ -2960,29 +3424,24 @@ if(!board)return;
 
 const matches=
 !query||
-
 board.title
 .toLowerCase()
 .includes(query)||
-
 board.items.some(
 item=>
 (item.title||"")
 .toLowerCase()
 .includes(query)||
-
 (item.url||"")
-.toLowerCase()
-.includes(query)||
-
-(item.nickname||"")
 .toLowerCase()
 .includes(query)
 );
 
 
 element.style.opacity=
-matches?"1":"0.2";
+matches
+?"1"
+:"0.2";
 
 });
 
@@ -3001,7 +3460,9 @@ async()=>{
 const data={
 
 title:"Spaceboards",
+
 text:"Check out my Spaceboards!",
+
 url:window.location.href
 
 };
@@ -3074,38 +3535,11 @@ closeModal();
 
 
 /* =========================================================
-AUTH ENTER KEY
-========================================================= */
-
-document.getElementById("authEmail")
-.addEventListener(
-"keydown",
-event=>{
-
-if(event.key==="Enter"){
-
-if(signupMode){
-
-document.getElementById("authNickname")
-.focus();
-
-}else{
-
-document.getElementById("authPassword")
-.focus();
-
-}
-
-}
-
-});
-
-
-/* =========================================================
 INITIAL
 ========================================================= */
 
 updateAuthUI();
+
 render();
 
 </script>
