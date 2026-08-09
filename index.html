@@ -3,1972 +3,1158 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Spaceboards</title>
-
 <style>
-* {
-    box-sizing: border-box;
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;font-family:Arial,sans-serif;color:#111;background:#fafafa;overflow:hidden}
+button,input{font:inherit}
+button{border:1px solid #bbb;background:#fff;border-radius:7px;padding:8px 13px;cursor:pointer}
+button:hover{background:#f1f1f1}
+.topbar{height:58px;display:flex;align-items:center;gap:7px;padding:8px 12px;background:#fff;border-bottom:1px solid #ddd;position:relative;z-index:20}
+.logo{font-weight:bold;margin-left:7px}
+.spacer{flex:1}
+.search{width:240px;padding:9px 10px;border:1px solid #bbb;border-radius:7px}
+.add-friend{width:180px;padding:9px 10px;border:1px solid #bbb;border-radius:7px}
+.friends{display:flex;align-items:center;gap:5px;max-width:250px;overflow-x:auto}
+.friend{padding:6px 9px;border:1px solid #ddd;border-radius:15px;background:#f7f7f7;white-space:nowrap;font-size:12px}
+#workspace{position:absolute;top:58px;left:0;right:0;bottom:0;overflow:hidden;background:#fafafa;touch-action:none}
+#world{position:absolute;width:1px;height:1px;transform-origin:0 0}
+.board{position:absolute;background:#fff;border:1px solid #aaa;border-radius:10px;box-shadow:0 2px 10px #00000012}
+.board.private{border-style:dashed}
+.board.selected{outline:2px solid #222}
+.board-title{position:absolute;top:-31px;left:8px;font-size:14px;font-weight:bold;white-space:nowrap}
+.visibility{position:absolute;top:-31px;right:8px;font-size:11px;color:#666}
+.board-inner{width:100%;height:100%;padding:14px;overflow:auto;border-radius:10px}
+.item{display:inline-flex;align-items:center;gap:8px;max-width:100%;margin:4px;padding:7px 9px;background:#fff;border:1px solid #ddd;border-radius:7px;cursor:pointer;word-break:break-word}
+.item:hover{background:#f5f5f5}
+.item img{width:34px;height:34px;object-fit:cover;border-radius:5px}
+.resize{position:absolute;width:12px;height:12px;right:-6px;bottom:-6px;background:#fff;border:1px solid #777;border-radius:3px;cursor:nwse-resize}
+.modal-bg{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;z-index:100}
+.modal{width:min(440px,92vw);background:#fff;border-radius:12px;padding:20px;box-shadow:0 15px 50px #0004}
+.modal h2{margin-top:0}
+.modal input{width:100%;padding:10px;margin:5px 0 12px;border:1px solid #aaa;border-radius:7px}
+.modal-actions{display:flex;justify-content:flex-end;gap:8px}
+.auth{position:fixed;inset:0;background:#fff;display:flex;align-items:center;justify-content:center;z-index:500}
+.auth-box{width:min(400px,92vw);border:1px solid #ddd;border-radius:12px;padding:25px;box-shadow:0 5px 30px #0001}
+.auth-box input{width:100%;padding:11px;margin:6px 0 10px;border:1px solid #aaa;border-radius:7px}
+.auth-error{color:#c00;font-size:13px;min-height:20px}
+.menu{position:fixed;display:none;min-width:160px;background:#fff;border:1px solid #aaa;border-radius:7px;box-shadow:0 5px 20px #0003;z-index:200}
+.menu div{padding:10px 13px;cursor:pointer}
+.menu div:hover{background:#eee}
+.hint{position:fixed;left:12px;bottom:12px;background:#fff;border:1px solid #ddd;border-radius:8px;padding:8px 10px;font-size:12px;color:#555;z-index:10}
+.choice{display:flex;gap:10px;margin:15px 0}
+.choice button{flex:1;padding:14px}
+@media(max-width:900px){
+ .add-friend{width:130px}
+ .search{width:150px}
+ .friends{max-width:160px}
 }
-
-html, body {
-    margin: 0;
-    width: 100%;
-    height: 100%;
-    font-family: Arial, Helvetica, sans-serif;
-    color: #111;
-    background: #fafafa;
-    overflow: hidden;
-}
-
-button,
-input {
-    font: inherit;
-}
-
-button {
-    border: 1px solid #bbb;
-    background: white;
-    border-radius: 7px;
-    padding: 8px 14px;
-    cursor: pointer;
-}
-
-button:hover {
-    background: #f2f2f2;
-}
-
-/* TOP BAR */
-
-.topbar {
-    height: 58px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 12px;
-    background: white;
-    border-bottom: 1px solid #ddd;
-    position: relative;
-    z-index: 20;
-}
-
-.logo {
-    font-weight: bold;
-    margin-left: 8px;
-}
-
-.spacer {
-    flex: 1;
-}
-
-.search {
-    width: 300px;
-    max-width: 35vw;
-    padding: 9px 11px;
-    border: 1px solid #bbb;
-    border-radius: 7px;
-    outline: none;
-}
-
-.search:focus {
-    border-color: #555;
-}
-
-/* WORKSPACE */
-
-#workspace {
-    position: absolute;
-    top: 58px;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    overflow: hidden;
-    background: #fafafa;
-    touch-action: none;
-}
-
-#world {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    transform-origin: 0 0;
-}
-
-/* BOARDS */
-
-.board {
-    position: absolute;
-    background: white;
-    border: 1px solid #aaa;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0,0,0,.08);
-}
-
-.board.selected {
-    outline: 2px solid #222;
-}
-
-.board-title {
-    position: absolute;
-    top: -31px;
-    left: 8px;
-    font-size: 14px;
-    font-weight: bold;
-    white-space: nowrap;
-    user-select: none;
-}
-
-.board-inner {
-    width: 100%;
-    height: 100%;
-    padding: 14px;
-    overflow: auto;
-    border-radius: 10px;
-}
-
-/* ITEMS */
-
-.item {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    max-width: 100%;
-    margin: 4px;
-    padding: 7px 9px;
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 7px;
-    cursor: pointer;
-    word-break: break-word;
-}
-
-.item:hover {
-    background: #f5f5f5;
-}
-
-.item img {
-    width: 34px;
-    height: 34px;
-    object-fit: cover;
-    border-radius: 5px;
-}
-
-/* RESIZE HANDLE */
-
-.resize {
-    position: absolute;
-    width: 12px;
-    height: 12px;
-    right: -6px;
-    bottom: -6px;
-    background: white;
-    border: 1px solid #777;
-    border-radius: 3px;
-    cursor: nwse-resize;
-}
-
-/* MENU */
-
-.menu {
-    position: fixed;
-    display: none;
-    min-width: 150px;
-    background: white;
-    border: 1px solid #aaa;
-    border-radius: 7px;
-    box-shadow: 0 5px 20px rgba(0,0,0,.15);
-    z-index: 200;
-}
-
-.menu div {
-    padding: 10px 13px;
-    cursor: pointer;
-}
-
-.menu div:hover {
-    background: #eee;
-}
-
-/* MODAL */
-
-.modal-bg {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,.55);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 100;
-}
-
-.modal {
-    width: min(440px, 92vw);
-    background: white;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 15px 50px rgba(0,0,0,.3);
-}
-
-.modal h2 {
-    margin-top: 0;
-}
-
-.modal input {
-    width: 100%;
-    padding: 10px;
-    margin: 5px 0 12px;
-    border: 1px solid #aaa;
-    border-radius: 7px;
-}
-
-.modal-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 8px;
-}
-
-/* LOGIN */
-
-#login {
-    position: fixed;
-    inset: 0;
-    background: white;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 500;
-}
-
-.login-box {
-    width: min(380px, 90vw);
-    padding: 25px;
-    border: 1px solid #ddd;
-    border-radius: 12px;
-    box-shadow: 0 5px 30px rgba(0,0,0,.08);
-}
-
-.login-box h1 {
-    margin-top: 0;
-}
-
-.login-box input {
-    width: 100%;
-    padding: 11px;
-    margin: 7px 0 12px;
-    border: 1px solid #aaa;
-    border-radius: 7px;
-}
-
-/* HELP */
-
-.hint {
-    position: fixed;
-    left: 12px;
-    bottom: 12px;
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 8px 10px;
-    font-size: 12px;
-    color: #555;
-    z-index: 10;
-}
-
-@media(max-width: 600px) {
-
-    .logo {
-        display: none;
-    }
-
-    .topbar {
-        gap: 4px;
-        padding: 7px;
-    }
-
-    .topbar button {
-        padding: 8px;
-    }
-
-    .search {
-        width: 28vw;
-    }
+@media(max-width:600px){
+ .logo{display:none}
+ .search{width:100px}
+ .add-friend{width:120px}
+ .friends{display:none}
+ .topbar button{padding:7px}
 }
 </style>
 </head>
-
 <body>
-
-<!-- LOGIN -->
-
-<div id="login">
-
-    <div class="login-box">
-
-        <h1>Spaceboards</h1>
-
-        <p>Enter your username to continue.</p>
-
-        <input
-            id="loginName"
-            type="text"
-            placeholder="Username"
-        >
-
-        <button id="loginBtn">
-            Login
-        </button>
-
-    </div>
-
+<div class="auth" id="authScreen">
+<div class="auth-box">
+<h1>Spaceboards</h1>
+<p id="authSubtitle">Create an account or log in.</p>
+<input id="authEmail" type="email" placeholder="Email">
+<input id="authPassword" type="password" placeholder="Password">
+<div class="auth-error" id="authError"></div>
+<button id="loginButton">Log in</button>
+<button id="signupButton">Create account</button>
 </div>
-
-
-<!-- TOP BAR -->
-
+</div>
 <header class="topbar">
-
-    <button id="newBtn">
-        New
-    </button>
-
-    <button id="backupBtn">
-        Backup
-    </button>
-
-    <button id="restoreBtn">
-        Restore
-    </button>
-
-    <button id="shareBtn">
-        Share
-    </button>
-
-    <button id="logoutBtn">
-        Logout
-    </button>
-
-    <div class="logo">
-        Spaceboards
-    </div>
-
-    <div class="spacer"></div>
-
-    <input
-        id="search"
-        class="search"
-        type="text"
-        placeholder="Search"
-    >
-
-    <button id="mySpace">
-        My space
-    </button>
-
+<button id="newBtn">New</button>
+<button id="backupBtn">Backup</button>
+<button id="restoreBtn">Restore</button>
+<input id="addFriendInput" class="add-friend" placeholder="Add friends">
+<button id="addFriendBtn">Add</button>
+<div class="friends" id="friendsList"></div>
+<div class="spacer"></div>
+<input id="search" class="search" placeholder="Search">
+<button id="logoutBtn">Logout</button>
 </header>
-
-
-<!-- WORKSPACE -->
-
 <main id="workspace">
-
-    <div id="world"></div>
-
+<div id="world"></div>
 </main>
-
-
 <div class="hint">
-    Click "New" to create a board. Drag boards to move them.
-    Drag the bottom-right corner to resize.
+New → choose Public or Private. Public boxes are visible to everyone. Private boxes are visible only to you.
 </div>
-
-
-<!-- RIGHT CLICK MENU -->
-
 <div class="menu" id="menu">
-
-    <div id="renameOpt">
-        Rename
-    </div>
-
-    <div id="deleteOpt">
-        Delete
-    </div>
-
+<div id="renameOpt">Rename</div>
+<div id="visibilityOpt">Change visibility</div>
+<div id="deleteOpt">Delete</div>
 </div>
-
-
-<!-- MODAL -->
-
 <div class="modal-bg" id="modalBg">
-
-    <div class="modal" id="modal"></div>
-
+<div class="modal" id="modal"></div>
 </div>
-
-
-<!-- RESTORE FILE -->
-
-<input
-    id="restoreFile"
-    type="file"
-    accept=".json"
-    hidden
->
-
-
-<script>
-
+<input id="restoreFile" type="file" accept=".json" hidden>
+<script type="module">
 /* =========================================================
-   DATA
+   SUPABASE
 ========================================================= */
-
-const STORAGE_KEY = "spaceboards-v1";
-
-const defaultData = {
-
-    user: "",
-
-    zoom: 1,
-
-    panX: 80,
-
-    panY: 80,
-
-    boards: [
-
-        {
-            id: "board-1",
-
-            title: "Friends",
-
-            x: 80,
-
-            y: 110,
-
-            w: 430,
-
-            h: 270,
-
-            items: []
-        }
-
-    ]
-
-};
-
-
-let data = loadData();
-
+import {
+ createClient
+} from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+const SUPABASE_URL =
+"https://uqpivlamfwbjoqvordcm.supabase.co";
+const SUPABASE_KEY =
+"sb_publishable_8CryzR2sR-y5nHprgLWJlA_Wfy_mTrj";
+const supabase =
+createClient(
+ SUPABASE_URL,
+ SUPABASE_KEY
+);
+/* =========================================================
+   STATE
+========================================================= */
+let user = null;
+let boards = [];
+let friends = [];
 let selectedBoard = null;
-
 let menuBoard = null;
-
-let drawing = null;
-
 let moving = null;
-
 let resizing = null;
-
-
-/* =========================================================
-   STORAGE
-========================================================= */
-
-function loadData() {
-
-    try {
-
-        const saved =
-            localStorage.getItem(STORAGE_KEY);
-
-        if (saved) {
-
-            return JSON.parse(saved);
-
-        }
-
-    } catch (error) {
-
-        console.error(error);
-
-    }
-
-    return structuredClone(defaultData);
-}
-
-
-function saveData() {
-
-    localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(data)
-    );
-
-}
-
-
+let drawing = null;
+let panX = 80;
+let panY = 80;
+let zoom = 1;
 /* =========================================================
    HELPERS
 ========================================================= */
-
-function escapeHTML(value) {
-
-    return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-
+function escapeHTML(value){
+ return String(value)
+ .replace(/&/g,"&amp;")
+ .replace(/</g,"&lt;")
+ .replace(/>/g,"&gt;")
+ .replace(/"/g,"&quot;")
+ .replace(/'/g,"&#039;");
 }
-
-
-function createID() {
-
-    if (crypto.randomUUID) {
-
-        return crypto.randomUUID();
-
-    }
-
-    return Date.now() + "-" + Math.random();
-
+function openModal(html){
+ document.getElementById("modal").innerHTML=html;
+ document.getElementById("modalBg").style.display="flex";
 }
-
-
-/* Convert screen coordinates into board/world coordinates */
-
-function screenToWorld(x, y) {
-
-    return {
-
-        x:
-            (x - data.panX)
-            / data.zoom,
-
-        y:
-            (y - 58 - data.panY)
-            / data.zoom
-
-    };
-
+function closeModal(){
+ document.getElementById("modalBg").style.display="none";
 }
-
-
+window.closeModal=closeModal;
+function screenToWorld(x,y){
+ return {
+  x:(x-panX)/zoom,
+  y:(y-58-panY)/zoom
+ };
+}
 /* =========================================================
-   RENDER
+   AUTH
 ========================================================= */
-
-function render() {
-
-    const world =
-        document.getElementById("world");
-
-    world.style.transform =
-        `translate(${data.panX}px,
-                   ${data.panY}px)
-         scale(${data.zoom})`;
-
-    world.innerHTML = "";
-
-
-    data.boards.forEach(board => {
-
-        const element =
-            document.createElement("section");
-
-
-        element.className =
-            "board" +
-            (
-                selectedBoard === board.id
-                    ? " selected"
-                    : ""
-            );
-
-
-        element.dataset.id =
-            board.id;
-
-
-        element.style.left =
-            board.x + "px";
-
-        element.style.top =
-            board.y + "px";
-
-        element.style.width =
-            board.w + "px";
-
-        element.style.height =
-            board.h + "px";
-
-
-        let itemsHTML = "";
-
-
-        board.items.forEach(item => {
-
-            itemsHTML += `
-
-                <div
-                    class="item"
-                    data-item="${item.id}"
-                    title="${escapeHTML(item.url)}"
-                >
-
-                    ${
-                        item.image
-                        ?
-                        `<img
-                            src="${escapeHTML(item.image)}"
-                            alt=""
-                        >`
-                        :
-                        ""
-                    }
-
-                    <span>
-                        ${escapeHTML(item.title || item.url)}
-                    </span>
-
-                </div>
-
-            `;
-
-        });
-
-
-        element.innerHTML = `
-
-            <div class="board-title">
-                ${escapeHTML(board.title)}
-            </div>
-
-            <div class="board-inner">
-                ${itemsHTML}
-            </div>
-
-            <div class="resize"></div>
-
-        `;
-
-
-        /* SELECT BOARD */
-
-        element.addEventListener(
-            "click",
-            event => {
-
-                if (
-                    event.target.closest(".item")
-                ) {
-
-                    return;
-
-                }
-
-                selectedBoard =
-                    board.id;
-
-                render();
-
-            }
-        );
-
-
-        /* RIGHT CLICK */
-
-        element.addEventListener(
-            "contextmenu",
-            event => {
-
-                event.preventDefault();
-
-                showMenu(
-                    event.clientX,
-                    event.clientY,
-                    board.id
-                );
-
-            }
-        );
-
-
-        /* OPEN ITEM */
-
-        element
-            .querySelector(".board-inner")
-            .addEventListener(
-                "click",
-                event => {
-
-                    const item =
-                        event.target.closest(".item");
-
-                    if (!item) {
-
-                        return;
-
-                    }
-
-                    const itemData =
-                        board.items.find(
-                            i =>
-                                i.id ===
-                                item.dataset.item
-                        );
-
-
-                    if (
-                        itemData &&
-                        itemData.url
-                    ) {
-
-                        window.open(
-                            itemData.url,
-                            "_blank"
-                        );
-
-                    }
-
-                }
-            );
-
-
-        /* BOARD DRAG / RESIZE */
-
-        element.addEventListener(
-            "pointerdown",
-            event => {
-
-                if (
-                    event.target.closest(".resize")
-                ) {
-
-                    event.stopPropagation();
-
-                    resizing = {
-
-                        id: board.id,
-
-                        startX:
-                            event.clientX,
-
-                        startY:
-                            event.clientY,
-
-                        width:
-                            board.w,
-
-                        height:
-                            board.h
-
-                    };
-
-                    element.setPointerCapture(
-                        event.pointerId
-                    );
-
-                    return;
-
-                }
-
-
-                if (
-                    event.target.closest(".item")
-                ) {
-
-                    return;
-
-                }
-
-
-                if (event.button !== 0) {
-
-                    return;
-
-                }
-
-
-                moving = {
-
-                    id: board.id,
-
-                    startX:
-                        event.clientX,
-
-                    startY:
-                        event.clientY,
-
-                    x:
-                        board.x,
-
-                    y:
-                        board.y
-
-                };
-
-
-                element.setPointerCapture(
-                    event.pointerId
-                );
-
-            }
-        );
-
-
-        element.addEventListener(
-            "pointermove",
-            event => {
-
-                if (
-                    resizing &&
-                    resizing.id === board.id
-                ) {
-
-                    board.w =
-                        Math.max(
-                            150,
-                            resizing.width +
-                            (
-                                event.clientX -
-                                resizing.startX
-                            ) / data.zoom
-                        );
-
-
-                    board.h =
-                        Math.max(
-                            100,
-                            resizing.height +
-                            (
-                                event.clientY -
-                                resizing.startY
-                            ) / data.zoom
-                        );
-
-
-                    render();
-
-                    return;
-
-                }
-
-
-                if (
-                    moving &&
-                    moving.id === board.id
-                ) {
-
-                    board.x =
-                        moving.x +
-                        (
-                            event.clientX -
-                            moving.startX
-                        ) / data.zoom;
-
-
-                    board.y =
-                        moving.y +
-                        (
-                            event.clientY -
-                            moving.startY
-                        ) / data.zoom;
-
-
-                    render();
-
-                }
-
-            }
-        );
-
-
-        element.addEventListener(
-            "pointerup",
-            () => {
-
-                moving = null;
-
-                resizing = null;
-
-                saveData();
-
-            }
-        );
-
-
-        world.appendChild(element);
-
-    });
-
-}
-
-
+document.getElementById("loginButton").onclick =
+async()=>{
+ const email =
+ document.getElementById("authEmail").value.trim();
+ const password =
+ document.getElementById("authPassword").value;
+ document.getElementById("authError").textContent="";
+ const {error} =
+ await supabase.auth.signInWithPassword({
+  email,
+  password
+ });
+ if(error){
+  document.getElementById("authError").textContent =
+  error.message;
+ }
+};
+document.getElementById("signupButton").onclick =
+async()=>{
+ const email =
+ document.getElementById("authEmail").value.trim();
+ const password =
+ document.getElementById("authPassword").value;
+ document.getElementById("authError").textContent="";
+ if(!email || !password){
+  document.getElementById("authError").textContent =
+  "Enter an email and password.";
+  return;
+ }
+ const {error} =
+ await supabase.auth.signUp({
+  email,
+  password
+ });
+ if(error){
+  document.getElementById("authError").textContent =
+  error.message;
+ }else{
+  document.getElementById("authError").textContent =
+  "Account created. Check your email if confirmation is required.";
+ }
+};
 /* =========================================================
-   NEW BUTTON
+   LOGOUT
 ========================================================= */
-
-document
-    .getElementById("newBtn")
-    .addEventListener(
-        "click",
-        () => {
-
-            const board = {
-
-                id: createID(),
-
-                title: "New board",
-
-                x:
-                    (-data.panX + 120)
-                    / data.zoom,
-
-                y:
-                    (-data.panY + 130)
-                    / data.zoom,
-
-                w: 430,
-
-                h: 270,
-
-                items: []
-
-            };
-
-
-            data.boards.push(board);
-
-            selectedBoard =
-                board.id;
-
-            saveData();
-
-            render();
-
-            addItemModal(board);
-
-        }
-    );
-
-
+document.getElementById("logoutBtn").onclick =
+async()=>{
+ await supabase.auth.signOut();
+};
+/* =========================================================
+   SESSION
+========================================================= */
+supabase.auth.onAuthStateChange(
+ async(event,session)=>{
+  user =
+  session?.user || null;
+  if(user){
+   document.getElementById("authScreen")
+   .style.display="none";
+   await loadFriends();
+   await loadBoards();
+  }else{
+   document.getElementById("authScreen")
+   .style.display="flex";
+   boards=[];
+   render();
+  }
+ });
+const {data:sessionData} =
+await supabase.auth.getSession();
+if(sessionData.session){
+ user =
+ sessionData.session.user;
+ document.getElementById("authScreen")
+ .style.display="none";
+ await loadFriends();
+ await loadBoards();
+}
+/* =========================================================
+   FRIENDS
+========================================================= */
+async function loadFriends(){
+ if(!user)return;
+ const {data:requests,error} =
+ await supabase
+ .from("friend_requests")
+ .select("*")
+ .or(
+  `sender_id.eq.${user.id},receiver_id.eq.${user.id}`
+ );
+ if(error){
+  console.error(error);
+  return;
+ }
+ const accepted =
+ requests.filter(
+  r=>r.status==="accepted"
+ );
+ const ids =
+ accepted.map(
+  r =>
+   r.sender_id===user.id
+   ? r.receiver_id
+   : r.sender_id
+ );
+ if(!ids.length){
+  friends=[];
+  renderFriends();
+  return;
+ }
+ const {data:profiles} =
+ await supabase
+ .from("profiles")
+ .select("id,email")
+ .in("id",ids);
+ friends =
+ profiles || [];
+ renderFriends();
+}
+function renderFriends(){
+ const container =
+ document.getElementById("friendsList");
+ container.innerHTML="";
+ friends.forEach(friend=>{
+  const el =
+  document.createElement("div");
+  el.className="friend";
+  el.textContent =
+  friend.email;
+  container.appendChild(el);
+ });
+}
+/* ADD FRIEND */
+document.getElementById("addFriendBtn").onclick =
+async()=>{
+ const email =
+ document
+ .getElementById("addFriendInput")
+ .value
+ .trim()
+ .toLowerCase();
+ if(!email){
+  alert("Enter your friend's email.");
+  return;
+ }
+ if(email===user.email.toLowerCase()){
+  alert("You cannot add yourself.");
+  return;
+ }
+ const {data:profile,error} =
+ await supabase
+ .from("profiles")
+ .select("id,email")
+ .eq("email",email)
+ .maybeSingle();
+ if(error){
+  alert(error.message);
+  return;
+ }
+ if(!profile){
+  alert("No user with that email was found.");
+  return;
+ }
+ const {error:requestError} =
+ await supabase
+ .from("friend_requests")
+ .insert({
+  sender_id:user.id,
+  receiver_id:profile.id
+ });
+ if(requestError){
+  if(
+   requestError.code==="23505"
+  ){
+   alert("A request already exists.");
+  }else{
+   alert(requestError.message);
+  }
+  return;
+ }
+ document
+ .getElementById("addFriendInput")
+ .value="";
+ alert("Friend request sent.");
+};
+/* =========================================================
+   LOAD BOARDS
+========================================================= */
+async function loadBoards(){
+ if(!user)return;
+ const {data,error} =
+ await supabase
+ .from("boxes")
+ .select(`
+  id,
+  owner_id,
+  title,
+  x,
+  y,
+  width,
+  height,
+  visibility,
+  box_items(
+   id,
+   title,
+   url,
+   image
+  )
+ `)
+ .order("created_at");
+ if(error){
+  console.error(error);
+  alert(error.message);
+  return;
+ }
+ boards =
+ (data || []).map(b=>({
+  ...b,
+  w:b.width,
+  h:b.height,
+  items:b.box_items || []
+ }));
+ render();
+}
+/* =========================================================
+   CREATE NEW BOX
+========================================================= */
+document.getElementById("newBtn").onclick =
+()=>{
+ openModal(`
+ <h2>New box</h2>
+ <p>Who should be able to see this box?</p>
+ <div class="choice">
+  <button id="publicBox">
+   Public
+  </button>
+  <button id="privateBox">
+   Private
+  </button>
+ </div>
+ <div class="modal-actions">
+  <button onclick="closeModal()">
+   Cancel
+  </button>
+ </div>
+ `);
+ document.getElementById("publicBox").onclick =
+ ()=>createBox("public");
+ document.getElementById("privateBox").onclick =
+ ()=>createBox("private");
+};
+async function createBox(visibility){
+ closeModal();
+ const {data,error} =
+ await supabase
+ .from("boxes")
+ .insert({
+  owner_id:user.id,
+  title:"New board",
+  x:120,
+  y:120,
+  width:430,
+  height:270,
+  visibility
+ })
+ .select()
+ .single();
+ if(error){
+  alert(error.message);
+  return;
+ }
+ boards.push({
+  ...data,
+  w:data.width,
+  h:data.height,
+  items:[]
+ });
+ selectedBoard=data.id;
+ render();
+ addItemModal(
+  boards.find(
+   b=>b.id===data.id
+  )
+ );
+}
 /* =========================================================
    ADD ITEM
 ========================================================= */
-
-function addItemModal(board) {
-
-    openModal(`
-
-        <h2>Add item</h2>
-
-        <input
-            id="itemTitle"
-            placeholder="Name (optional)"
-        >
-
-        <input
-            id="itemURL"
-            placeholder="https://example.com"
-        >
-
-        <input
-            id="itemImage"
-            placeholder="Image URL (optional)"
-        >
-
-        <div class="modal-actions">
-
-            <button onclick="closeModal()">
-                Cancel
-            </button>
-
-            <button id="addItemButton">
-                Add
-            </button>
-
-        </div>
-
-    `);
-
-
-    document
-        .getElementById("addItemButton")
-        .onclick = () => {
-
-            let url =
-                document
-                    .getElementById("itemURL")
-                    .value
-                    .trim();
-
-
-            if (!url) {
-
-                alert("Please enter a URL.");
-
-                return;
-
-            }
-
-
-            if (
-                !/^https?:\/\//i.test(url)
-            ) {
-
-                url =
-                    "https://" + url;
-
-            }
-
-
-            const title =
-                document
-                    .getElementById("itemTitle")
-                    .value
-                    .trim();
-
-
-            const image =
-                document
-                    .getElementById("itemImage")
-                    .value
-                    .trim();
-
-
-            board.items.push({
-
-                id: createID(),
-
-                title:
-                    title || url,
-
-                url: url,
-
-                image: image
-
-            });
-
-
-            saveData();
-
-            closeModal();
-
-            render();
-
-        };
-
+function addItemModal(board){
+ openModal(`
+ <h2>Add item</h2>
+ <input
+  id="itemTitle"
+  placeholder="Name (optional)"
+ >
+ <input
+  id="itemURL"
+  placeholder="https://example.com"
+ >
+ <input
+  id="itemImage"
+  placeholder="Image URL (optional)"
+ >
+ <div class="modal-actions">
+  <button onclick="closeModal()">
+   Cancel
+  </button>
+  <button id="addItemButton">
+   Add
+  </button>
+ </div>
+ `);
+ document.getElementById("addItemButton").onclick =
+ async()=>{
+  let url =
+  document
+  .getElementById("itemURL")
+  .value
+  .trim();
+  if(!url){
+   alert("Enter a URL.");
+   return;
+  }
+  if(!/^https?:\/\//i.test(url)){
+   url="https://"+url;
+  }
+  const title =
+  document
+  .getElementById("itemTitle")
+  .value
+  .trim();
+  const image =
+  document
+  .getElementById("itemImage")
+  .value
+  .trim();
+  const {data,error} =
+  await supabase
+  .from("box_items")
+  .insert({
+   box_id:board.id,
+   title:title || url,
+   url,
+   image
+  })
+  .select()
+  .single();
+  if(error){
+   alert(error.message);
+   return;
+  }
+  board.items.push(data);
+  closeModal();
+  render();
+ };
 }
-
-
 /* =========================================================
-   RIGHT CLICK MENU
+   RENDER
 ========================================================= */
-
-function showMenu(x, y, boardID) {
-
-    menuBoard = boardID;
-
-    const menu =
-        document.getElementById("menu");
-
-    menu.style.display =
-        "block";
-
-    menu.style.left =
-        x + "px";
-
-    menu.style.top =
-        y + "px";
-
-}
-
-
-function hideMenu() {
-
-    document
-        .getElementById("menu")
-        .style.display =
-        "none";
-
-}
-
-
-document.addEventListener(
-    "pointerdown",
-    event => {
-
-        if (
-            !event.target.closest("#menu")
-        ) {
-
-            hideMenu();
-
-        }
-
+function render(){
+ const world =
+ document.getElementById("world");
+ world.style.transform =
+ `translate(${panX}px,${panY}px) scale(${zoom})`;
+ world.innerHTML="";
+ boards.forEach(board=>{
+  const element =
+  document.createElement("section");
+  element.className =
+  "board " +
+  (board.visibility==="private"
+   ?"private "
+   :"") +
+  (selectedBoard===board.id
+   ?"selected"
+   :"");
+  element.dataset.id=board.id;
+  element.style.left =
+  board.x+"px";
+  element.style.top =
+  board.y+"px";
+  element.style.width =
+  board.w+"px";
+  element.style.height =
+  board.h+"px";
+  element.innerHTML=`
+   <div class="board-title">
+    ${escapeHTML(board.title)}
+   </div>
+   <div class="visibility">
+    ${board.visibility==="public"
+      ?"Public"
+      :"Private"}
+   </div>
+   <div class="board-inner">
+    ${
+     board.items.map(item=>`
+      <div
+       class="item"
+       data-item="${item.id}"
+      >
+       ${
+        item.image
+        ?`
+        <img
+         src="${escapeHTML(item.image)}"
+         alt=""
+        >
+        `
+        :""
+       }
+       <span>
+        ${escapeHTML(
+         item.title ||
+         item.url
+        )}
+       </span>
+      </div>
+     `).join("")
     }
+   </div>
+   ${
+    board.owner_id===user.id
+    ?`<div class="resize"></div>`
+    :""
+   }
+  `;
+  /* SELECT */
+  element.addEventListener(
+   "click",
+   event=>{
+    if(event.target.closest(".item"))
+     return;
+    selectedBoard=board.id;
+    render();
+   }
+  );
+  /* CONTEXT MENU */
+  element.addEventListener(
+   "contextmenu",
+   event=>{
+    if(board.owner_id!==user.id)
+     return;
+    event.preventDefault();
+    showMenu(
+     event.clientX,
+     event.clientY,
+     board.id
+    );
+   }
+  );
+  /* OPEN ITEMS */
+  element
+  .querySelector(".board-inner")
+  .addEventListener(
+   "click",
+   event=>{
+    const item =
+    event.target.closest(".item");
+    if(!item)return;
+    const itemData =
+    board.items.find(
+     i=>i.id===item.dataset.item
+    );
+    if(
+     itemData &&
+     itemData.url
+    ){
+     window.open(
+      itemData.url,
+      "_blank"
+     );
+    }
+   }
+  );
+  /* MOVE / RESIZE ONLY OWNER */
+  if(board.owner_id===user.id){
+   element.addEventListener(
+    "pointerdown",
+    event=>{
+     if(
+      event.target.closest(".resize")
+     ){
+      resizing={
+       id:board.id,
+       startX:event.clientX,
+       startY:event.clientY,
+       width:board.w,
+       height:board.h
+      };
+      element.setPointerCapture(
+       event.pointerId
+      );
+      return;
+     }
+     if(
+      event.target.closest(".item")
+     )return;
+     if(event.button!==0)return;
+     moving={
+      id:board.id,
+      startX:event.clientX,
+      startY:event.clientY,
+      x:board.x,
+      y:board.y
+     };
+     element.setPointerCapture(
+      event.pointerId
+     );
+    }
+   );
+   element.addEventListener(
+    "pointermove",
+    event=>{
+     if(
+      resizing &&
+      resizing.id===board.id
+     ){
+      board.w=
+      Math.max(
+       150,
+       resizing.width+
+       (event.clientX-
+        resizing.startX)/zoom
+      );
+      board.h=
+      Math.max(
+       100,
+       resizing.height+
+       (event.clientY-
+        resizing.startY)/zoom
+      );
+      render();
+      return;
+     }
+     if(
+      moving &&
+      moving.id===board.id
+     ){
+      board.x=
+      moving.x+
+      (event.clientX-
+       moving.startX)/zoom;
+      board.y=
+      moving.y+
+      (event.clientY-
+       moving.startY)/zoom;
+      render();
+     }
+    }
+   );
+   element.addEventListener(
+    "pointerup",
+    async()=>{
+     if(moving){
+      await supabase
+      .from("boxes")
+      .update({
+       x:board.x,
+       y:board.y
+      })
+      .eq("id",board.id);
+     }
+     if(resizing){
+      await supabase
+      .from("boxes")
+      .update({
+       width:board.w,
+       height:board.h
+      })
+      .eq("id",board.id);
+     }
+     moving=null;
+     resizing=null;
+    }
+   );
+  }
+  world.appendChild(element);
+ });
+}
+/* =========================================================
+   CONTEXT MENU
+========================================================= */
+function showMenu(x,y,id){
+ menuBoard=id;
+ const menu=
+ document.getElementById("menu");
+ menu.style.display="block";
+ menu.style.left=x+"px";
+ menu.style.top=y+"px";
+}
+function hideMenu(){
+ document.getElementById("menu")
+ .style.display="none";
+}
+document.addEventListener(
+ "pointerdown",
+ event=>{
+  if(!event.target.closest("#menu"))
+   hideMenu();
+ }
 );
-
-
 /* =========================================================
    RENAME
 ========================================================= */
-
-document
-    .getElementById("renameOpt")
-    .onclick = () => {
-
-        hideMenu();
-
-        const board =
-            data.boards.find(
-                b =>
-                    b.id === menuBoard
-            );
-
-
-        if (!board) {
-
-            return;
-
-        }
-
-
-        openModal(`
-
-            <h2>Rename board</h2>
-
-            <input
-                id="renameInput"
-                value="${escapeHTML(board.title)}"
-            >
-
-            <div class="modal-actions">
-
-                <button onclick="closeModal()">
-                    Cancel
-                </button>
-
-                <button id="renameSave">
-                    Save
-                </button>
-
-            </div>
-
-        `);
-
-
-        document
-            .getElementById("renameSave")
-            .onclick = () => {
-
-                const name =
-                    document
-                        .getElementById("renameInput")
-                        .value
-                        .trim();
-
-
-                board.title =
-                    name || "Untitled";
-
-
-                saveData();
-
-                closeModal();
-
-                render();
-
-            };
-
-    };
-
-
+document.getElementById("renameOpt").onclick =
+()=>{
+ hideMenu();
+ const board =
+ boards.find(
+  b=>b.id===menuBoard
+ );
+ if(!board)return;
+ openModal(`
+ <h2>Rename box</h2>
+ <input
+  id="renameInput"
+  value="${escapeHTML(board.title)}"
+ >
+ <div class="modal-actions">
+  <button onclick="closeModal()">
+   Cancel
+  </button>
+  <button id="renameSave">
+   Save
+  </button>
+ </div>
+ `);
+ document.getElementById("renameSave").onclick =
+ async()=>{
+  const title =
+  document
+  .getElementById("renameInput")
+  .value
+  .trim() ||
+  "Untitled";
+  await supabase
+  .from("boxes")
+  .update({title})
+  .eq("id",board.id);
+  board.title=title;
+  closeModal();
+  render();
+ };
+};
+/* =========================================================
+   CHANGE VISIBILITY
+========================================================= */
+document.getElementById("visibilityOpt").onclick =
+async()=>{
+ hideMenu();
+ const board =
+ boards.find(
+  b=>b.id===menuBoard
+ );
+ if(!board)return;
+ const newVisibility =
+ board.visibility==="public"
+ ?"private"
+ :"public";
+ const {error} =
+ await supabase
+ .from("boxes")
+ .update({
+  visibility:newVisibility
+ })
+ .eq("id",board.id);
+ if(error){
+  alert(error.message);
+  return;
+ }
+ board.visibility=
+ newVisibility;
+ render();
+};
 /* =========================================================
    DELETE
 ========================================================= */
-
-document
-    .getElementById("deleteOpt")
-    .onclick = () => {
-
-        hideMenu();
-
-        if (
-            !confirm(
-                "Delete this board?"
-            )
-        ) {
-
-            return;
-
-        }
-
-
-        data.boards =
-            data.boards.filter(
-                board =>
-                    board.id !== menuBoard
-            );
-
-
-        selectedBoard = null;
-
-        saveData();
-
-        render();
-
-    };
-
-
-/* =========================================================
-   DRAW NEW BOARD
-========================================================= */
-
-document
-    .getElementById("workspace")
-    .addEventListener(
-        "pointerdown",
-        event => {
-
-            if (
-                event.target.closest(".board")
-            ) {
-
-                return;
-
-            }
-
-
-            if (event.button !== 0) {
-
-                return;
-
-            }
-
-
-            const point =
-                screenToWorld(
-                    event.clientX,
-                    event.clientY
-                );
-
-
-            drawing = {
-
-                startX:
-                    point.x,
-
-                startY:
-                    point.y,
-
-                clientX:
-                    event.clientX,
-
-                clientY:
-                    event.clientY
-
-            };
-
-        }
-    );
-
-
-document.addEventListener(
-    "pointermove",
-    event => {
-
-        if (!drawing) {
-
-            return;
-
-        }
-
-
-        const point =
-            screenToWorld(
-                event.clientX,
-                event.clientY
-            );
-
-
-        const x =
-            Math.min(
-                drawing.startX,
-                point.x
-            );
-
-
-        const y =
-            Math.min(
-                drawing.startY,
-                point.y
-            );
-
-
-        const width =
-            Math.abs(
-                point.x -
-                drawing.startX
-            );
-
-
-        const height =
-            Math.abs(
-                point.y -
-                drawing.startY
-            );
-
-
-        let temp =
-            document.getElementById(
-                "drawTemp"
-            );
-
-
-        if (!temp) {
-
-            temp =
-                document.createElement(
-                    "div"
-                );
-
-            temp.id =
-                "drawTemp";
-
-            temp.className =
-                "board";
-
-            document
-                .getElementById("world")
-                .appendChild(temp);
-
-        }
-
-
-        temp.style.left =
-            x + "px";
-
-        temp.style.top =
-            y + "px";
-
-        temp.style.width =
-            Math.max(
-                10,
-                width
-            ) + "px";
-
-        temp.style.height =
-            Math.max(
-                10,
-                height
-            ) + "px";
-
-    }
-);
-
-
-document.addEventListener(
-    "pointerup",
-    event => {
-
-        if (!drawing) {
-
-            return;
-
-        }
-
-
-        const point =
-            screenToWorld(
-                event.clientX,
-                event.clientY
-            );
-
-
-        const x =
-            Math.min(
-                drawing.startX,
-                point.x
-            );
-
-
-        const y =
-            Math.min(
-                drawing.startY,
-                point.y
-            );
-
-
-        const width =
-            Math.abs(
-                point.x -
-                drawing.startX
-            );
-
-
-        const height =
-            Math.abs(
-                point.y -
-                drawing.startY
-            );
-
-
-        document
-            .getElementById("drawTemp")
-            ?.remove();
-
-
-        drawing = null;
-
-
-        if (
-            width < 30 ||
-            height < 30
-        ) {
-
-            return;
-
-        }
-
-
-        const board = {
-
-            id: createID(),
-
-            title: "New board",
-
-            x: x,
-
-            y: y,
-
-            w: Math.max(
-                180,
-                width
-            ),
-
-            h: Math.max(
-                120,
-                height
-            ),
-
-            items: []
-
-        };
-
-
-        data.boards.push(board);
-
-        selectedBoard =
-            board.id;
-
-        saveData();
-
-        render();
-
-        addItemModal(board);
-
-    }
-);
-
-
+document.getElementById("deleteOpt").onclick =
+async()=>{
+ hideMenu();
+ const board =
+ boards.find(
+  b=>b.id===menuBoard
+ );
+ if(!board)return;
+ if(
+  !confirm(
+   "Delete this box?"
+  )
+ )return;
+ const {error} =
+ await supabase
+ .from("boxes")
+ .delete()
+ .eq("id",board.id);
+ if(error){
+  alert(error.message);
+  return;
+ }
+ boards=
+ boards.filter(
+  b=>b.id!==board.id
+ );
+ render();
+};
 /* =========================================================
    SEARCH
 ========================================================= */
-
-document
-    .getElementById("search")
-    .addEventListener(
-        "input",
-        event => {
-
-            const query =
-                event.target.value
-                    .toLowerCase()
-                    .trim();
-
-
-            document
-                .querySelectorAll(".board")
-                .forEach(element => {
-
-                    const board =
-                        data.boards.find(
-                            b =>
-                                b.id ===
-                                element.dataset.id
-                        );
-
-
-                    if (!board) {
-
-                        return;
-
-                    }
-
-
-                    const matches =
-                        !query ||
-                        board.title
-                            .toLowerCase()
-                            .includes(query) ||
-                        board.items.some(
-                            item =>
-                                (
-                                    item.title ||
-                                    ""
-                                )
-                                .toLowerCase()
-                                .includes(query)
-                        );
-
-
-                    element.style.opacity =
-                        matches
-                            ? "1"
-                            : "0.2";
-
-                });
-
-        }
-    );
-
-
+document.getElementById("search")
+.addEventListener(
+ "input",
+ event=>{
+  const query =
+  event.target.value
+  .toLowerCase()
+  .trim();
+  document
+  .querySelectorAll(".board")
+  .forEach(element=>{
+   const board=
+   boards.find(
+    b=>b.id===element.dataset.id
+   );
+   const matches=
+   !query ||
+   board.title
+   .toLowerCase()
+   .includes(query) ||
+   board.items.some(
+    item=>
+     (item.title||"")
+     .toLowerCase()
+     .includes(query)
+   );
+   element.style.opacity=
+   matches?"1":"0.2";
+  });
+ }
+);
+/* =========================================================
+   DRAWING NEW BOX WITH MOUSE
+========================================================= */
+document.getElementById("workspace")
+.addEventListener(
+ "pointerdown",
+ event=>{
+  if(
+   event.target.closest(".board")
+  )return;
+  if(event.button!==0)return;
+  const point=
+  screenToWorld(
+   event.clientX,
+   event.clientY
+  );
+  drawing={
+   x:point.x,
+   y:point.y
+  };
+ }
+);
+document.addEventListener(
+ "pointermove",
+ event=>{
+  if(!drawing)return;
+  const point=
+  screenToWorld(
+   event.clientX,
+   event.clientY
+  );
+  const x=
+  Math.min(
+   drawing.x,
+   point.x
+  );
+  const y=
+  Math.min(
+   drawing.y,
+   point.y
+  );
+  const w=
+  Math.abs(
+   point.x-
+   drawing.x
+  );
+  const h=
+  Math.abs(
+   point.y-
+   drawing.y
+  );
+  let temp=
+  document.getElementById(
+   "drawTemp"
+  );
+  if(!temp){
+   temp=
+   document.createElement("div");
+   temp.id="drawTemp";
+   temp.className="board";
+   document
+   .getElementById("world")
+   .appendChild(temp);
+  }
+  temp.style.left=x+"px";
+  temp.style.top=y+"px";
+  temp.style.width=
+  Math.max(10,w)+"px";
+  temp.style.height=
+  Math.max(10,h)+"px";
+ }
+);
+document.addEventListener(
+ "pointerup",
+ event=>{
+  if(!drawing)return;
+  const point=
+  screenToWorld(
+   event.clientX,
+   event.clientY
+  );
+  const w=
+  Math.abs(
+   point.x-
+   drawing.x
+  );
+  const h=
+  Math.abs(
+   point.y-
+   drawing.y
+  );
+  document
+  .getElementById("drawTemp")
+  ?.remove();
+  drawing=null;
+  if(w<30||h<30)return;
+  openModal(`
+   <h2>New box</h2>
+   <p>Who should be able to see this box?</p>
+   <div class="choice">
+    <button id="drawPublic">
+     Public
+    </button>
+    <button id="drawPrivate">
+     Private
+    </button>
+   </div>
+   <div class="modal-actions">
+    <button onclick="closeModal()">
+     Cancel
+    </button>
+   </div>
+  `);
+  async function finish(visibility){
+   closeModal();
+   const {data,error}=
+   await supabase
+   .from("boxes")
+   .insert({
+    owner_id:user.id,
+    title:"New board",
+    x:drawingX,
+    y:drawingY,
+    width:Math.max(180,w),
+    height:Math.max(120,h),
+    visibility
+   })
+   .select()
+   .single();
+   if(error){
+    alert(error.message);
+    return;
+   }
+   boards.push({
+    ...data,
+    w:data.width,
+    h:data.height,
+    items:[]
+   });
+   render();
+  }
+  const drawingX=
+  Math.min(
+   point.x,
+   point.x-w
+  );
+  const drawingY=
+  Math.min(
+   point.y,
+   point.y-h
+  );
+  document.getElementById("drawPublic")
+  .onclick=()=>finish("public");
+  document.getElementById("drawPrivate")
+  .onclick=()=>finish("private");
+ });
 /* =========================================================
    BACKUP
 ========================================================= */
-
-document
-    .getElementById("backupBtn")
-    .onclick = () => {
-
-        const blob =
-            new Blob(
-                [
-                    JSON.stringify(
-                        data,
-                        null,
-                        2
-                    )
-                ],
-                {
-                    type:
-                        "application/json"
-                }
-            );
-
-
-        const url =
-            URL.createObjectURL(blob);
-
-
-        const link =
-            document.createElement("a");
-
-
-        link.href = url;
-
-        link.download =
-            "spaceboards-backup.json";
-
-
-        link.click();
-
-
-        URL.revokeObjectURL(url);
-
-    };
-
-
+document.getElementById("backupBtn").onclick =
+()=>{
+ const blob=
+ new Blob(
+  [JSON.stringify(boards,null,2)],
+  {type:"application/json"}
+ );
+ const url=
+ URL.createObjectURL(blob);
+ const a=
+ document.createElement("a");
+ a.href=url;
+ a.download=
+ "spaceboards-backup.json";
+ a.click();
+ URL.revokeObjectURL(url);
+};
 /* =========================================================
    RESTORE
 ========================================================= */
-
-document
-    .getElementById("restoreBtn")
-    .onclick = () => {
-
-        document
-            .getElementById("restoreFile")
-            .click();
-
-    };
-
-
-document
-    .getElementById("restoreFile")
-    .addEventListener(
-        "change",
-        event => {
-
-            const file =
-                event.target.files[0];
-
-
-            if (!file) {
-
-                return;
-
-            }
-
-
-            const reader =
-                new FileReader();
-
-
-            reader.onload = () => {
-
-                try {
-
-                    data =
-                        JSON.parse(
-                            reader.result
-                        );
-
-
-                    saveData();
-
-                    render();
-
-                    alert(
-                        "Backup restored."
-                    );
-
-                } catch {
-
-                    alert(
-                        "Invalid backup file."
-                    );
-
-                }
-
-            };
-
-
-            reader.readAsText(file);
-
-        }
+document.getElementById("restoreBtn").onclick =
+()=>{
+ document
+ .getElementById("restoreFile")
+ .click();
+};
+document.getElementById("restoreFile")
+.addEventListener(
+ "change",
+ event=>{
+  const file=
+  event.target.files[0];
+  if(!file)return;
+  const reader=
+  new FileReader();
+  reader.onload=
+  async()=>{
+   try{
+    const saved=
+    JSON.parse(
+     reader.result
     );
-
-
-/* =========================================================
-   SHARE
-========================================================= */
-
-document
-    .getElementById("shareBtn")
-    .onclick = async () => {
-
-        const encoded =
-            btoa(
-                unescape(
-                    encodeURIComponent(
-                        JSON.stringify(data)
-                    )
-                )
-            );
-
-
-        const shareURL =
-            location.href
-            .split("#")[0]
-            + "#data="
-            + encoded;
-
-
-        try {
-
-            await navigator.clipboard.writeText(
-                shareURL
-            );
-
-            alert(
-                "Share link copied."
-            );
-
-        } catch {
-
-            prompt(
-                "Copy this link:",
-                shareURL
-            );
-
-        }
-
-    };
-
-
-/* =========================================================
-   MY SPACE
-========================================================= */
-
-document
-    .getElementById("mySpace")
-    .onclick = () => {
-
-        data.panX = 80;
-
-        data.panY = 80;
-
-        data.zoom = 1;
-
-        saveData();
-
-        render();
-
-    };
-
-
-/* =========================================================
-   ZOOM
-========================================================= */
-
-document
-    .getElementById("workspace")
-    .addEventListener(
-        "wheel",
-        event => {
-
-            event.preventDefault();
-
-
-            const oldZoom =
-                data.zoom;
-
-
-            const factor =
-                event.deltaY < 0
-                    ? 1.1
-                    : 0.9;
-
-
-            const rect =
-                document
-                    .getElementById(
-                        "workspace"
-                    )
-                    .getBoundingClientRect();
-
-
-            const mouseX =
-                event.clientX -
-                rect.left;
-
-
-            const mouseY =
-                event.clientY -
-                rect.top;
-
-
-            data.zoom =
-                Math.min(
-                    3,
-                    Math.max(
-                        .25,
-                        oldZoom *
-                        factor
-                    )
-                );
-
-
-            data.panX =
-                mouseX -
-                (
-                    mouseX -
-                    data.panX
-                ) *
-                data.zoom /
-                oldZoom;
-
-
-            data.panY =
-                mouseY -
-                (
-                    mouseY -
-                    58 -
-                    data.panY
-                ) *
-                data.zoom /
-                oldZoom;
-
-
-            saveData();
-
-            render();
-
-        },
-        {
-            passive: false
-        }
-    );
-
-
-/* =========================================================
-   MODALS
-========================================================= */
-
-function openModal(content) {
-
-    document
-        .getElementById("modal")
-        .innerHTML =
-        content;
-
-
-    document
-        .getElementById("modalBg")
-        .style.display =
-        "flex";
-
-}
-
-
-function closeModal() {
-
-    document
-        .getElementById("modalBg")
-        .style.display =
-        "none";
-
-}
-
-
-window.closeModal =
-    closeModal;
-
-
-document
-    .getElementById("modalBg")
-    .addEventListener(
-        "click",
-        event => {
-
-            if (
-                event.target.id ===
-                "modalBg"
-            ) {
-
-                closeModal();
-
-            }
-
-        }
-    );
-
-
-/* =========================================================
-   LOGIN
-========================================================= */
-
-document
-    .getElementById("loginBtn")
-    .onclick = () => {
-
-        const username =
-            document
-                .getElementById("loginName")
-                .value
-                .trim();
-
-
-        data.user =
-            username || "User";
-
-
-        saveData();
-
-
-        document
-            .getElementById("login")
-            .style.display =
-            "none";
-
-
-        render();
-
-    };
-
-
-document
-    .getElementById("logoutBtn")
-    .onclick = () => {
-
-        data.user = "";
-
-        saveData();
-
-
-        document
-            .getElementById("login")
-            .style.display =
-            "flex";
-
-    };
-
-
-/* =========================================================
-   LOAD SHARED DATA
-========================================================= */
-
-if (
-    location.hash.startsWith("#data=")
-) {
-
-    try {
-
-        const encoded =
-            location.hash.slice(6);
-
-
-        data =
-            JSON.parse(
-                decodeURIComponent(
-                    escape(
-                        atob(encoded)
-                    )
-                )
-            );
-
-
-        saveData();
-
-
-        history.replaceState(
-            null,
-            "",
-            location.pathname
-        );
-
-    } catch {
-
-        console.log(
-            "Could not load shared data."
-        );
-
+    for(const board of saved){
+     const {data,error}=
+     await supabase
+     .from("boxes")
+     .insert({
+      owner_id:user.id,
+      title:board.title||"Restored board",
+      x:board.x||100,
+      y:board.y||100,
+      width:board.w||430,
+      height:board.h||270,
+      visibility:"private"
+     })
+     .select()
+     .single();
+     if(error)throw error;
+     if(
+      board.items &&
+      board.items.length
+     ){
+      await supabase
+      .from("box_items")
+      .insert(
+       board.items.map(item=>({
+        box_id:data.id,
+        title:item.title,
+        url:item.url,
+        image:item.image
+       }))
+      );
+     }
     }
-
-}
-
-
+    await loadBoards();
+    alert("Backup restored.");
+   }catch(error){
+    alert(
+     "Could not restore backup: "+
+     error.message
+    );
+   }
+  };
+  reader.readAsText(file);
+ });
 /* =========================================================
-   START
+   MODAL CLICK
 ========================================================= */
-
-if (!data.user) {
-
-    document
-        .getElementById("login")
-        .style.display =
-        "flex";
-
-}
-
-
+document.getElementById("modalBg")
+.addEventListener(
+ "click",
+ event=>{
+  if(
+   event.target.id==="modalBg"
+  ){
+   closeModal();
+  }
+ });
+/* =========================================================
+   INITIAL RENDER
+========================================================= */
 render();
-
 </script>
-
 </body>
 </html>
