@@ -1032,34 +1032,24 @@ async function loadBoards() {
 /* =========================================================
    NEW BOX BUTTON
 ========================================================= */
-document.getElementById("newBtn")
-    .onclick = () => {
-        openModal(`
-            <h2>New box</h2>
-            <p>
-                Who should be able to see this box?
-            </p>
-            <div class="choice">
-                <button id="publicBox">
-                    Public
-                </button>
-                <button id="privateBox">
-                    Private
-                </button>
-            </div>
-            <div class="modal-actions">
-                <button id="cancelNewBox">
-                    Cancel
-                </button>
-            </div>
-        `);
-        document.getElementById(
-            "publicBox"
-        ).onclick =
-            () =>
-                createBox(
-                    "public"
-                );
+document.getElementById("newBtn").onclick = () => {
+
+    if (!selectedBoard) {
+        alert("Select a box first.");
+        return;
+    }
+
+    const board = boards.find(
+        b => b.id === selectedBoard
+    );
+
+    if (!board) {
+        alert("Select a box first.");
+        return;
+    }
+
+    addURLToBoard(board);
+};
         document.getElementById(
             "privateBox"
         ).onclick =
