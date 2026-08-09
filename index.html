@@ -1619,47 +1619,57 @@ matches?"1":"0.2";
 /* =========================================================
 SHARE
 ========================================================= */
-document.getElementById("shareBtn")
-.onclick=
-async()=>{
-const shareData={
-title:"Spaceboards",
-text:"Check out my Spaceboards!",
-url:window.location.href
+
+document.getElementById("shareBtn").onclick = async () => {
+
+    const shareData = {
+        title: "Spaceboards",
+        text: "Check out my Spaceboards!",
+        url: window.location.href
+    };
+
+    try {
+
+        if (navigator.share) {
+
+            await navigator.share(shareData);
+
+        } else {
+
+            await navigator.clipboard.writeText(
+                window.location.href
+            );
+
+            alert("Website link copied to clipboard.");
+
+        }
+
+    } catch (error) {
+
+        if (error.name !== "AbortError") {
+
+            try {
+
+                await navigator.clipboard.writeText(
+                    window.location.href
+                );
+
+                alert("Website link copied to clipboard.");
+
+            } catch (e) {
+
+                prompt(
+                    "Copy this link:",
+                    window.location.href
+                );
+
+            }
+
+        }
+
+    }
+
 };
-try{
-if(navigator.share){
-await navigator.share(
-shareData
-);
-}else{
-await navigator.clipboard.writeText(
-window.location.href
-);
-alert(
-"Website link copied to clipboard."
-);
-}
-}catch(error){
-if(error.name!=="AbortError"){
-try{
-await navigator.clipboard.writeText(
-window.location.href
-);
-alert(
-"Website link copied to clipboard."
-);
-}catch(e){
-prompt(
-"Copy this link:",
-window.location.href
-);
-}
-}
-};
-/* =========================================================
-CLOSE MODAL
-========================================================= */
 document.getElementById("modalBg")
 .addEventListener(
 "click",
