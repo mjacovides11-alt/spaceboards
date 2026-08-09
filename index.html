@@ -28,6 +28,7 @@ cursor:pointer
 button:hover{
 background:#f1f1f1
 }
+/* TOP BAR */
 .topbar{
 height:58px;
 display:flex;
@@ -46,13 +47,18 @@ margin-left:5px
 .spacer{
 flex:1
 }
-.search,.add-friend{
+.search,
+.add-friend{
 padding:9px 10px;
 border:1px solid #bbb;
 border-radius:7px
 }
-.search{width:190px}
-.add-friend{width:145px}
+.search{
+width:190px
+}
+.add-friend{
+width:145px
+}
 .friends{
 display:flex;
 align-items:center;
@@ -129,7 +135,7 @@ width:1px;
 height:1px;
 transform-origin:0 0
 }
-/* BOARD */
+/* BOX */
 .board{
 position:absolute;
 background:#fff;
@@ -173,13 +179,14 @@ padding:45px 12px 12px;
 overflow:auto;
 border-radius:10px
 }
-/* URL */
+/* URL BUTTON */
 .add-url{
 width:100%;
 margin-bottom:9px;
 padding:7px;
 font-size:12px
 }
+/* URL ITEM */
 .item{
 position:relative;
 display:inline-flex;
@@ -338,9 +345,15 @@ color:#555;
 z-index:10
 }
 @media(max-width:900px){
-.search{width:130px}
-.add-friend{width:110px}
-.friends{max-width:150px}
+.search{
+width:130px
+}
+.add-friend{
+width:110px
+}
+.friends{
+max-width:150px
+}
 }
 @media(max-width:600px){
 .logo{
@@ -371,20 +384,22 @@ width:290px
 <div class="auth-box">
 <h1>Spaceboards</h1>
 <p>Create an account or log in.</p>
-
 <input
-id=“authEmail”
-type=“email”
-placeholder=“Email”
-autocomplete=“email”
-
+id="authEmail"
+type="email"
+placeholder="Email"
+autocomplete="email"
+>
 <input
-id=“authPassword”
-type=“password”
-placeholder=“Password”
-autocomplete=“current-password”
-
-<div id="authError" class="auth-error"></div>
+id="authPassword"
+type="password"
+placeholder="Password"
+autocomplete="current-password"
+>
+<div
+id="authError"
+class="auth-error">
+</div>
 <button id="loginButton">
 Log in
 </button>
@@ -407,12 +422,11 @@ New Box
 <button id="shareButton">
 Share
 </button>
-
 <input
-id=“addFriendInput”
-class=“add-friend”
-placeholder=“Add friends”
-
+id="addFriendInput"
+class="add-friend"
+placeholder="Add friends"
+>
 <button id="addFriendButton">
 Add
 </button>
@@ -424,12 +438,11 @@ id="friendsList"
 class="friends">
 </div>
 <div class="spacer"></div>
-
 <input
-id=“searchInput”
-class=“search”
-placeholder=“Search”
-
+id="searchInput"
+class="search"
+placeholder="Search"
+>
 <button id="logoutButton">
 Logout
 </button>
@@ -520,7 +533,8 @@ return String(value)
 .replace(/'/g,"&#039;");
 }
 function openModal(html){
-document.getElementById("modal").innerHTML=html;
+document.getElementById("modal")
+.innerHTML=html;
 document.getElementById("modalBackground")
 .style.display="flex";
 }
@@ -541,7 +555,8 @@ document.getElementById("loginButton")
 async()=>{
 const email=
 document.getElementById("authEmail")
-.value.trim();
+.value
+.trim();
 const password=
 document.getElementById("authPassword")
 .value;
@@ -555,8 +570,8 @@ return;
 }
 const {error}=
 await supabase.auth.signInWithPassword({
-email,
-password
+email:email,
+password:password
 });
 if(error){
 errorBox.textContent=
@@ -569,7 +584,8 @@ document.getElementById("signupButton")
 async()=>{
 const email=
 document.getElementById("authEmail")
-.value.trim();
+.value
+.trim();
 const password=
 document.getElementById("authPassword")
 .value;
@@ -578,7 +594,7 @@ document.getElementById("authError");
 errorBox.textContent="";
 if(!email||!password){
 errorBox.textContent=
-"Enter your email and password.";
+"Enter an email and password.";
 return;
 }
 if(password.length<6){
@@ -588,8 +604,8 @@ return;
 }
 const {data,error}=
 await supabase.auth.signUp({
-email,
-password
+email:email,
+password:password
 });
 if(error){
 errorBox.textContent=
@@ -617,7 +633,8 @@ SESSION
 ========================================================= */
 supabase.auth.onAuthStateChange(
 async(event,session)=>{
-user=session?.user||null;
+user=
+session?.user||null;
 if(user){
 document.getElementById("authScreen")
 .style.display="none";
@@ -671,7 +688,8 @@ console.error(error);
 return;
 }
 const accepted=
-(data||[]).filter(
+(data||[])
+.filter(
 r=>r.status==="accepted"
 );
 const ids=
@@ -691,7 +709,8 @@ await supabase
 .from("profiles")
 .select("id,email")
 .in("id",ids);
-friends=profiles||[];
+friends=
+profiles||[];
 renderFriends();
 }
 function renderFriends(){
@@ -717,7 +736,9 @@ async()=>{
 const input=
 document.getElementById("addFriendInput");
 const email=
-input.value.trim().toLowerCase();
+input.value
+.trim()
+.toLowerCase();
 if(!email){
 showError(
 "Enter your friend's email."
@@ -760,9 +781,7 @@ showError(
 "A friend request already exists."
 );
 }else{
-showError(
-insertError.message
-);
+showError(insertError.message);
 }
 return;
 }
@@ -956,9 +975,7 @@ boards.filter(
 b=>b.owner_id===user.id
 );
 const previous=
-ownBoards.length
-?ownBoards[ownBoards.length-1]
-:null;
+ownBoards[ownBoards.length-1];
 let x=120;
 let y=120;
 if(previous){
@@ -1003,6 +1020,9 @@ document.getElementById("newUrlButton")
 .addEventListener(
 "click",
 ()=>{
+if(!user){
+return;
+}
 const ownBoxes=
 boards.filter(
 board=>board.owner_id===user.id
@@ -1018,13 +1038,11 @@ ownBoxes[ownBoxes.length-1]
 );
 });
 /* =========================================================
-URL MODAL
+ADD URL MODAL
 ========================================================= */
 function openURLModal(board){
 openModal(`
-<h2>
-Add URL
-</h2>
+<h2>Add URL</h2>
 <input
 id="urlTitle"
 placeholder="Name (optional)"
@@ -1069,13 +1087,16 @@ SAVE URL
 async function saveURL(board,visibility){
 let url=
 document.getElementById("urlAddress")
-.value.trim();
+.value
+.trim();
 const title=
 document.getElementById("urlTitle")
-.value.trim();
+.value
+.trim();
 const image=
 document.getElementById("urlImage")
-.value.trim();
+.value
+.trim();
 if(!url){
 showError(
 "Enter a URL."
@@ -1101,10 +1122,11 @@ if(error){
 showError(error.message);
 return;
 }
-/* Keep every previous URL */
-if(!Array.isArray(board.items)){
-board.items=[];
-}
+/*
+IMPORTANT:
+Add the new URL to the existing array.
+Nothing already in the box is deleted.
+*/
 board.items.push(data);
 closeModal();
 render();
@@ -1113,9 +1135,11 @@ render();
 DELETE URL
 ========================================================= */
 async function deleteURL(board,itemId){
-if(!confirm("Delete this URL?")){
-return;
-}
+const confirmed=
+confirm(
+"Delete this URL?"
+);
+if(!confirmed)return;
 const {error}=
 await supabase
 .from("box_items")
@@ -1123,7 +1147,9 @@ await supabase
 .eq("id",itemId)
 .eq("box_id",board.id);
 if(error){
-showError(error.message);
+showError(
+"Could not delete URL: "+error.message
+);
 return;
 }
 board.items=
@@ -1139,21 +1165,28 @@ DELETE BOX
 ========================================================= */
 async function deleteBoard(board){
 if(!user){
+showError(
+"You must be logged in."
+);
 return;
 }
-if(board.owner_id!==user.id){
+/*
+Only the owner can delete a box.
+*/
+if(String(board.owner_id)!==
+String(user.id)){
 showError(
 "You can only delete your own boxes."
 );
 return;
 }
-if(!confirm(
+const confirmed=
+confirm(
 "Delete this box and all of its URLs?"
-)){
-return;
-}
+);
+if(!confirmed)return;
 /*
-First delete URLs.
+FIRST delete all URLs.
 */
 const {error:itemError}=
 await supabase
@@ -1162,16 +1195,15 @@ await supabase
 .eq("box_id",board.id);
 if(itemError){
 showError(
-"Could not delete URLs: "+
+"Could not delete the URLs in this box: "+
 itemError.message
 );
 return;
 }
 /*
-IMPORTANT FIX:
-Delete using BOTH the box ID and owner ID.
-This prevents another user's box from being deleted,
-but allows your own box to be removed.
+THEN delete the box.
+The owner_id condition prevents
+another user's box from being deleted.
 */
 const {data:deleted,error:boxError}=
 await supabase
@@ -1189,21 +1221,28 @@ return;
 }
 /*
 If Supabase returned no deleted row,
-the database RLS policy is blocking deletion.
+the database policy is preventing
+the deletion.
 */
 if(!deleted||deleted.length===0){
 showError(
-"The box was not deleted. Your Supabase RLS policy may be blocking DELETE operations on the boxes table."
+"Supabase did not allow this box to be deleted. Check the DELETE policy for the boxes table."
 );
 return;
 }
+/*
+Remove it from the screen.
+*/
 boards=
 boards.filter(
 b=>
 String(b.id)!==
 String(board.id)
 );
-if(selectedBoardId===board.id){
+if(
+String(selectedBoardId)===
+String(board.id)
+){
 selectedBoardId=null;
 }
 render();
@@ -1223,12 +1262,12 @@ document.createElement("section");
 element.className=
 "board"+
 (
-selectedBoardId===board.id
+String(selectedBoardId)===
+String(board.id)
 ?" selected"
 :""
 );
-element.dataset.id=
-board.id;
+element.dataset.id=board.id;
 element.style.left=
 Number(board.x)+"px";
 element.style.top=
@@ -1238,14 +1277,19 @@ Number(board.w)+"px";
 element.style.height=
 Number(board.h)+"px";
 const owner=
-board.owner_id===user?.id;
+String(board.owner_id)===
+String(user?.id);
+/*
+BOX HTML
+*/
 element.innerHTML=`
 <div class="board-title">
 ${escapeHTML(board.title)}
 </div>
 ${
 owner
-?`
+?
+`
 <div class="board-actions">
 <button
 class="trash-button"
@@ -1260,7 +1304,8 @@ data-delete-board="${board.id}">
 <div class="board-inner">
 ${
 owner
-?`
+?
+`
 <button
 class="add-url"
 data-add-url="${board.id}">
@@ -1277,7 +1322,8 @@ data-item-id="${item.id}"
 data-url="${escapeHTML(item.url)}">
 ${
 item.image
-?`
+?
+`
 <img
 src="${escapeHTML(item.image)}"
 alt=""
@@ -1289,13 +1335,12 @@ alt=""
 ${escapeHTML(item.title||item.url)}
 </span>
 <span class="item-visibility">
-${item.visibility==="public"
-?"Public"
-:"Private"}
+${item.visibility==="public"?"Public":"Private"}
 </span>
 ${
 owner
-?`
+?
+`
 <button
 class="item-trash"
 title="Delete URL"
@@ -1311,36 +1356,49 @@ data-delete-item="${item.id}">
 </div>
 ${
 owner
-?`
+?
+`
 <div class="resize"></div>
 `
 :""
 }
 `;
-/* BOARD CLICK */
+/* =========================================================
+BOARD CLICK
+========================================================= */
 element.addEventListener(
 "click",
 event=>{
-if(event.target.closest(".trash-button"))return;
-if(event.target.closest(".item-trash"))return;
-if(event.target.closest(".add-url"))return;
-if(event.target.closest(".resize"))return;
+if(event.target.closest(".trash-button"))
+return;
+if(event.target.closest(".item-trash"))
+return;
+if(event.target.closest(".add-url"))
+return;
+if(event.target.closest(".resize"))
+return;
 selectedBoardId=board.id;
+render();
 });
-/* DELETE BOX BUTTON */
-const deleteButton=
+/* =========================================================
+BOX TRASH BUTTON
+========================================================= */
+const deleteBoardButton=
 element.querySelector(
 "[data-delete-board]"
 );
-if(deleteButton){
-deleteButton.addEventListener(
+if(deleteBoardButton){
+deleteBoardButton.addEventListener(
 "click",
 async event=>{
+event.preventDefault();
 event.stopPropagation();
 await deleteBoard(board);
 });
 }
-/* ADD URL */
+/* =========================================================
+ADD URL BUTTON
+========================================================= */
 const addButton=
 element.querySelector(
 "[data-add-url]"
@@ -1349,18 +1407,21 @@ if(addButton){
 addButton.addEventListener(
 "click",
 event=>{
+event.preventDefault();
 event.stopPropagation();
 openURLModal(board);
 });
 }
-/* DELETE URL */
-element.querySelectorAll(
-"[data-delete-item]"
-)
+/* =========================================================
+URL TRASH BUTTONS
+========================================================= */
+element
+.querySelectorAll("[data-delete-item]")
 .forEach(button=>{
 button.addEventListener(
 "click",
 async event=>{
+event.preventDefault();
 event.stopPropagation();
 await deleteURL(
 board,
@@ -1368,17 +1429,17 @@ button.dataset.deleteItem
 );
 });
 });
-/* OPEN URL */
-element.querySelectorAll(
-".item"
-)
+/* =========================================================
+OPEN URL
+========================================================= */
+element
+.querySelectorAll(".item")
 .forEach(item=>{
 item.addEventListener(
 "click",
 event=>{
-if(event.target.closest(".item-trash")){
+if(event.target.closest(".item-trash"))
 return;
-}
 const url=
 item.dataset.url;
 if(url){
@@ -1389,14 +1450,15 @@ url,
 }
 });
 });
-/* CONTEXT MENU */
+/* =========================================================
+CONTEXT MENU
+========================================================= */
 element.addEventListener(
 "contextmenu",
 event=>{
 if(!owner)return;
 event.preventDefault();
-contextBoardId=
-board.id;
+contextBoardId=board.id;
 const menu=
 document.getElementById("contextMenu");
 menu.style.display="block";
@@ -1405,15 +1467,21 @@ event.clientX+"px";
 menu.style.top=
 event.clientY+"px";
 });
-/* MOVE / RESIZE */
+/* =========================================================
+MOVE + RESIZE
+========================================================= */
 if(owner){
 element.addEventListener(
 "pointerdown",
 event=>{
-if(event.pointerType==="touch")return;
-if(event.target.closest(".item"))return;
-if(event.target.closest(".add-url"))return;
-if(event.target.closest(".trash-button"))return;
+if(event.pointerType==="touch")
+return;
+if(event.target.closest(".item"))
+return;
+if(event.target.closest(".add-url"))
+return;
+if(event.target.closest(".trash-button"))
+return;
 if(event.target.closest(".resize")){
 resizing={
 id:board.id,
@@ -1505,8 +1573,10 @@ document.getElementById("workspace");
 workspace.addEventListener(
 "pointerdown",
 event=>{
-if(event.pointerType==="touch")return;
-if(event.target.closest(".board"))return;
+if(event.pointerType==="touch")
+return;
+if(event.target.closest(".board"))
+return;
 panning={
 x:event.clientX,
 y:event.clientY,
@@ -1534,7 +1604,7 @@ document.addEventListener(
 panning=null;
 });
 /* =========================================================
-PINCH ZOOM
+TOUCH PAN + PINCH ZOOM
 ========================================================= */
 function distance(a,b){
 return Math.hypot(
@@ -1551,7 +1621,8 @@ y:(a.clientY+b.clientY)/2
 workspace.addEventListener(
 "pointerdown",
 event=>{
-if(event.pointerType!=="touch")return;
+if(event.pointerType!=="touch")
+return;
 pointers.set(
 event.pointerId,
 {
@@ -1591,8 +1662,10 @@ pinchStartPanY=panY;
 workspace.addEventListener(
 "pointermove",
 event=>{
-if(event.pointerType!=="touch")return;
-if(!pointers.has(event.pointerId))return;
+if(event.pointerType!=="touch")
+return;
+if(!pointers.has(event.pointerId))
+return;
 pointers.set(
 event.pointerId,
 {
@@ -1623,7 +1696,8 @@ distance(
 points[0],
 points[1]
 );
-if(!pinchStartDistance)return;
+if(!pinchStartDistance)
+return;
 let newZoom=
 pinchStartZoom*
 (
@@ -1672,7 +1746,8 @@ render();
 }
 });
 function endTouch(event){
-if(event.pointerType!=="touch")return;
+if(event.pointerType!=="touch")
+return;
 pointers.delete(
 event.pointerId
 );
@@ -1701,11 +1776,9 @@ event.preventDefault();
 const rect=
 workspace.getBoundingClientRect();
 const mouseX=
-event.clientX-
-rect.left;
+event.clientX-rect.left;
 const mouseY=
-event.clientY-
-rect.top;
+event.clientY-rect.top;
 const worldX=
 (mouseX-panX)/zoom;
 const worldY=
@@ -1723,17 +1796,17 @@ zoom*factor
 )
 );
 panX=
-mouseX-
-worldX*zoom;
+mouseX-worldX*zoom;
 panY=
-mouseY-
-worldY*zoom;
+mouseY-worldY*zoom;
 render();
 },
-{passive:false}
+{
+passive:false
+}
 );
 /* =========================================================
-CONTEXT MENU
+CONTEXT MENU CLOSE
 ========================================================= */
 document.addEventListener(
 "pointerdown",
@@ -1754,13 +1827,22 @@ document.getElementById("contextMenu")
 .style.display="none";
 const board=
 boards.find(
-b=>b.id===contextBoardId
+b=>
+String(b.id)===
+String(contextBoardId)
 );
 if(!board)return;
+if(
+String(board.owner_id)!==
+String(user.id)
+){
+showError(
+"You can only rename your own boxes."
+);
+return;
+}
 openModal(`
-<h2>
-Rename box
-</h2>
+<h2>Rename box</h2>
 <input
 id="renameInput"
 value="${escapeHTML(board.title)}"
@@ -1780,7 +1862,8 @@ document.getElementById("renameSave")
 .onclick=async()=>{
 const title=
 document.getElementById("renameInput")
-.value.trim();
+.value
+.trim();
 if(!title)return;
 const {error}=
 await supabase
@@ -1800,7 +1883,7 @@ render();
 };
 });
 /* =========================================================
-DELETE CONTEXT MENU
+DELETE FROM CONTEXT MENU
 ========================================================= */
 document.getElementById("deleteOption")
 .addEventListener(
@@ -1810,7 +1893,9 @@ document.getElementById("contextMenu")
 .style.display="none";
 const board=
 boards.find(
-b=>b.id===contextBoardId
+b=>
+String(b.id)===
+String(contextBoardId)
 );
 if(board){
 await deleteBoard(board);
@@ -1909,7 +1994,7 @@ closeModal();
 }
 });
 /* =========================================================
-INITIAL
+INITIAL RENDER
 ========================================================= */
 render();
 </script>
