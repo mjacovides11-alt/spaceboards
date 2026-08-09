@@ -2524,12 +2524,8 @@ alt=""
 
 <div class="item-content">
 
-<div
-class="item-nickname"
-data-owner-id="${escapeHTML(board.owner_id)}">
-
-Loading...
-
+<div class="item-nickname">
+${escapeHTML(currentProfile?.nickname || "Unknown")}
 </div>
 
 <div class="item-title">
@@ -2577,13 +2573,6 @@ owner
 }
 
 `;
-
-
-loadOwnerNickname(
-board.owner_id,
-element
-);
-
 
 element.addEventListener(
 "click",
