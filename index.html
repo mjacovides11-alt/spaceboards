@@ -1,698 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Spaceboards</title>
-
-<style>
-*{
-box-sizing:border-box
-}
-
-html,body{
-margin:0;
-width:100%;
-height:100%;
-font-family:Arial,sans-serif;
-background:#fafafa;
-color:#111;
-overflow:hidden
-}
-
-button,input{
-font:inherit
-}
-
-button{
-border:1px solid #bbb;
-background:#fff;
-border-radius:7px;
-padding:8px 12px;
-cursor:pointer
-}
-
-button:hover{
-background:#f1f1f1
-}
-
-/* =========================
-TOP BAR
-========================= */
-
-.topbar{
-height:58px;
-display:flex;
-align-items:center;
-gap:7px;
-padding:8px 12px;
-background:#fff;
-border-bottom:1px solid #ddd;
-position:relative;
-z-index:50
-}
-
-.logo{
-font-weight:bold;
-margin-left:5px
-}
-
-.spacer{
-flex:1
-}
-
-.search,
-.add-friend{
-padding:9px 10px;
-border:1px solid #bbb;
-border-radius:7px
-}
-
-.search{
-width:190px
-}
-
-.add-friend{
-width:145px
-}
-
-.friends{
-display:flex;
-align-items:center;
-gap:5px;
-max-width:220px;
-overflow-x:auto
-}
-
-.friend{
-padding:6px 9px;
-border:1px solid #ddd;
-border-radius:15px;
-background:#f7f7f7;
-white-space:nowrap;
-font-size:12px
-}
-
-/* =========================
-FRIEND REQUESTS
-========================= */
-
-#requestsPanel{
-position:fixed;
-top:65px;
-right:12px;
-width:300px;
-max-height:400px;
-overflow:auto;
-background:#fff;
-border:1px solid #ccc;
-border-radius:10px;
-box-shadow:0 8px 30px #0003;
-z-index:200;
-display:none;
-padding:12px
-}
-
-#requestsPanel h3{
-margin:3px 0 12px
-}
-
-.request{
-display:flex;
-align-items:center;
-justify-content:space-between;
-gap:8px;
-padding:9px 0;
-border-bottom:1px solid #eee
-}
-
-.request-nickname{
-font-size:13px;
-overflow:hidden;
-text-overflow:ellipsis;
-white-space:nowrap
-}
-
-.request-actions{
-display:flex;
-gap:5px
-}
-
-.request-actions button{
-padding:6px 8px;
-font-size:12px
-}
-
-/* =========================
-WORKSPACE
-========================= */
-
-#workspace{
-position:absolute;
-top:58px;
-left:0;
-right:0;
-bottom:0;
-overflow:hidden;
-background:#fafafa;
-touch-action:none;
-cursor:grab
-}
-
-#workspace:active{
-cursor:grabbing
-}
-
-#world{
-position:absolute;
-width:1px;
-height:1px;
-transform-origin:0 0
-}
-
-/* =========================
-BOARDS
-========================= */
-
-.board{
-position:absolute;
-background:#fff;
-border:1px solid #aaa;
-border-radius:10px;
-box-shadow:0 2px 10px #00000012
-}
-
-.board.selected{
-outline:2px solid #222
-}
-
-.board-title{
-position:absolute;
-top:-31px;
-left:10px;
-font-size:14px;
-font-weight:bold;
-white-space:nowrap
-}
-
-.board-actions{
-position:absolute;
-top:7px;
-right:7px;
-z-index:20
-}
-
-.trash-button{
-width:30px;
-height:30px;
-padding:0;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:16px
-}
-
-.trash-button:hover{
-background:#ffecec
-}
-
-.board-inner{
-width:100%;
-height:100%;
-padding:45px 12px 12px;
-overflow:auto;
-border-radius:10px
-}
-
-.add-url{
-width:100%;
-margin-bottom:9px;
-padding:7px;
-font-size:12px
-}
-
-/* =========================
-URL ITEMS
-========================= */
-
-.item{
-position:relative;
-display:inline-flex;
-align-items:center;
-gap:8px;
-max-width:100%;
-margin:4px;
-padding:8px 32px 8px 9px;
-border:1px solid #ddd;
-background:#fff;
-border-radius:7px;
-cursor:pointer;
-word-break:break-word
-}
-
-.item:hover{
-background:#f5f5f5
-}
-
-.item img{
-width:34px;
-height:34px;
-object-fit:cover;
-border-radius:5px
-}
-
-.item-content{
-display:flex;
-flex-direction:column;
-min-width:0
-}
-
-/*
-NICKNAME ABOVE URL
-*/
-
-.item-nickname{
-font-size:9px;
-color:#777;
-line-height:11px;
-margin-bottom:2px;
-white-space:nowrap;
-overflow:hidden;
-text-overflow:ellipsis;
-max-width:220px
-}
-
-.item-title{
-font-size:13px;
-word-break:break-word
-}
-
-.item-visibility{
-position:absolute;
-top:2px;
-right:5px;
-font-size:9px;
-color:#777
-}
-
-.item-trash{
-position:absolute;
-right:4px;
-bottom:2px;
-border:0;
-background:transparent;
-padding:1px 3px;
-font-size:11px;
-cursor:pointer
-}
-
-.item-trash:hover{
-background:#eee
-}
-
-/* =========================
-RESIZE
-========================= */
-
-.resize{
-position:absolute;
-width:12px;
-height:12px;
-right:-6px;
-bottom:-6px;
-background:#fff;
-border:1px solid #777;
-border-radius:3px;
-cursor:nwse-resize
-}
-
-/* =========================
-AUTH
-========================= */
-
-.auth{
-position:fixed;
-inset:0;
-background:#fff;
-display:flex;
-align-items:center;
-justify-content:center;
-z-index:500
-}
-
-.auth-box{
-width:min(400px,92vw);
-border:1px solid #ddd;
-border-radius:12px;
-padding:25px;
-box-shadow:0 5px 30px #0001
-}
-
-.auth-box input{
-width:100%;
-padding:11px;
-margin:6px 0 10px;
-border:1px solid #aaa;
-border-radius:7px
-}
-
-.auth-error{
-color:#c00;
-font-size:13px;
-min-height:20px;
-margin-bottom:8px
-}
-
-.auth-note{
-font-size:11px;
-color:#777;
-margin-top:-5px;
-margin-bottom:8px
-}
-
-/* =========================
-MODALS
-========================= */
-
-.modal-bg{
-position:fixed;
-inset:0;
-background:#0008;
-display:none;
-align-items:center;
-justify-content:center;
-z-index:300
-}
-
-.modal{
-width:min(440px,92vw);
-background:#fff;
-border-radius:12px;
-padding:20px;
-box-shadow:0 15px 50px #0004
-}
-
-.modal h2{
-margin-top:0
-}
-
-.modal input{
-width:100%;
-padding:10px;
-margin:5px 0 12px;
-border:1px solid #aaa;
-border-radius:7px
-}
-
-.modal-actions{
-display:flex;
-justify-content:flex-end;
-gap:8px
-}
-
-.choice{
-display:flex;
-gap:10px;
-margin:15px 0
-}
-
-.choice button{
-flex:1;
-padding:14px
-}
-
-/* =========================
-CONTEXT MENU
-========================= */
-
-.menu{
-position:fixed;
-display:none;
-min-width:160px;
-background:#fff;
-border:1px solid #aaa;
-border-radius:7px;
-box-shadow:0 5px 20px #0003;
-z-index:400
-}
-
-.menu div{
-padding:10px 13px;
-cursor:pointer
-}
-
-.menu div:hover{
-background:#eee
-}
-
-/* =========================
-HINT
-========================= */
-
-.hint{
-position:fixed;
-left:12px;
-bottom:12px;
-background:#fff;
-border:1px solid #ddd;
-border-radius:8px;
-padding:8px 10px;
-font-size:12px;
-color:#555;
-z-index:10
-}
-
-/* =========================
-MOBILE
-========================= */
-
-@media(max-width:900px){
-
-.search{
-width:130px
-}
-
-.add-friend{
-width:110px
-}
-
-.friends{
-max-width:150px
-}
-
-}
-
-@media(max-width:600px){
-
-.logo{
-display:none
-}
-
-.search{
-width:85px
-}
-
-.add-friend{
-width:95px
-}
-
-.friends{
-display:none
-}
-
-.topbar button{
-padding:7px
-}
-
-#requestsPanel{
-right:6px;
-width:290px
-}
-
-}
-</style>
-</head>
-
-<body>
-
-<!-- =========================================================
-AUTHENTICATION
-========================================================= -->
-
-<div class="auth" id="authScreen">
-
-<div class="auth-box">
-
-<h1>Spaceboards</h1>
-
-<p id="authDescription">
-Log in to Spaceboards.
-</p>
-
-<!-- EMAIL -->
-
-<input
-id="authEmail"
-type="email"
-placeholder="Email"
-autocomplete="email"
->
-
-<!-- NICKNAME
-IMPORTANT:
-This is ALWAYS visible.
-It is NOT used as authentication.
--->
-
-<input
-id="authNickname"
-type="text"
-placeholder="Nickname"
-autocomplete="nickname"
->
-
-<div class="auth-note">
-Nickname is not used to verify your account.
-</div>
-
-<!-- PASSWORD -->
-
-<input
-id="authPassword"
-type="password"
-placeholder="Password"
-autocomplete="current-password"
->
-
-<div id="authError" class="auth-error"></div>
-
-<button id="loginButton">
-Log in
-</button>
-
-<button id="signupButton">
-Create account
-</button>
-
-</div>
-
-</div>
-
-
-<!-- =========================================================
-TOP BAR
-========================================================= -->
-
-<header class="topbar">
-
-<div class="logo">
-Spaceboards
-</div>
-
-<button id="newUrlButton">
-New URL
-</button>
-
-<button id="newBoxButton">
-New Box
-</button>
-
-<button id="shareButton">
-Share
-</button>
-
-<input
-id="addFriendInput"
-class="add-friend"
-placeholder="Add friends"
->
-
-<button id="addFriendButton">
-Add
-</button>
-
-<button id="friendRequestsButton">
-Friend requests
-</button>
-
-<div id="friendsList" class="friends"></div>
-
-<div class="spacer"></div>
-
-<input
-id="searchInput"
-class="search"
-placeholder="Search"
->
-
-<button id="logoutButton">
-Logout
-</button>
-
-</header>
-
-
-<!-- =========================================================
-FRIEND REQUESTS
-========================================================= -->
-
-<div id="requestsPanel">
-
-<h3>
-Friend requests
-</h3>
-
-<div id="requestsList">
-Loading...
-</div>
-
-</div>
-
-
-<!-- =========================================================
-WORKSPACE
-========================================================= -->
-
-<main id="workspace">
-
-<div id="world"></div>
-
-</main>
-
-
-<div class="hint">
-Pinch with two fingers to zoom • Drag empty space to move
-</div>
-
-
-<!-- =========================================================
-CONTEXT MENU
-========================================================= -->
-
-<div id="contextMenu" class="menu">
-
-<div id="renameOption">
-Rename
-</div>
-
-<div id="deleteOption">
-Delete
-</div>
-
-</div>
-
-
-<!-- =========================================================
-MODAL
-========================================================= -->
-
-<div id="modalBackground" class="modal-bg">
-
-<div id="modal" class="modal"></div>
-
-</div>
-
-
 <script type="module">
 
 import {
@@ -712,10 +17,31 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
 "sb_publishable_8CryzR2sR-y5nHprgLWJlA_Wfy_mTrj";
 
+
+/*
+IMPORTANT:
+
+persistSession:false means Supabase will NOT keep the
+login session after the page is closed/reloaded.
+
+Therefore the login popup will appear every time the
+website is opened.
+
+The nickname is NOT authentication.
+Only email + password authenticate the user.
+*/
+
 const supabase =
 createClient(
 SUPABASE_URL,
-SUPABASE_KEY
+SUPABASE_KEY,
+{
+auth:{
+persistSession:false,
+autoRefreshToken:true,
+detectSessionInUrl:true
+}
+}
 );
 
 
@@ -768,7 +94,7 @@ HELPERS
 
 function escapeHTML(value){
 
-return String(value)
+return String(value ?? "")
 
 .replace(/&/g,"&amp;")
 
@@ -832,15 +158,9 @@ document.getElementById("authNickname");
 
 
 /*
-IMPORTANT:
+Nickname ALWAYS remains visible.
 
-Nickname NEVER disappears.
-
-It is required visually on both login
-and signup screens.
-
-But login does NOT send nickname
-to Supabase for verification.
+It is NEVER used as authentication.
 */
 
 nickname.style.display="block";
@@ -858,6 +178,8 @@ loginButton.style.display="none";
 signupButton.textContent=
 "Create account";
 
+nickname.placeholder="Nickname";
+
 }else{
 
 description.textContent=
@@ -868,6 +190,8 @@ loginButton.style.display=
 
 signupButton.textContent=
 "Create account";
+
+nickname.placeholder="Nickname";
 
 }
 
@@ -916,18 +240,18 @@ return;
 
 
 /*
-The nickname is intentionally NOT used
-for authentication.
+IMPORTANT:
 
-It is only collected because the website
-asks for it.
+Nickname is collected but is NOT passed to
+Supabase authentication.
 
-Email + password are the credentials
-Supabase uses to log in.
+Only email + password are credentials.
 */
 
-
-const {error}=
+const {
+data,
+error
+}=
 await supabase.auth.signInWithPassword({
 
 email:email,
@@ -947,39 +271,42 @@ return;
 }
 
 
-/*
-If the user entered a nickname but their
-profile has no nickname, we can use it
-to complete the profile.
+user=data?.user||null;
 
-This does NOT verify the login.
+
+if(!user){
+
+errorBox.textContent=
+"Login failed.";
+
+return;
+
+}
+
+
+/*
+Load the real profile from Supabase.
+
+If the user typed a nickname and the profile
+doesn't have one, save it.
+
+This is NOT authentication.
 */
 
-if(nickname){
-
-setTimeout(
-async()=>{
-
-if(!user)return;
-
-const {data:profile}=
-await supabase
-
-.from("profiles")
-
-.select("id,nickname")
-
-.eq("id",user.id)
-
-.maybeSingle();
+await loadCurrentProfile();
 
 
 if(
-profile&&
-(!profile.nickname||
-profile.nickname.trim()==="")
+nickname &&
+currentProfile &&
+(!currentProfile.nickname ||
+currentProfile.nickname.trim()==="")
 ){
 
+const {
+data:updatedProfile,
+error:updateError
+}=
 await supabase
 
 .from("profiles")
@@ -990,15 +317,45 @@ nickname:nickname
 
 })
 
-.eq("id",user.id);
+.eq(
+"id",
+user.id
+)
 
-}
+.select()
+.maybeSingle();
 
-},
-1000
+
+if(!updateError&&updatedProfile){
+
+currentProfile=
+updatedProfile;
+
+profilesCache.set(
+updatedProfile.id,
+updatedProfile
 );
 
 }
+
+}
+
+
+await loadProfiles();
+
+await loadFriends();
+
+await loadBoards();
+
+await loadFriendRequests();
+
+
+document.getElementById("authScreen")
+.style.display="none";
+
+render();
+
+renderFriends();
 
 });
 
@@ -1013,10 +370,6 @@ document.getElementById("signupButton")
 "click",
 async()=>{
 
-
-/*
-First click switches to signup mode.
-*/
 
 if(!signupMode){
 
@@ -1233,17 +586,8 @@ event=>{
 
 if(event.key==="Enter"){
 
-if(signupMode){
-
 document.getElementById("authNickname")
 .focus();
-
-}else{
-
-document.getElementById("authNickname")
-.focus();
-
-}
 
 }
 
@@ -1299,8 +643,16 @@ supabase.auth.onAuthStateChange(
 
 async(event,session)=>{
 
+/*
+Because persistSession is false, a new page load
+will normally have no session.
+
+When there IS a session, load the application.
+*/
+
 user=
 session?.user||null;
+
 
 if(user){
 
@@ -1318,6 +670,10 @@ await loadBoards();
 
 await loadFriendRequests();
 
+render();
+
+renderFriends();
+
 }else{
 
 document.getElementById("authScreen")
@@ -1332,18 +688,6 @@ selectedBoardId=null;
 currentProfile=null;
 
 profilesCache.clear();
-
-signupMode=false;
-
-document.getElementById("authEmail").value="";
-
-document.getElementById("authNickname").value="";
-
-document.getElementById("authPassword").value="";
-
-document.getElementById("authError").textContent="";
-
-updateAuthUI();
 
 render();
 
@@ -1364,6 +708,12 @@ await supabase.auth.getSession();
 
 if(sessionResult.data.session){
 
+/*
+There is a temporary in-memory session.
+
+Use it for the current page.
+*/
+
 user=
 sessionResult.data.session.user;
 
@@ -1381,6 +731,14 @@ await loadBoards();
 await loadFriendRequests();
 
 }else{
+
+/*
+NO SESSION:
+
+Always show login screen.
+*/
+
+user=null;
 
 document.getElementById("authScreen")
 .style.display="flex";
@@ -1429,14 +787,13 @@ return;
 }
 
 
+if(data){
+
 currentProfile=data;
 
-
-if(currentProfile){
-
 profilesCache.set(
-currentProfile.id,
-currentProfile
+String(data.id),
+data
 );
 
 return;
@@ -1445,8 +802,7 @@ return;
 
 
 /*
-Fallback for older accounts that do not
-have a profile.
+Fallback for old accounts.
 */
 
 const fallbackNickname=
@@ -1486,7 +842,7 @@ if(!newError&&newProfile){
 currentProfile=newProfile;
 
 profilesCache.set(
-newProfile.id,
+String(newProfile.id),
 newProfile
 );
 
@@ -1504,30 +860,24 @@ async function loadProfiles(){
 if(!user)return;
 
 
+/*
+Do NOT clear our own profile.
+*/
+
+const ownProfile=currentProfile;
+
 profilesCache.clear();
 
 
-/*
-First make sure our own profile
-is available.
-*/
-
-if(currentProfile){
+if(ownProfile){
 
 profilesCache.set(
-currentProfile.id,
-currentProfile
+String(ownProfile.id),
+ownProfile
 );
 
 }
 
-
-/*
-Load profiles.
-
-This is important because URL nicknames
-need the owner's nickname.
-*/
 
 const {
 data,
@@ -1557,7 +907,7 @@ return;
 (data||[]).forEach(profile=>{
 
 profilesCache.set(
-profile.id,
+String(profile.id),
 profile
 );
 
@@ -1585,20 +935,18 @@ String(ownerId)
 );
 
 
-if(profile?.nickname){
+if(
+profile &&
+profile.nickname
+){
 
 return profile.nickname;
 
 }
 
 
-/*
-Our current profile may have been stored
-using a UUID object/string difference.
-*/
-
 if(
-currentProfile&&
+currentProfile &&
 String(currentProfile.id)===
 String(ownerId)
 ){
@@ -1725,7 +1073,7 @@ friendProfiles||[];
 friends.forEach(friend=>{
 
 profilesCache.set(
-friend.id,
+String(friend.id),
 friend
 );
 
@@ -1865,12 +1213,10 @@ return;
 
 
 profilesCache.set(
-profile.id,
+String(profile.id),
 profile
 );
 
-
-/* CHECK EXISTING FRIENDSHIP */
 
 const {
 data:existing
@@ -1925,8 +1271,6 @@ return;
 
 }
 
-
-/* SEND REQUEST */
 
 const {
 error:insertError
@@ -2081,7 +1425,7 @@ ids
 (requestProfiles||[]).forEach(profile=>{
 
 profilesCache.set(
-profile.id,
+String(profile.id),
 profile
 );
 
@@ -2313,6 +1657,14 @@ return;
 }
 
 
+/*
+Make absolutely sure profiles are loaded
+before creating the board objects.
+*/
+
+await loadProfiles();
+
+
 boards=
 (data||[])
 .map(box=>{
@@ -2322,15 +1674,6 @@ Array.isArray(box.box_items)
 ?box.box_items
 :[];
 
-
-/*
-Attach the owner's nickname directly
-to the board object.
-
-This is the important change that
-prevents the URL from displaying
-"Unknown user" when rendering.
-*/
 
 const ownerNickname=
 getNickname(
@@ -2351,9 +1694,7 @@ Number(box.height)||
 270,
 
 ownerNickname:
-
-ownerNickname||
-"",
+ownerNickname||"",
 
 items:
 items.filter(
@@ -2652,10 +1993,85 @@ url=
 }
 
 
-const {
+/*
+Make sure we have the current nickname.
+*/
+
+await loadCurrentProfile();
+
+
+const ownerNickname=
+currentProfile?.nickname||
+getNickname(board.owner_id)||
+"";
+
+
+/*
+The nickname is stored directly with the
+URL item.
+
+This means the nickname stays attached to
+the URL instead of depending entirely on
+the profile cache.
+*/
+
+const insertData={
+
+box_id:board.id,
+
+title:
+title||
+url,
+
+url:url,
+
+image:
+image||
+null,
+
+visibility:visibility,
+
+owner_nickname:
+ownerNickname
+
+};
+
+
+let {
 data,
 error
 }=
+await supabase
+
+.from("box_items")
+
+.insert(insertData)
+
+.select()
+
+.single();
+
+
+/*
+If your existing box_items table does NOT
+yet have owner_nickname, the insert will fail.
+
+In that case we retry using the original
+columns so the rest of the website still
+works.
+*/
+
+if(
+error &&
+(
+error.code==="42703" ||
+String(error.message)
+.toLowerCase()
+.includes("owner_nickname")
+)
+){
+
+const fallback=
 await supabase
 
 .from("box_items")
@@ -2674,19 +2090,25 @@ image:
 image||
 null,
 
-visibility:
-visibility
+visibility:visibility
 
 })
 
 .select()
-
 .single();
+
+
+data=fallback.data;
+
+error=fallback.error;
+
+}
 
 
 if(error){
 
 showError(
+"Could not save URL: "+
 error.message
 );
 
@@ -2695,18 +2117,33 @@ return;
 }
 
 
-board.items.push(data);
+if(!data){
+
+showError(
+"Could not save URL."
+);
+
+return;
+
+}
 
 
 /*
-Make sure the board has the current
-nickname immediately.
+Attach nickname locally even if the
+database doesn't have the new column.
 */
 
+data.owner_nickname=
+ownerNickname;
+
+
 board.ownerNickname=
-currentProfile?.nickname||
+ownerNickname||
 board.ownerNickname||
 "";
+
+
+board.items.push(data);
 
 
 closeModal();
@@ -2819,8 +2256,6 @@ confirm(
 if(!confirmed)return;
 
 
-/* DELETE ITEMS */
-
 const {
 error:itemError
 }=
@@ -2847,8 +2282,6 @@ return;
 
 }
 
-
-/* DELETE BOX */
 
 const {
 data:deleted,
@@ -2939,6 +2372,13 @@ world.style.transform=
 world.innerHTML="";
 
 
+if(!user){
+
+return;
+
+}
+
+
 boards.forEach(board=>{
 
 const element=
@@ -2981,16 +2421,18 @@ String(user?.id);
 
 
 /*
-IMPORTANT:
+NICKNAME PRIORITY:
 
-Use the nickname already attached
-to the board.
+1. nickname stored on URL item
+2. board owner nickname
+3. current profile if this is our board
+4. profile cache
+5. blank
 
-If this is our board, use the current
-profile as a final fallback.
+We NEVER show "Unknown user" here.
 */
 
-let ownerNickname=
+let boardNickname=
 board.ownerNickname||
 "";
 
@@ -3000,19 +2442,21 @@ owner&&
 currentProfile?.nickname
 ){
 
-ownerNickname=
+boardNickname=
 currentProfile.nickname;
 
 }
 
 
-/*
-Never display "Unknown user" for the
-nickname above URLs.
+if(!boardNickname){
 
-If the profile cannot be found, leave
-it blank instead.
-*/
+boardNickname=
+getNickname(
+board.owner_id
+)||"";
+
+}
+
 
 element.innerHTML=`
 
@@ -3060,7 +2504,24 @@ data-add-url="${board.id}">
 
 
 ${
-board.items.map(item=>`
+board.items.map(item=>{
+
+
+/*
+For each URL, first use the nickname
+saved directly with that URL.
+
+If an old URL doesn't have it, use
+the board owner's nickname.
+*/
+
+const itemNickname=
+item.owner_nickname||
+boardNickname||
+"";
+
+
+return `
 
 <div
 class="item"
@@ -3086,7 +2547,7 @@ alt=""
 <div class="item-nickname">
 
 ${escapeHTML(
-ownerNickname
+itemNickname
 )}
 
 </div>
@@ -3130,7 +2591,9 @@ data-delete-item="${item.id}">
 
 </div>
 
-`).join("")
+`;
+
+}).join("")
 }
 
 
@@ -3676,7 +3139,8 @@ event=>{
 
 if(
 event.pointerType!=="touch"
-)return;
+)
+return;
 
 
 pointers.set(
@@ -3768,14 +3232,16 @@ event=>{
 
 if(
 event.pointerType!=="touch"
-)return;
+)
+return;
 
 
 if(
 !pointers.has(
 event.pointerId
 )
-)return;
+)
+return;
 
 
 pointers.set(
@@ -3909,7 +3375,8 @@ function endTouch(event){
 
 if(
 event.pointerType!=="touch"
-)return;
+)
+return;
 
 
 pointers.delete(
@@ -4410,6 +3877,3 @@ INITIAL RENDER
 render();
 
 </script>
-
-</body>
-</html>
