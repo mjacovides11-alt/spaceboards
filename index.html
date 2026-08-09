@@ -7,37 +7,62 @@
 <style>
 *{box-sizing:border-box}
 html,body{
-margin:0;width:100%;height:100%;
-font-family:Arial,sans-serif;color:#111;
-background:#fafafa;overflow:hidden
+margin:0;
+width:100%;
+height:100%;
+font-family:Arial,sans-serif;
+color:#111;
+background:#fafafa;
+overflow:hidden
 }
 button,input{font:inherit}
 button{
-border:1px solid #bbb;background:#fff;border-radius:7px;
-padding:8px 13px;cursor:pointer
+border:1px solid #bbb;
+background:#fff;
+border-radius:7px;
+padding:8px 13px;
+cursor:pointer
 }
 button:hover{background:#f1f1f1}
 .topbar{
-height:58px;display:flex;align-items:center;gap:7px;
-padding:8px 12px;background:#fff;border-bottom:1px solid #ddd;
-position:relative;z-index:20
+height:58px;
+display:flex;
+align-items:center;
+gap:7px;
+padding:8px 12px;
+background:#fff;
+border-bottom:1px solid #ddd;
+position:relative;
+z-index:20
 }
-.logo{font-weight:bold;margin-left:7px}
+.logo{
+font-weight:bold;
+margin-left:7px
+}
 .spacer{flex:1}
 .search,.add-friend{
-padding:9px 10px;border:1px solid #bbb;border-radius:7px
+padding:9px 10px;
+border:1px solid #bbb;
+border-radius:7px
 }
 .search{width:200px}
 .add-friend{width:150px}
 .friends{
-display:flex;align-items:center;gap:5px;
-max-width:220px;overflow-x:auto
+display:flex;
+align-items:center;
+gap:5px;
+max-width:220px;
+overflow-x:auto
 }
 .friend{
-padding:6px 9px;border:1px solid #ddd;border-radius:15px;
-background:#f7f7f7;white-space:nowrap;font-size:12px
+padding:6px 9px;
+border:1px solid #ddd;
+border-radius:15px;
+background:#f7f7f7;
+white-space:nowrap;
+font-size:12px
 }
-/* FRIEND REQUEST PANEL */
+/* FRIEND REQUESTS */
 #requestsPanel{
 position:fixed;
 top:65px;
@@ -54,7 +79,7 @@ display:none;
 padding:12px
 }
 #requestsPanel h3{
-margin:3px 0 12px;
+margin:3px 0 12px
 }
 .request{
 display:flex;
@@ -63,9 +88,6 @@ justify-content:space-between;
 gap:8px;
 padding:9px 0;
 border-bottom:1px solid #eee
-}
-.request:last-child{
-border-bottom:0
 }
 .request-email{
 font-size:13px;
@@ -80,109 +102,205 @@ gap:5px
 padding:6px 8px;
 font-size:12px
 }
+/* WORKSPACE */
 #workspace{
-position:absolute;top:58px;left:0;right:0;bottom:0;
-overflow:hidden;background:#fafafa;
-touch-action:none;cursor:grab
+position:absolute;
+top:58px;
+left:0;
+right:0;
+bottom:0;
+overflow:hidden;
+background:#fafafa;
+touch-action:none;
+cursor:grab
 }
-#workspace:active{cursor:grabbing}
+#workspace:active{
+cursor:grabbing
+}
 #world{
-position:absolute;width:1px;height:1px;
+position:absolute;
+width:1px;
+height:1px;
 transform-origin:0 0
 }
+/* BOX */
 .board{
-position:absolute;background:#fff;
-border:1px solid #aaa;border-radius:10px;
+position:absolute;
+background:#fff;
+border:1px solid #aaa;
+border-radius:10px;
 box-shadow:0 2px 10px #00000012
 }
-.board.private{border-style:dashed}
-.board.selected{outline:2px solid #222}
+.board.private{
+border-style:dashed
+}
+.board.selected{
+outline:2px solid #222
+}
 .board-title{
-position:absolute;top:-31px;left:8px;
-font-size:14px;font-weight:bold;
+position:absolute;
+top:-31px;
+left:8px;
+font-size:14px;
+font-weight:bold;
 white-space:nowrap
 }
 .visibility{
-position:absolute;top:-31px;right:8px;
-font-size:11px;color:#666
+position:absolute;
+top:-31px;
+right:8px;
+font-size:11px;
+color:#666
 }
 .board-inner{
-width:100%;height:100%;padding:14px;
-overflow:auto;border-radius:10px
+width:100%;
+height:100%;
+padding:14px;
+overflow:auto;
+border-radius:10px
 }
+/* ADD URL BUTTON */
+.add-url{
+display:block;
+margin-bottom:10px;
+width:100%;
+padding:7px;
+font-size:12px;
+background:#f8f8f8
+}
+/* URL ITEMS */
 .item{
-display:inline-flex;align-items:center;gap:8px;
-max-width:100%;margin:4px;padding:7px 9px;
-background:#fff;border:1px solid #ddd;
-border-radius:7px;cursor:pointer;word-break:break-word
+display:inline-flex;
+align-items:center;
+gap:8px;
+max-width:100%;
+margin:4px;
+padding:7px 9px;
+background:#fff;
+border:1px solid #ddd;
+border-radius:7px;
+cursor:pointer;
+word-break:break-word
 }
-.item:hover{background:#f5f5f5}
+.item:hover{
+background:#f5f5f5
+}
 .item img{
-width:34px;height:34px;
-object-fit:cover;border-radius:5px
+width:34px;
+height:34px;
+object-fit:cover;
+border-radius:5px
 }
 .resize{
-position:absolute;width:12px;height:12px;
-right:-6px;bottom:-6px;background:#fff;
-border:1px solid #777;border-radius:3px;
+position:absolute;
+width:12px;
+height:12px;
+right:-6px;
+bottom:-6px;
+background:#fff;
+border:1px solid #777;
+border-radius:3px;
 cursor:nwse-resize
 }
+/* MODALS */
 .modal-bg{
-position:fixed;inset:0;background:#0008;
-display:none;align-items:center;justify-content:center;
+position:fixed;
+inset:0;
+background:#0008;
+display:none;
+align-items:center;
+justify-content:center;
 z-index:100
 }
 .modal{
-width:min(440px,92vw);background:#fff;
-border-radius:12px;padding:20px;
+width:min(440px,92vw);
+background:#fff;
+border-radius:12px;
+padding:20px;
 box-shadow:0 15px 50px #0004
 }
-.modal h2{margin-top:0}
+.modal h2{
+margin-top:0
+}
 .modal input{
-width:100%;padding:10px;margin:5px 0 12px;
-border:1px solid #aaa;border-radius:7px
+width:100%;
+padding:10px;
+margin:5px 0 12px;
+border:1px solid #aaa;
+border-radius:7px
 }
 .modal-actions{
-display:flex;justify-content:flex-end;gap:8px
+display:flex;
+justify-content:flex-end;
+gap:8px
 }
 .choice{
-display:flex;gap:10px;margin:15px 0
+display:flex;
+gap:10px;
+margin:15px 0
 }
 .choice button{
-flex:1;padding:14px
+flex:1;
+padding:14px
 }
+/* LOGIN */
 .auth{
-position:fixed;inset:0;background:#fff;
-display:flex;align-items:center;justify-content:center;
+position:fixed;
+inset:0;
+background:#fff;
+display:flex;
+align-items:center;
+justify-content:center;
 z-index:500
 }
 .auth-box{
-width:min(400px,92vw);border:1px solid #ddd;
-border-radius:12px;padding:25px;
+width:min(400px,92vw);
+border:1px solid #ddd;
+border-radius:12px;
+padding:25px;
 box-shadow:0 5px 30px #0001
 }
 .auth-box input{
-width:100%;padding:11px;margin:6px 0 10px;
-border:1px solid #aaa;border-radius:7px
+width:100%;
+padding:11px;
+margin:6px 0 10px;
+border:1px solid #aaa;
+border-radius:7px
 }
 .auth-error{
-color:#c00;font-size:13px;min-height:20px
+color:#c00;
+font-size:13px;
+min-height:20px
 }
+/* MENU */
 .menu{
-position:fixed;display:none;min-width:160px;
-background:#fff;border:1px solid #aaa;
-border-radius:7px;box-shadow:0 5px 20px #0003;
+position:fixed;
+display:none;
+min-width:160px;
+background:#fff;
+border:1px solid #aaa;
+border-radius:7px;
+box-shadow:0 5px 20px #0003;
 z-index:200
 }
 .menu div{
-padding:10px 13px;cursor:pointer
+padding:10px 13px;
+cursor:pointer
 }
-.menu div:hover{background:#eee}
+.menu div:hover{
+background:#eee
+}
 .hint{
-position:fixed;left:12px;bottom:12px;
-background:#fff;border:1px solid #ddd;
-border-radius:8px;padding:8px 10px;
-font-size:12px;color:#555;z-index:10
+position:fixed;
+left:12px;
+bottom:12px;
+background:#fff;
+border:1px solid #ddd;
+border-radius:8px;
+padding:8px 10px;
+font-size:12px;
+color:#555;
+z-index:10
 }
 @media(max-width:900px){
 .search{width:130px}
@@ -194,7 +312,9 @@ font-size:12px;color:#555;z-index:10
 .search{width:90px}
 .add-friend{width:95px}
 .friends{display:none}
-.topbar button{padding:7px}
+.topbar button{
+padding:7px
+}
 #requestsPanel{
 right:6px;
 width:290px
@@ -203,40 +323,74 @@ width:290px
 </style>
 </head>
 <body>
-<!-- AUTH -->
+<!-- LOGIN -->
 <div class="auth" id="authScreen">
 <div class="auth-box">
 <h1>Spaceboards</h1>
 <p>Create an account or log in.</p>
-<input id="authEmail" type="email" placeholder="Email">
-<input id="authPassword" type="password" placeholder="Password">
-<div class="auth-error" id="authError"></div>
-<button id="loginButton">Log in</button>
-<button id="signupButton">Create account</button>
+<input
+id="authEmail"
+type="email"
+placeholder="Email"
+>
+<input
+id="authPassword"
+type="password"
+placeholder="Password"
+>
+<div
+class="auth-error"
+id="authError">
+</div>
+<button id="loginButton">
+Log in
+</button>
+<button id="signupButton">
+Create account
+</button>
 </div>
 </div>
 <!-- TOP BAR -->
 <header class="topbar">
-<div class="logo">Spaceboards</div>
-<button id="newBtn">New</button>
-<button id="shareBtn">Share</button>
+<div class="logo">
+Spaceboards
+</div>
+<button id="newBtn">
+New
+</button>
+<button id="shareBtn">
+Share
+</button>
 <input
 id="addFriendInput"
 class="add-friend"
 placeholder="Add friends"
 >
-<button id="addFriendBtn">Add</button>
+<button id="addFriendBtn">
+Add
+</button>
 <button id="friendRequestsBtn">
 Friend requests
 </button>
-<div class="friends" id="friendsList"></div>
+<div
+class="friends"
+id="friendsList">
+</div>
 <div class="spacer"></div>
-<input id="search" class="search" placeholder="Search">
-<button id="logoutBtn">Logout</button>
+<input
+id="search"
+class="search"
+placeholder="Search"
+>
+<button id="logoutBtn">
+Logout
+</button>
 </header>
-<!-- FRIEND REQUESTS -->
+<!-- FRIEND REQUEST PANEL -->
 <div id="requestsPanel">
-<h3>Friend requests</h3>
+<h3>
+Friend requests
+</h3>
 <div id="requestsList">
 Loading...
 </div>
@@ -249,8 +403,12 @@ Loading...
 Pinch with two fingers to zoom • Drag empty space to move
 </div>
 <!-- CONTEXT MENU -->
-<div class="menu" id="menu">
-<div id="renameOpt">Rename</div>
+<div
+class="menu"
+id="menu">
+<div id="renameOpt">
+Rename
+</div>
 <div id="visibilityOpt">
 Change visibility
 </div>
@@ -259,8 +417,13 @@ Delete
 </div>
 </div>
 <!-- MODAL -->
-<div class="modal-bg" id="modalBg">
-<div class="modal" id="modal"></div>
+<div
+class="modal-bg"
+id="modalBg">
+<div
+class="modal"
+id="modal">
+</div>
 </div>
 <script type="module">
 import {
@@ -526,9 +689,7 @@ document.getElementById("friendRequestsBtn")
 async()=>{
 const panel=
 document.getElementById("requestsPanel");
-if(
-panel.style.display==="block"
-){
+if(panel.style.display==="block"){
 panel.style.display="none";
 return;
 }
@@ -586,14 +747,12 @@ sender?.email||"Unknown user"
 <div class="request-actions">
 <button
 data-action="accept"
-data-id="${request.id}"
->
+data-id="${request.id}">
 Accept
 </button>
 <button
 data-action="decline"
-data-id="${request.id}"
->
+data-id="${request.id}">
 Decline
 </button>
 </div>
@@ -677,7 +836,9 @@ boards=
 ...b,
 w:b.width,
 h:b.height,
-items:b.box_items||[]
+items:Array.isArray(b.box_items)
+?b.box_items
+:[]
 }));
 render();
 }
@@ -730,26 +891,22 @@ if(error){
 alert(error.message);
 return;
 }
-boards.push({
+const board={
 ...data,
 w:data.width,
 h:data.height,
 items:[]
-});
+};
+boards.push(board);
 selectedBoard=data.id;
 render();
-addItemModal(
-boards.find(
-b=>b.id===data.id
-)
-);
 }
 /* =========================================================
-ADD ITEM
+ADD URL
 ========================================================= */
-function addItemModal(board){
+async function addURLToBoard(board){
 openModal(`
-<h2>Add item</h2>
+<h2>Add URL</h2>
 <input
 id="itemTitle"
 placeholder="Name (optional)"
@@ -772,8 +929,7 @@ Add
 </div>
 `);
 document.getElementById("addItemButton")
-.onclick=
-async()=>{
+.onclick=async()=>{
 let url=
 document.getElementById("itemURL")
 .value
@@ -793,22 +949,41 @@ const image=
 document.getElementById("itemImage")
 .value
 .trim();
-const {data,error}=
+/*
+IMPORTANT FIX:
+We insert the new item without touching
+the existing items.
+*/
+const {error:insertError}=
 await supabase
 .from("box_items")
 .insert({
 box_id:board.id,
 title:title||url,
-url,
-image
-})
-.select()
-.single();
-if(error){
-alert(error.message);
+url:url,
+image:image||null
+});
+if(insertError){
+alert(insertError.message);
 return;
 }
-board.items.push(data);
+/*
+IMPORTANT FIX:
+Reload ALL items for this box from Supabase.
+This guarantees that URL 1 stays when URL 2
+is added, URL 3 stays when URL 4 is added, etc.
+*/
+const {data:items,error:loadError}=
+await supabase
+.from("box_items")
+.select("*")
+.eq("box_id",board.id)
+.order("id");
+if(loadError){
+alert(loadError.message);
+return;
+}
+board.items=items||[];
 closeModal();
 render();
 };
@@ -859,18 +1034,27 @@ board.visibility==="public"
 </div>
 <div class="board-inner">
 ${
+board.owner_id===user?.id
+?`
+<button
+class="add-url"
+data-add-url="${board.id}">
++ Add URL
+</button>
+`
+:""
+}
+${
 board.items.map(item=>`
 <div
 class="item"
-data-item="${item.id}"
->
+data-item="${item.id}">
 ${
 item.image
 ?`
 <img
 src="${escapeHTML(item.image)}"
-alt=""
->
+alt="">
 `
 :""
 }
@@ -895,9 +1079,22 @@ element.addEventListener(
 event=>{
 if(event.target.closest(".item"))
 return;
+if(event.target.closest(".add-url"))
+return;
 selectedBoard=board.id;
 render();
 });
+/* ADD URL BUTTON */
+const addButton=
+element.querySelector(".add-url");
+if(addButton){
+addButton.addEventListener(
+"click",
+event=>{
+event.stopPropagation();
+addURLToBoard(board);
+});
+}
 /* CONTEXT MENU */
 element.addEventListener(
 "contextmenu",
@@ -911,7 +1108,7 @@ event.clientY,
 board.id
 );
 });
-/* OPEN ITEMS */
+/* OPEN URL */
 element
 .querySelector(".board-inner")
 .addEventListener(
@@ -922,7 +1119,7 @@ event.target.closest(".item");
 if(!item)return;
 const itemData=
 board.items.find(
-i=>i.id===item.dataset.item
+i=>String(i.id)===String(item.dataset.item)
 );
 if(itemData?.url){
 window.open(
@@ -938,9 +1135,7 @@ element.addEventListener(
 event=>{
 if(event.pointerType==="touch")
 return;
-if(
-event.target.closest(".resize")
-){
+if(event.target.closest(".resize")){
 resizing={
 id:board.id,
 startX:event.clientX,
@@ -954,6 +1149,8 @@ event.pointerId
 return;
 }
 if(event.target.closest(".item"))
+return;
+if(event.target.closest(".add-url"))
 return;
 moving={
 id:board.id,
@@ -1063,7 +1260,7 @@ document.addEventListener(
 panning=null;
 });
 /* =========================================================
-TOUCH PAN + PINCH
+TOUCH PAN + PINCH ZOOM
 ========================================================= */
 const workspace=
 document.getElementById("workspace");
@@ -1149,6 +1346,8 @@ distance(
 pts[0],
 pts[1]
 );
+if(!pinchStartDistance)
+return;
 let newZoom=
 pinchStartZoom*
 (
@@ -1291,8 +1490,7 @@ openModal(`
 <h2>Rename box</h2>
 <input
 id="renameInput"
-value="${escapeHTML(board.title)}"
->
+value="${escapeHTML(board.title)}">
 <div class="modal-actions">
 <button onclick="closeModal()">
 Cancel
@@ -1458,20 +1656,16 @@ window.location.href
 );
 }
 }
-}
 };
 /* =========================================================
-MODAL
+CLOSE MODAL
 ========================================================= */
 document.getElementById("modalBg")
 .addEventListener(
 "click",
 event=>{
-if(
-event.target.id==="modalBg"
-){
+if(event.target.id==="modalBg")
 closeModal();
-}
 });
 /* =========================================================
 INITIAL
@@ -1479,4 +1673,4 @@ INITIAL
 render();
 </script>
 </body>
-</html>.
+</html>
