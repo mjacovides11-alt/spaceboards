@@ -398,64 +398,34 @@ z-index:10
 }
 
 @media(max-width:900px){
-
-.search{
-width:130px
-}
-
-.add-friend{
-width:110px
-}
-
-.friends{
-max-width:150px
-}
-
+.search{width:130px}
+.add-friend{width:110px}
+.friends{max-width:150px}
 }
 
 @media(max-width:600px){
-
-.logo{
-display:none
-}
-
-.search{
-width:85px
-}
-
-.add-friend{
-width:95px
-}
-
-.friends{
-display:none
-}
-
-.topbar button{
-padding:7px
-}
-
+.logo{display:none}
+.search{width:85px}
+.add-friend{width:95px}
+.friends{display:none}
+.topbar button{padding:7px}
 #requestsPanel{
 right:6px;
 width:290px
 }
-
 }
 </style>
 </head>
 
 <body>
 
-<!-- LOGIN / SIGN UP -->
-
 <div class="auth" id="authScreen">
-
 <div class="auth-box">
 
 <h1>Spaceboards</h1>
 
 <p id="authDescription">
-Create an account or log in.
+Log in to Spaceboards.
 </p>
 
 <input
@@ -491,11 +461,7 @@ Create account
 </button>
 
 </div>
-
 </div>
-
-
-<!-- TOP BAR -->
 
 <header class="topbar">
 
@@ -545,14 +511,9 @@ Logout
 
 </header>
 
-
-<!-- FRIEND REQUESTS -->
-
 <div id="requestsPanel">
 
-<h3>
-Friend requests
-</h3>
+<h3>Friend requests</h3>
 
 <div id="requestsList">
 Loading...
@@ -560,22 +521,13 @@ Loading...
 
 </div>
 
-
-<!-- WORKSPACE -->
-
 <main id="workspace">
-
 <div id="world"></div>
-
 </main>
-
 
 <div class="hint">
 Pinch with two fingers to zoom • Drag empty space to move
 </div>
-
-
-<!-- CONTEXT MENU -->
 
 <div id="contextMenu" class="menu">
 
@@ -589,13 +541,8 @@ Delete
 
 </div>
 
-
-<!-- MODAL -->
-
 <div id="modalBackground" class="modal-bg">
-
 <div id="modal" class="modal"></div>
-
 </div>
 
 
@@ -635,6 +582,7 @@ let boards=[];
 let friends=[];
 let selectedBoardId=null;
 let contextBoardId=null;
+
 let moving=null;
 let resizing=null;
 let panning=null;
@@ -644,7 +592,6 @@ let panY=80;
 let zoom=1;
 
 let pointers=new Map();
-
 let pinchStartDistance=null;
 let pinchStartZoom=1;
 let pinchStartCenter=null;
@@ -658,8 +605,7 @@ HELPERS
 
 function escapeHTML(value){
 
-return String(value)
-
+return String(value ?? "")
 .replace(/&/g,"&amp;")
 .replace(/</g,"&lt;")
 .replace(/>/g,"&gt;")
@@ -673,14 +619,16 @@ function openModal(html){
 
 document.getElementById("modal").innerHTML=html;
 
-document.getElementById("modalBackground").style.display="flex";
+document.getElementById("modalBackground")
+.style.display="flex";
 
 }
 
 
 function closeModal(){
 
-document.getElementById("modalBackground").style.display="none";
+document.getElementById("modalBackground")
+.style.display="none";
 
 }
 
@@ -696,7 +644,7 @@ alert(message);
 
 
 /* =========================================================
-AUTH MODE
+AUTH
 ========================================================= */
 
 let signupMode=false;
@@ -715,6 +663,7 @@ document.getElementById("loginButton");
 
 const signupButton=
 document.getElementById("signupButton");
+
 
 if(signupMode){
 
@@ -752,23 +701,25 @@ LOGIN
 ========================================================= */
 
 document.getElementById("loginButton")
-.addEventListener(
-"click",
-async()=>{
+.addEventListener("click",async()=>{
 
 const email=
 document.getElementById("authEmail")
-.value
-.trim();
+.value.trim()
+.toLowerCase();
 
 const password=
 document.getElementById("authPassword")
 .value;
 
+const nicknameInput=
+document.getElementById("authNickname");
+
 const errorBox=
 document.getElementById("authError");
 
 errorBox.textContent="";
+
 
 if(!email||!password){
 
@@ -779,6 +730,12 @@ return;
 
 }
 
+
+/*
+Nickname is deliberately NOT used
+for authentication or verification.
+*/
+
 const {error}=
 await supabase.auth.signInWithPassword({
 
@@ -787,12 +744,31 @@ password:password
 
 });
 
+
 if(error){
 
 errorBox.textContent=
 error.message;
 
+return;
+
 }
+
+
+/*
+After authentication, load the nickname
+from the user's profile.
+*/
+
+await loadCurrentProfile();
+
+
+/*
+The nickname entered here is never
+used as a password or credential.
+*/
+
+nicknameInput.value="";
 
 });
 
@@ -802,9 +778,7 @@ CREATE ACCOUNT
 ========================================================= */
 
 document.getElementById("signupButton")
-.addEventListener(
-"click",
-async()=>{
+.addEventListener("click",async()=>{
 
 if(!signupMode){
 
@@ -816,16 +790,15 @@ return;
 
 }
 
+
 const email=
 document.getElementById("authEmail")
-.value
-.trim()
+.value.trim()
 .toLowerCase();
 
 const nickname=
 document.getElementById("authNickname")
-.value
-.trim();
+.value.trim();
 
 const password=
 document.getElementById("authPassword")
@@ -879,17 +852,13 @@ return;
 
 /* CHECK NICKNAME */
 
-const {data:existingNickname,error:nicknameError}=
+const {data:existingNickname}=
+
 await supabase
 .from("profiles")
 .select("id")
 .ilike("nickname",nickname)
 .maybeSingle();
-
-
-if(nicknameError){
-console.error(nicknameError);
-}
 
 
 if(existingNickname){
@@ -902,7 +871,7 @@ return;
 }
 
 
-/* CREATE ACCOUNT */
+/* CREATE AUTH USER */
 
 const {data,error}=
 await supabase.auth.signUp({
@@ -961,41 +930,13 @@ errorBox.textContent=
 
 
 /* =========================================================
-ENTER KEY
-========================================================= */
-
-document.getElementById("authEmail")
-.addEventListener(
-"keydown",
-event=>{
-
-if(event.key==="Enter"){
-
-if(signupMode){
-
-document.getElementById("authNickname").focus();
-
-}else{
-
-document.getElementById("authPassword").focus();
-
-}
-
-}
-
-});
-
-
-/* =========================================================
 SESSION
 ========================================================= */
 
 supabase.auth.onAuthStateChange(
-
 async(event,session)=>{
 
-user=
-session?.user||null;
+user=session?.user||null;
 
 if(user){
 
@@ -1026,25 +967,23 @@ renderFriends();
 
 
 /* =========================================================
-INITIAL SESSION
+FORCE LOGIN EVERY TIME PAGE OPENS
 ========================================================= */
 
-const sessionResult=
+/*
+Supabase normally restores the previous session.
+
+We immediately sign it out on a fresh page load,
+so the website asks for credentials again.
+*/
+
+const initialSession=
 await supabase.auth.getSession();
 
 
-if(sessionResult.data.session){
+if(initialSession.data.session){
 
-user=
-sessionResult.data.session.user;
-
-document.getElementById("authScreen")
-.style.display="none";
-
-await loadCurrentProfile();
-await loadFriends();
-await loadBoards();
-await loadFriendRequests();
+await supabase.auth.signOut();
 
 }
 
@@ -1079,6 +1018,11 @@ currentProfile=data;
 
 if(!currentProfile){
 
+const fallbackNickname=
+user.email?.split("@")[0]||
+"User";
+
+
 const {data:newProfile,error:newError}=
 await supabase
 .from("profiles")
@@ -1086,7 +1030,7 @@ await supabase
 
 id:user.id,
 email:user.email?.toLowerCase()||"",
-nickname:user.email?.split("@")[0]||"User"
+nickname:fallbackNickname
 
 },{
 onConflict:"id"
@@ -1111,9 +1055,7 @@ LOGOUT
 ========================================================= */
 
 document.getElementById("logoutButton")
-.addEventListener(
-"click",
-async()=>{
+.addEventListener("click",async()=>{
 
 await supabase.auth.signOut();
 
@@ -1147,8 +1089,7 @@ return;
 
 
 const accepted=
-(data||[])
-.filter(
+(data||[]).filter(
 r=>r.status==="accepted"
 );
 
@@ -1228,22 +1169,26 @@ ADD FRIEND
 ========================================================= */
 
 document.getElementById("addFriendButton")
-.addEventListener(
-"click",
-async()=>{
+.addEventListener("click",async()=>{
 
 const input=
 document.getElementById("addFriendInput");
 
 const email=
-input.value
-.trim()
-.toLowerCase();
+input.value.trim().toLowerCase();
 
 
 if(!email){
 
 showError("Enter your friend's email.");
+return;
+
+}
+
+
+if(!user){
+
+showError("You must be logged in.");
 return;
 
 }
@@ -1275,10 +1220,7 @@ return;
 
 if(!profile){
 
-showError(
-"No user with that email was found."
-);
-
+showError("No user with that email was found.");
 return;
 
 }
@@ -1297,20 +1239,14 @@ if(existing&&existing.length){
 
 if(existing.some(r=>r.status==="accepted")){
 
-showError(
-"You are already friends with this user."
-);
-
+showError("You are already friends with this user.");
 return;
 
 }
 
 if(existing.some(r=>r.status==="pending")){
 
-showError(
-"A friend request already exists."
-);
-
+showError("A friend request already exists.");
 return;
 
 }
@@ -1350,9 +1286,7 @@ FRIEND REQUESTS
 ========================================================= */
 
 document.getElementById("friendRequestsButton")
-.addEventListener(
-"click",
-async()=>{
+.addEventListener("click",async()=>{
 
 const panel=
 document.getElementById("requestsPanel");
@@ -1415,9 +1349,7 @@ return;
 
 
 const ids=
-requests.map(
-request=>request.sender_id
-);
+requests.map(r=>r.sender_id);
 
 
 const {data:profiles}=
@@ -1434,10 +1366,7 @@ requests.forEach(request=>{
 
 const sender=
 (profiles||[])
-.find(
-profile=>
-profile.id===request.sender_id
-);
+.find(p=>p.id===request.sender_id);
 
 
 const row=
@@ -1445,14 +1374,10 @@ document.createElement("div");
 
 row.className="request";
 
-
 row.innerHTML=`
 
 <div class="request-nickname">
-${escapeHTML(
-sender?.nickname||
-"Unknown user"
-)}
+${escapeHTML(sender?.nickname||"Unknown user")}
 </div>
 
 <div class="request-actions">
@@ -1470,9 +1395,7 @@ Decline
 </button>
 
 </div>
-
 `;
-
 
 list.appendChild(row);
 
@@ -1486,9 +1409,7 @@ REQUEST ACTIONS
 ========================================================= */
 
 document.getElementById("requestsList")
-.addEventListener(
-"click",
-async event=>{
+.addEventListener("click",async event=>{
 
 const button=
 event.target.closest("button");
@@ -1496,11 +1417,8 @@ event.target.closest("button");
 if(!button)return;
 
 
-const id=
-button.dataset.id;
-
-const action=
-button.dataset.action;
+const id=button.dataset.id;
+const action=button.dataset.action;
 
 
 if(action==="accept"){
@@ -1555,7 +1473,7 @@ await loadFriendRequests();
 
 
 /* =========================================================
-LOAD BOXES + URL OWNER
+LOAD BOARDS
 ========================================================= */
 
 async function loadBoards(){
@@ -1579,11 +1497,11 @@ visibility,
 box_items(
 id,
 box_id,
-owner_id,
 title,
 url,
 image,
-visibility
+visibility,
+nickname
 )
 `)
 .order("created_at");
@@ -1599,8 +1517,7 @@ return;
 
 
 boards=
-(data||[])
-.map(box=>{
+(data||[]).map(box=>{
 
 const items=
 Array.isArray(box.box_items)
@@ -1613,14 +1530,12 @@ return{
 ...box,
 
 w:Number(box.width)||430,
-
 h:Number(box.height)||270,
 
 items:items.filter(
 item=>
 item.visibility==="public"||
-String(box.owner_id)===
-String(user.id)
+String(box.owner_id)===String(user.id)
 )
 
 };
@@ -1638,18 +1553,14 @@ NEW BOX
 ========================================================= */
 
 document.getElementById("newBoxButton")
-.addEventListener(
-"click",
-async()=>{
+.addEventListener("click",async()=>{
 
 if(!user)return;
 
 
 const ownBoards=
 boards.filter(
-b=>
-String(b.owner_id)===
-String(user.id)
+b=>String(b.owner_id)===String(user.id)
 );
 
 
@@ -1668,8 +1579,7 @@ Number(previous.x)+
 Number(previous.w)+
 40;
 
-y=
-Number(previous.y);
+y=Number(previous.y);
 
 }
 
@@ -1723,18 +1633,14 @@ NEW URL
 ========================================================= */
 
 document.getElementById("newUrlButton")
-.addEventListener(
-"click",
-()=>{
+.addEventListener("click",()=>{
 
 if(!user)return;
 
 
 const ownBoxes=
 boards.filter(
-board=>
-String(board.owner_id)===
-String(user.id)
+board=>String(board.owner_id)===String(user.id)
 );
 
 
@@ -1823,28 +1729,21 @@ document.getElementById("privateURLButton")
 
 /* =========================================================
 SAVE URL
-IMPORTANT:
-SAVE OWNER_ID WITH EVERY URL
 ========================================================= */
 
 async function saveURL(board,visibility){
 
 let url=
 document.getElementById("urlAddress")
-.value
-.trim();
-
+.value.trim();
 
 const title=
 document.getElementById("urlTitle")
-.value
-.trim();
-
+.value.trim();
 
 const image=
 document.getElementById("urlImage")
-.value
-.trim();
+.value.trim();
 
 
 if(!url){
@@ -1862,6 +1761,33 @@ url="https://"+url;
 }
 
 
+/*
+THIS IS THE IMPORTANT FIX.
+
+The nickname is copied from the current profile
+and stored directly on the URL.
+
+It is NOT a credential.
+It is NOT used to authenticate.
+It is ONLY displayed above the URL.
+*/
+
+const nickname=
+currentProfile?.nickname||
+"";
+
+
+if(!nickname){
+
+showError(
+"Your nickname could not be loaded. Please log out and log in again."
+);
+
+return;
+
+}
+
+
 const {data,error}=
 await supabase
 .from("box_items")
@@ -1869,19 +1795,15 @@ await supabase
 
 box_id:board.id,
 
-/*
-THIS IS THE IMPORTANT CHANGE.
-The URL remembers who created it.
-*/
-owner_id:user.id,
-
 title:title||url,
 
 url:url,
 
 image:image||null,
 
-visibility:visibility
+visibility:visibility,
+
+nickname:nickname
 
 })
 .select()
@@ -1890,7 +1812,11 @@ visibility:visibility
 
 if(error){
 
-showError(error.message);
+showError(
+"Could not save URL: "+
+error.message
+);
+
 return;
 
 }
@@ -1929,7 +1855,8 @@ await supabase
 if(error){
 
 showError(
-"Could not delete URL: "+error.message
+"Could not delete URL: "+
+error.message
 );
 
 return;
@@ -1940,8 +1867,7 @@ return;
 board.items=
 board.items.filter(
 item=>
-String(item.id)!==
-String(itemId)
+String(item.id)!==String(itemId)
 );
 
 
@@ -1964,10 +1890,7 @@ return;
 }
 
 
-if(
-String(board.owner_id)!==
-String(user.id)
-){
+if(String(board.owner_id)!==String(user.id)){
 
 showError(
 "You can only delete your own boxes."
@@ -1978,13 +1901,9 @@ return;
 }
 
 
-const confirmed=
-confirm(
+if(!confirm(
 "Delete this box and all of its URLs?"
-);
-
-
-if(!confirmed)return;
+))return;
 
 
 const {error:itemError}=
@@ -2030,7 +1949,7 @@ return;
 if(!deleted||deleted.length===0){
 
 showError(
-"Supabase did not allow this box to be deleted. Check the DELETE policy for the boxes table."
+"Supabase did not allow this box to be deleted. Check your DELETE policy."
 );
 
 return;
@@ -2040,16 +1959,11 @@ return;
 
 boards=
 boards.filter(
-b=>
-String(b.id)!==
-String(board.id)
+b=>String(b.id)!==String(board.id)
 );
 
 
-if(
-String(selectedBoardId)===
-String(board.id)
-){
+if(String(selectedBoardId)===String(board.id)){
 
 selectedBoardId=null;
 
@@ -2057,74 +1971,6 @@ selectedBoardId=null;
 
 
 render();
-
-}
-
-
-/* =========================================================
-LOAD URL CREATOR NICKNAME
-========================================================= */
-
-async function loadItemNickname(item,nicknameElement){
-
-if(!item.owner_id){
-
-nicknameElement.textContent=
-"Unknown";
-
-return;
-
-}
-
-
-/*
-If this URL was created by the current user,
-use the already-loaded profile.
-*/
-
-if(
-user&&
-String(item.owner_id)===
-String(user.id)
-){
-
-nicknameElement.textContent=
-currentProfile?.nickname||
-"Unknown";
-
-return;
-
-}
-
-
-/*
-Otherwise get the profile belonging
-to the URL creator.
-*/
-
-const {data,error}=
-await supabase
-.from("profiles")
-.select("nickname")
-.eq("id",item.owner_id)
-.maybeSingle();
-
-
-if(error){
-
-console.error(error);
-
-nicknameElement.textContent=
-"Unknown";
-
-return;
-
-}
-
-
-nicknameElement.textContent=
-data?.nickname||
-"Unknown";
 
 }
 
@@ -2142,7 +1988,6 @@ document.getElementById("world");
 world.style.transform=
 `translate(${panX}px,${panY}px) scale(${zoom})`;
 
-
 world.innerHTML="";
 
 
@@ -2155,8 +2000,7 @@ document.createElement("section");
 element.className=
 "board"+
 (
-String(selectedBoardId)===
-String(board.id)
+String(selectedBoardId)===String(board.id)
 ?" selected"
 :""
 );
@@ -2168,14 +2012,11 @@ element.dataset.id=board.id;
 element.style.left=
 Number(board.x)+"px";
 
-
 element.style.top=
 Number(board.y)+"px";
 
-
 element.style.width=
 Number(board.w)+"px";
-
 
 element.style.height=
 Number(board.h)+"px";
@@ -2191,7 +2032,6 @@ element.innerHTML=`
 <div class="board-title">
 ${escapeHTML(board.title)}
 </div>
-
 
 ${
 owner
@@ -2211,9 +2051,7 @@ data-delete-board="${board.id}">
 :""
 }
 
-
 <div class="board-inner">
-
 
 ${
 owner
@@ -2228,7 +2066,6 @@ data-add-url="${board.id}">
 :""
 }
 
-
 ${
 board.items.map(item=>`
 
@@ -2236,7 +2073,6 @@ board.items.map(item=>`
 class="item"
 data-item-id="${item.id}"
 data-url="${escapeHTML(item.url)}">
-
 
 ${
 item.image
@@ -2250,43 +2086,24 @@ alt=""
 :""
 }
 
-
 <div class="item-content">
 
-<div
-class="item-nickname"
-data-item-owner-id="${escapeHTML(item.owner_id || "")}">
-
-${
-item.owner_id &&
-user &&
-String(item.owner_id)===String(user.id)
-?
-escapeHTML(
-currentProfile?.nickname||"Unknown"
-)
-:
-"Loading..."
-}
-
+<div class="item-nickname">
+${escapeHTML(
+item.nickname||
+"Unknown"
+)}
 </div>
-
 
 <div class="item-title">
-
 ${escapeHTML(item.title||item.url)}
-
 </div>
 
 </div>
-
 
 <span class="item-visibility">
-
 ${item.visibility==="public"?"Public":"Private"}
-
 </span>
-
 
 ${
 owner
@@ -2302,15 +2119,12 @@ data-delete-item="${item.id}">
 :""
 }
 
-
 </div>
 
 `).join("")
 }
 
-
 </div>
-
 
 ${
 owner
@@ -2325,63 +2139,15 @@ owner
 
 
 /* =========================================================
-LOAD NICKNAME FOR EACH URL
+BOARD CLICK
 ========================================================= */
 
-element
-.querySelectorAll(".item")
-.forEach(itemElement=>{
+element.addEventListener("click",event=>{
 
-const itemId=
-itemElement.dataset.itemId;
-
-
-const item=
-board.items.find(
-i=>
-String(i.id)===
-String(itemId)
-);
-
-
-if(!item)return;
-
-
-const nicknameElement=
-itemElement.querySelector(
-".item-nickname"
-);
-
-
-if(nicknameElement){
-
-loadItemNickname(
-item,
-nicknameElement
-);
-
-}
-
-});
-
-
-/* BOARD CLICK */
-
-element.addEventListener(
-"click",
-event=>{
-
-if(event.target.closest(".trash-button"))
-return;
-
-if(event.target.closest(".item-trash"))
-return;
-
-if(event.target.closest(".add-url"))
-return;
-
-if(event.target.closest(".resize"))
-return;
+if(event.target.closest(".trash-button"))return;
+if(event.target.closest(".item-trash"))return;
+if(event.target.closest(".add-url"))return;
+if(event.target.closest(".resize"))return;
 
 selectedBoardId=board.id;
 
@@ -2390,12 +2156,12 @@ render();
 });
 
 
-/* DELETE BUTTON */
+/* =========================================================
+DELETE BOARD
+========================================================= */
 
 const deleteBoardButton=
-element.querySelector(
-"[data-delete-board]"
-);
+element.querySelector("[data-delete-board]");
 
 
 if(deleteBoardButton){
@@ -2414,12 +2180,12 @@ await deleteBoard(board);
 }
 
 
-/* ADD URL */
+/* =========================================================
+ADD URL
+========================================================= */
 
 const addButton=
-element.querySelector(
-"[data-add-url]"
-);
+element.querySelector("[data-add-url]");
 
 
 if(addButton){
@@ -2438,7 +2204,9 @@ openURLModal(board);
 }
 
 
-/* DELETE URL */
+/* =========================================================
+DELETE URL
+========================================================= */
 
 element
 .querySelectorAll("[data-delete-item]")
@@ -2461,7 +2229,9 @@ button.dataset.deleteItem
 });
 
 
-/* OPEN URL */
+/* =========================================================
+OPEN URL
+========================================================= */
 
 element
 .querySelectorAll(".item")
@@ -2474,16 +2244,11 @@ event=>{
 if(event.target.closest(".item-trash"))
 return;
 
-const url=
-item.dataset.url;
-
+const url=item.dataset.url;
 
 if(url){
 
-window.open(
-url,
-"_blank"
-);
+window.open(url,"_blank");
 
 }
 
@@ -2492,7 +2257,9 @@ url,
 });
 
 
-/* CONTEXT MENU */
+/* =========================================================
+CONTEXT MENU
+========================================================= */
 
 element.addEventListener(
 "contextmenu",
@@ -2504,10 +2271,8 @@ event.preventDefault();
 
 contextBoardId=board.id;
 
-
 const menu=
 document.getElementById("contextMenu");
-
 
 menu.style.display="block";
 
@@ -2520,7 +2285,9 @@ event.clientY+"px";
 });
 
 
-/* MOVE + RESIZE */
+/* =========================================================
+MOVE / RESIZE
+========================================================= */
 
 if(owner){
 
@@ -2546,15 +2313,12 @@ if(event.target.closest(".resize")){
 resizing={
 
 id:board.id,
-
 startX:event.clientX,
 startY:event.clientY,
-
 width:board.w,
 height:board.h
 
 };
-
 
 element.setPointerCapture(
 event.pointerId
@@ -2568,15 +2332,12 @@ return;
 moving={
 
 id:board.id,
-
 startX:event.clientX,
 startY:event.clientY,
-
 x:board.x,
 y:board.y
 
 };
-
 
 element.setPointerCapture(
 event.pointerId
@@ -2598,14 +2359,12 @@ resizing.width+
 (event.clientX-resizing.startX)/zoom
 );
 
-
 board.h=
 Math.max(
 120,
 resizing.height+
 (event.clientY-resizing.startY)/zoom
 );
-
 
 render();
 
@@ -2620,11 +2379,9 @@ board.x=
 moving.x+
 (event.clientX-moving.startX)/zoom;
 
-
 board.y=
 moving.y+
 (event.clientY-moving.startY)/zoom;
-
 
 render();
 
@@ -2699,7 +2456,6 @@ event=>{
 if(event.pointerType==="touch")
 return;
 
-
 if(event.target.closest(".board"))
 return;
 
@@ -2708,7 +2464,6 @@ panning={
 
 x:event.clientX,
 y:event.clientY,
-
 panX:panX,
 panY:panY
 
@@ -2729,12 +2484,10 @@ panning.panX+
 event.clientX-
 panning.x;
 
-
 panY=
 panning.panY+
 event.clientY-
 panning.y;
-
 
 render();
 
@@ -2799,7 +2552,6 @@ panning={
 
 x:event.clientX,
 y:event.clientY,
-
 panX:panX,
 panY:panY
 
@@ -2814,27 +2566,17 @@ if(pointers.size===2){
 
 panning=null;
 
-
 const points=
 [...pointers.values()];
 
 
 pinchStartDistance=
-distance(
-points[0],
-points[1]
-);
-
+distance(points[0],points[1]);
 
 pinchStartZoom=zoom;
 
-
 pinchStartCenter=
-midpoint(
-points[0],
-points[1]
-);
-
+midpoint(points[0],points[1]);
 
 pinchStartPanX=panX;
 pinchStartPanY=panY;
@@ -2851,7 +2593,6 @@ event=>{
 if(event.pointerType!=="touch")
 return;
 
-
 if(!pointers.has(event.pointerId))
 return;
 
@@ -2865,22 +2606,17 @@ clientY:event.clientY
 );
 
 
-if(
-pointers.size===1&&
-panning
-){
+if(pointers.size===1&&panning){
 
 panX=
 panning.panX+
 event.clientX-
 panning.x;
 
-
 panY=
 panning.panY+
 event.clientY-
 panning.y;
-
 
 render();
 
@@ -2894,41 +2630,27 @@ if(pointers.size===2){
 const points=
 [...pointers.values()];
 
-
 const currentDistance=
-distance(
-points[0],
-points[1]
-);
+distance(points[0],points[1]);
 
 
-if(!pinchStartDistance)
-return;
+if(!pinchStartDistance)return;
 
 
 let newZoom=
 pinchStartZoom*
-(
-currentDistance/
-pinchStartDistance
-);
+(currentDistance/pinchStartDistance);
 
 
 newZoom=
 Math.max(
 0.25,
-Math.min(
-3,
-newZoom
-)
+Math.min(3,newZoom)
 );
 
 
 const center=
-midpoint(
-points[0],
-points[1]
-);
+midpoint(points[0],points[1]);
 
 
 const rect=
@@ -2980,9 +2702,7 @@ if(event.pointerType!=="touch")
 return;
 
 
-pointers.delete(
-event.pointerId
-);
+pointers.delete(event.pointerId);
 
 
 if(pointers.size<2){
@@ -3006,7 +2726,6 @@ workspace.addEventListener(
 endTouch
 );
 
-
 workspace.addEventListener(
 "pointercancel",
 endTouch
@@ -3014,7 +2733,7 @@ endTouch
 
 
 /* =========================================================
-MOUSE WHEEL ZOOM
+WHEEL ZOOM
 ========================================================= */
 
 workspace.addEventListener(
@@ -3023,50 +2742,37 @@ event=>{
 
 event.preventDefault();
 
-
 const rect=
 workspace.getBoundingClientRect();
-
 
 const mouseX=
 event.clientX-rect.left;
 
-
 const mouseY=
 event.clientY-rect.top;
-
 
 const worldX=
 (mouseX-panX)/zoom;
 
-
 const worldY=
 (mouseY-panY)/zoom;
 
-
 const factor=
-event.deltaY<0
-?1.1
-:0.9;
+event.deltaY<0?1.1:0.9;
 
 
 zoom=
 Math.max(
 0.25,
-Math.min(
-3,
-zoom*factor
-)
+Math.min(3,zoom*factor)
 );
 
 
 panX=
 mouseX-worldX*zoom;
 
-
 panY=
 mouseY-worldY*zoom;
-
 
 render();
 
@@ -3110,19 +2816,14 @@ document.getElementById("contextMenu")
 
 const board=
 boards.find(
-b=>
-String(b.id)===
-String(contextBoardId)
+b=>String(b.id)===String(contextBoardId)
 );
 
 
 if(!board)return;
 
 
-if(
-String(board.owner_id)!==
-String(user.id)
-){
+if(String(board.owner_id)!==String(user.id)){
 
 showError(
 "You can only rename your own boxes."
@@ -3166,8 +2867,7 @@ document.getElementById("renameSave")
 
 const title=
 document.getElementById("renameInput")
-.value
-.trim();
+.value.trim();
 
 
 if(!title)return;
@@ -3217,9 +2917,7 @@ document.getElementById("contextMenu")
 
 const board=
 boards.find(
-b=>
-String(b.id)===
-String(contextBoardId)
+b=>String(b.id)===String(contextBoardId)
 );
 
 
@@ -3253,9 +2951,7 @@ document
 
 const board=
 boards.find(
-b=>
-String(b.id)===
-String(element.dataset.id)
+b=>String(b.id)===String(element.dataset.id)
 );
 
 
@@ -3277,14 +2973,16 @@ item=>
 
 (item.url||"")
 .toLowerCase()
+.includes(query)||
+
+(item.nickname||"")
+.toLowerCase()
 .includes(query)
 );
 
 
 element.style.opacity=
-matches
-?"1"
-:"0.2";
+matches?"1":"0.2";
 
 });
 
@@ -3303,9 +3001,7 @@ async()=>{
 const data={
 
 title:"Spaceboards",
-
 text:"Check out my Spaceboards!",
-
 url:window.location.href
 
 };
@@ -3378,11 +3074,38 @@ closeModal();
 
 
 /* =========================================================
+AUTH ENTER KEY
+========================================================= */
+
+document.getElementById("authEmail")
+.addEventListener(
+"keydown",
+event=>{
+
+if(event.key==="Enter"){
+
+if(signupMode){
+
+document.getElementById("authNickname")
+.focus();
+
+}else{
+
+document.getElementById("authPassword")
+.focus();
+
+}
+
+}
+
+});
+
+
+/* =========================================================
 INITIAL
 ========================================================= */
 
 updateAuthUI();
-
 render();
 
 </script>
