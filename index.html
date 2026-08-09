@@ -227,8 +227,6 @@ object-fit:cover;
 border-radius:5px
 }
 
-/* NEW: nickname above URL */
-
 .item-content{
 display:flex;
 flex-direction:column;
@@ -317,6 +315,13 @@ color:#c00;
 font-size:13px;
 min-height:20px;
 margin-bottom:8px
+}
+
+.auth-note{
+font-size:12px;
+color:#777;
+margin-top:4px;
+margin-bottom:12px
 }
 
 .modal-bg{
@@ -459,36 +464,33 @@ LOGIN / SIGN UP
 <h1>Spaceboards</h1>
 
 <p id="authDescription">
-Create an account or log in.
+Log in to Spaceboards.
 </p>
-
-<!-- LOGIN/SIGNUP EMAIL -->
 
 <input
 id="authEmail"
 type="email"
 placeholder="Email"
-autocomplete="email"
+autocomplete="off"
 >
-
-<!-- NEW: NICKNAME -->
 
 <input
 id="authNickname"
 type="text"
 placeholder="Nickname"
-autocomplete="nickname"
-style="display:none"
+autocomplete="off"
 >
-
-<!-- PASSWORD -->
 
 <input
 id="authPassword"
 type="password"
 placeholder="Password"
-autocomplete="current-password"
+autocomplete="off"
 >
+
+<div class="auth-note">
+Nickname is your display name and is not used as a credential.
+</div>
 
 <div id="authError" class="auth-error"></div>
 
@@ -638,10 +640,33 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
 "sb_publishable_8CryzR2sR-y5nHprgLWJlA_Wfy_mTrj";
 
+
+/*
+IMPORTANT:
+
+persistSession:false
+
+means Supabase will NOT save the login
+session in localStorage.
+
+Therefore when the website is opened again,
+there is no saved session and the login
+screen appears again.
+
+The nickname is NOT used for authentication.
+*/
+
 const supabase =
 createClient(
 SUPABASE_URL,
-SUPABASE_KEY
+SUPABASE_KEY,
+{
+auth:{
+persistSession:false,
+autoRefreshToken:false,
+detectSessionInUrl:false
+}
+}
 );
 
 
@@ -742,9 +767,6 @@ let signupMode=false;
 
 function updateAuthUI(){
 
-const nickname=
-document.getElementById("authNickname");
-
 const description=
 document.getElementById("authDescription");
 
@@ -754,13 +776,10 @@ document.getElementById("loginButton");
 const signupButton=
 document.getElementById("signupButton");
 
+const nickname=
+document.getElementById("authNickname");
+
 if(signupMode){
-
-nickname.style.display="block";
-
-nickname.required=true;
-
-nickname.placeholder="Nickname";
 
 description.textContent=
 "Create a new Spaceboards account.";
@@ -770,11 +789,9 @@ loginButton.style.display="none";
 signupButton.textContent=
 "Create account";
 
+nickname.style.display="block";
+
 }else{
-
-nickname.style.display="none";
-
-nickname.required=false;
 
 description.textContent=
 "Log in to Spaceboards.";
@@ -784,6 +801,13 @@ loginButton.style.display="inline-block";
 signupButton.textContent=
 "Create account";
 
+/*
+Nickname is ALWAYS displayed,
+including during login.
+*/
+
+nickname.style.display="block";
+
 }
 
 }
@@ -791,6 +815,10 @@ signupButton.textContent=
 
 /* =========================================================
 LOGIN
+
+EMAIL + PASSWORD AUTHENTICATE.
+NICKNAME IS REQUIRED BY THE FORM BUT IS
+NOT CHECKED OR USED AS A CREDENTIAL.
 ========================================================= */
 
 document.getElementById("loginButton")
@@ -801,6 +829,12 @@ async()=>{
 
 const email=
 document.getElementById("authEmail")
+.value
+.trim()
+.toLowerCase();
+
+const nickname=
+document.getElementById("authNickname")
 .value
 .trim();
 
@@ -813,14 +847,22 @@ document.getElementById("authError");
 
 errorBox.textContent="";
 
-if(!email||!password){
+
+/*
+All three fields are required.
+The nickname is intentionally NOT
+sent to Supabase authentication.
+*/
+
+if(!email||!nickname||!password){
 
 errorBox.textContent=
-"Enter your email and password.";
+"Enter your email, nickname and password.";
 
 return;
 
 }
+
 
 const {error}=
 await supabase.auth.signInWithPassword({
@@ -830,6 +872,7 @@ email:email,
 password:password
 
 });
+
 
 if(error){
 
@@ -851,20 +894,18 @@ document.getElementById("signupButton")
 "click",
 async()=>{
 
-/*
-If we are currently on the login screen,
-first switch to signup mode.
-*/
-
 if(!signupMode){
 
 signupMode=true;
 
 updateAuthUI();
 
+document.getElementById("authNickname").focus();
+
 return;
 
 }
+
 
 const email=
 document.getElementById("authEmail")
@@ -927,9 +968,12 @@ return;
 }
 
 
-/* CHECK IF NICKNAME IS ALREADY USED */
+/* CHECK NICKNAME AVAILABILITY */
 
-const {data:existingNickname,error:nicknameError}=
+const {
+data:existingNickname,
+error:nicknameError
+}=
 await supabase
 
 .from("profiles")
@@ -958,9 +1002,12 @@ return;
 }
 
 
-/* CREATE SUPABASE AUTH ACCOUNT */
+/* CREATE AUTH ACCOUNT */
 
-const {data,error}=
+const {
+data,
+error
+}=
 await supabase.auth.signUp({
 
 email:email,
@@ -982,11 +1029,9 @@ return;
 
 if(data?.user){
 
-/*
-SAVE EMAIL + NICKNAME
-*/
-
-const {error:profileError}=
+const {
+error:profileError
+}=
 await supabase
 
 .from("profiles")
@@ -1026,10 +1071,41 @@ errorBox.textContent=
 
 
 /* =========================================================
-AUTH SCREEN
+ENTER KEY
 ========================================================= */
 
 document.getElementById("authEmail")
+
+.addEventListener(
+"keydown",
+event=>{
+
+if(event.key==="Enter"){
+
+document.getElementById("authNickname").focus();
+
+}
+
+});
+
+
+document.getElementById("authNickname")
+
+.addEventListener(
+"keydown",
+event=>{
+
+if(event.key==="Enter"){
+
+document.getElementById("authPassword").focus();
+
+}
+
+});
+
+
+document.getElementById("authPassword")
+
 .addEventListener(
 "keydown",
 event=>{
@@ -1038,13 +1114,11 @@ if(event.key==="Enter"){
 
 if(signupMode){
 
-document.getElementById("authNickname")
-.focus();
+document.getElementById("signupButton").click();
 
 }else{
 
-document.getElementById("authPassword")
-.focus();
+document.getElementById("loginButton").click();
 
 }
 
@@ -1055,6 +1129,12 @@ document.getElementById("authPassword")
 
 /* =========================================================
 SESSION
+
+Because persistSession=false, there will normally
+be NO session after a page reload/new browser open.
+
+If a session exists in the current page,
+we still use it normally.
 ========================================================= */
 
 supabase.auth.onAuthStateChange(
@@ -1101,6 +1181,9 @@ renderFriends();
 
 /* =========================================================
 INITIAL SESSION
+
+With persistSession:false this will normally be null
+after a fresh page load.
 ========================================================= */
 
 const sessionResult=
@@ -1123,6 +1206,11 @@ await loadBoards();
 
 await loadFriendRequests();
 
+}else{
+
+document.getElementById("authScreen")
+.style.display="flex";
+
 }
 
 
@@ -1134,7 +1222,10 @@ async function loadCurrentProfile(){
 
 if(!user)return;
 
-const {data,error}=
+const {
+data,
+error
+}=
 await supabase
 
 .from("profiles")
@@ -1160,12 +1251,10 @@ currentProfile=data;
 
 if(!currentProfile){
 
-/*
-Fallback in case an older account
-doesn't have a profile yet.
-*/
-
-const {data:newProfile,error:newError}=
+const {
+data:newProfile,
+error:newError
+}=
 await supabase
 
 .from("profiles")
@@ -1221,7 +1310,10 @@ async function loadFriends(){
 if(!user)return;
 
 
-const {data,error}=
+const {
+data,
+error
+}=
 await supabase
 
 .from("friend_requests")
@@ -1269,12 +1361,10 @@ return;
 }
 
 
-/*
-IMPORTANT:
-Load nickname instead of only email.
-*/
-
-const {data:profiles,error:profilesError}=
+const {
+data:profiles,
+error:profilesError
+}=
 await supabase
 
 .from("profiles")
@@ -1321,14 +1411,9 @@ document.createElement("div");
 
 element.className="friend";
 
-/*
-ONLY SHOW NICKNAME
-*/
-
 element.textContent=
 friend.nickname||
 "Unknown user";
-
 
 list.appendChild(element);
 
@@ -1378,7 +1463,10 @@ return;
 }
 
 
-const {data:profile,error}=
+const {
+data:profile,
+error
+}=
 await supabase
 
 .from("profiles")
@@ -1421,9 +1509,9 @@ return;
 }
 
 
-/* CHECK EXISTING FRIENDSHIP */
-
-const {data:existing}=
+const {
+data:existing
+}=
 await supabase
 
 .from("friend_requests")
@@ -1470,9 +1558,9 @@ return;
 }
 
 
-/* SEND REQUEST */
-
-const {error:insertError}=
+const {
+error:insertError
+}=
 await supabase
 
 .from("friend_requests")
@@ -1550,7 +1638,10 @@ document.getElementById("requestsList");
 list.innerHTML="Loading...";
 
 
-const {data:requests,error}=
+const {
+data:requests,
+error
+}=
 await supabase
 
 .from("friend_requests")
@@ -1590,7 +1681,9 @@ request=>request.sender_id
 );
 
 
-const {data:profiles}=
+const {
+data:profiles
+}=
 await supabase
 
 .from("profiles")
@@ -1629,7 +1722,6 @@ sender?.nickname||
 )}
 
 </div>
-
 
 <div class="request-actions">
 
@@ -1682,7 +1774,9 @@ button.dataset.action;
 
 if(action==="accept"){
 
-const {error}=
+const {
+error
+}=
 await supabase
 
 .from("friend_requests")
@@ -1716,7 +1810,9 @@ await loadFriendRequests();
 
 if(action==="decline"){
 
-const {error}=
+const {
+error
+}=
 await supabase
 
 .from("friend_requests")
@@ -1753,7 +1849,10 @@ async function loadBoards(){
 if(!user)return;
 
 
-const {data,error}=
+const {
+data,
+error
+}=
 await supabase
 
 .from("boxes")
@@ -1870,7 +1969,10 @@ Number(previous.y);
 }
 
 
-const {data,error}=
+const {
+data,
+error
+}=
 await supabase
 
 .from("boxes")
@@ -1977,29 +2079,24 @@ openModal(`
 
 <h2>Add URL</h2>
 
-
 <input
 id="urlTitle"
 placeholder="Name (optional)"
 >
-
 
 <input
 id="urlAddress"
 placeholder="https://example.com"
 >
 
-
 <input
 id="urlImage"
 placeholder="Image URL (optional)"
 >
 
-
 <p>
 Who should be able to see this URL?
 </p>
-
 
 <div class="choice">
 
@@ -2012,7 +2109,6 @@ Private
 </button>
 
 </div>
-
 
 <div class="modal-actions">
 
@@ -2083,7 +2179,10 @@ url="https://"+url;
 }
 
 
-const {data,error}=
+const {
+data,
+error
+}=
 await supabase
 
 .from("box_items")
@@ -2118,7 +2217,6 @@ return;
 
 board.items.push(data);
 
-
 closeModal();
 
 render();
@@ -2141,7 +2239,9 @@ confirm(
 if(!confirmed)return;
 
 
-const {error}=
+const {
+error
+}=
 await supabase
 
 .from("box_items")
@@ -2217,9 +2317,9 @@ confirm(
 if(!confirmed)return;
 
 
-/* DELETE ITEMS */
-
-const {error:itemError}=
+const {
+error:itemError
+}=
 await supabase
 
 .from("box_items")
@@ -2241,9 +2341,10 @@ return;
 }
 
 
-/* DELETE BOX */
-
-const {data:deleted,error:boxError}=
+const {
+data:deleted,
+error:boxError
+}=
 await supabase
 
 .from("boxes")
@@ -2360,33 +2461,6 @@ String(board.owner_id)===
 String(user?.id);
 
 
-/*
-Get the owner's nickname.
-
-For our own boxes, use our loaded profile.
-
-For other people's boxes, load the nickname
-from the owner profile when available.
-*/
-
-let ownerNickname=
-"";
-
-
-if(owner){
-
-ownerNickname=
-currentProfile?.nickname||
-"";
-
-}
-
-
-/*
-We use a data attribute so the nickname can be
-loaded without changing the rest of the board.
-*/
-
 element.innerHTML=`
 
 <div class="board-title">
@@ -2394,7 +2468,6 @@ element.innerHTML=`
 ${escapeHTML(board.title)}
 
 </div>
-
 
 ${
 owner
@@ -2414,9 +2487,7 @@ data-delete-board="${board.id}">
 :""
 }
 
-
 <div class="board-inner">
-
 
 ${
 owner
@@ -2431,7 +2502,6 @@ data-add-url="${board.id}">
 :""
 }
 
-
 ${
 board.items.map(item=>`
 
@@ -2439,7 +2509,6 @@ board.items.map(item=>`
 class="item"
 data-item-id="${item.id}"
 data-url="${escapeHTML(item.url)}">
-
 
 ${
 item.image
@@ -2453,7 +2522,6 @@ alt=""
 :""
 }
 
-
 <div class="item-content">
 
 <div
@@ -2464,7 +2532,6 @@ Loading...
 
 </div>
 
-
 <div class="item-title">
 
 ${escapeHTML(item.title||item.url)}
@@ -2473,13 +2540,11 @@ ${escapeHTML(item.title||item.url)}
 
 </div>
 
-
 <span class="item-visibility">
 
 ${item.visibility==="public"?"Public":"Private"}
 
 </span>
-
 
 ${
 owner
@@ -2495,15 +2560,12 @@ data-delete-item="${item.id}">
 :""
 }
 
-
 </div>
 
 `).join("")
 }
 
-
 </div>
-
 
 ${
 owner
@@ -2517,15 +2579,11 @@ owner
 `;
 
 
-/* LOAD OWNER NICKNAME */
-
 loadOwnerNickname(
 board.owner_id,
 element
 );
 
-
-/* BOARD CLICK */
 
 element.addEventListener(
 "click",
@@ -2550,8 +2608,6 @@ render();
 });
 
 
-/* DELETE BUTTON */
-
 const deleteBoardButton=
 element.querySelector(
 "[data-delete-board]"
@@ -2574,8 +2630,6 @@ await deleteBoard(board);
 
 }
 
-
-/* ADD URL */
 
 const addButton=
 element.querySelector(
@@ -2600,8 +2654,6 @@ openURLModal(board);
 }
 
 
-/* DELETE URL */
-
 element
 
 .querySelectorAll("[data-delete-item]")
@@ -2625,8 +2677,6 @@ button.dataset.deleteItem
 
 });
 
-
-/* OPEN URL */
 
 element
 
@@ -2659,8 +2709,6 @@ url,
 });
 
 
-/* CONTEXT MENU */
-
 element.addEventListener(
 "contextmenu",
 event=>{
@@ -2689,8 +2737,6 @@ event.clientY+"px";
 });
 
 
-/* MOVE + RESIZE */
-
 if(owner){
 
 element.addEventListener(
@@ -2704,10 +2750,8 @@ return;
 if(event.target.closest(".item"))
 return;
 
-
 if(event.target.closest(".add-url"))
 return;
-
 
 if(event.target.closest(".trash-button"))
 return;
@@ -2889,10 +2933,6 @@ boardElement.querySelectorAll(
 if(!nicknameElements.length)return;
 
 
-/*
-If this is our own board, use our already loaded profile.
-*/
-
 if(
 user&&
 String(ownerId)===
@@ -2917,11 +2957,10 @@ return;
 }
 
 
-/*
-Otherwise fetch the owner's profile.
-*/
-
-const {data,error}=
+const {
+data,
+error
+}=
 await supabase
 
 .from("profiles")
@@ -3418,12 +3457,10 @@ openModal(`
 
 <h2>Rename box</h2>
 
-
 <input
 id="renameInput"
 value="${escapeHTML(board.title)}"
 >
-
 
 <div class="modal-actions">
 
@@ -3456,7 +3493,9 @@ document.getElementById("renameInput")
 if(!title)return;
 
 
-const {error}=
+const {
+error
+}=
 await supabase
 
 .from("boxes")
