@@ -2,1829 +2,678 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-
-<meta
-name="viewport"
-content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
->
-
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>Spaceboards</title>
-
 <style>
-
-*{
-box-sizing:border-box;
-}
-
-html,
-body{
+*{box-sizing:border-box}
+html,body{
 margin:0;
 width:100%;
 height:100%;
-font-family:Arial,Helvetica,sans-serif;
-overflow:hidden;
-background:#0b0b0d;
-color:#e8e8e8;
+font-family:Arial,sans-serif;
+background:#fafafa;
+color:#111;
+overflow:hidden
 }
-
-button,
-input{
-font-family:inherit;
+button,input{
+font:inherit
 }
-
 button{
-cursor:pointer;
-border:0;
+border:1px solid #bbb;
+background:#fff;
+border-radius:7px;
+padding:8px 12px;
+cursor:pointer
 }
-
-.hidden{
-display:none!important;
+button:hover{
+background:#f1f1f1
 }
-
-/* =========================================================
-AUTH
-========================================================= */
-
-#authScreen{
-position:fixed;
-inset:0;
+.topbar{
+height:58px;
 display:flex;
 align-items:center;
-justify-content:center;
-background:#0b0b0d;
-z-index:10000;
+gap:7px;
+padding:8px 12px;
+background:#fff;
+border-bottom:1px solid #ddd;
+position:relative;
+z-index:50
 }
-
-.auth-card{
-width:min(420px,calc(100% - 30px));
-background:#161618;
-border:1px solid #29292d;
-border-radius:18px;
-padding:32px;
-box-shadow:0 15px 50px rgba(0,0,0,.65);
-}
-
-.auth-card h1{
-margin:0 0 8px;
-font-size:30px;
-color:#f5f5f5;
-}
-
-.auth-description{
-margin:0 0 24px;
-color:#999;
-font-size:15px;
-}
-
-.auth-card input{
-display:block;
-width:100%;
-height:46px;
-margin-bottom:12px;
-padding:0 14px;
-border:1px solid #343438;
-border-radius:9px;
-font-size:15px;
-outline:none;
-background:#0f0f11;
-color:#eee;
-}
-
-.auth-card input::placeholder{
-color:#666;
-}
-
-.auth-card input:focus{
-border-color:#777;
-}
-
-.auth-buttons{
-display:flex;
-gap:10px;
-margin-top:8px;
-}
-
-.auth-buttons button{
-flex:1;
-height:46px;
-border-radius:9px;
-font-weight:600;
-}
-
-#loginButton{
-background:#eeeeee;
-color:#111;
-}
-
-#loginButton:hover{
-background:#d5d5d5;
-}
-
-#signupButton{
-background:#29292d;
-color:#eee;
-}
-
-#signupButton:hover{
-background:#38383d;
-}
-
-.auth-error{
-min-height:20px;
-margin-top:14px;
-font-size:13px;
-color:#ff6666;
-}
-
-/* =========================================================
-TOP BAR
-========================================================= */
-
-#app{
-position:fixed;
-inset:0;
-display:flex;
-flex-direction:column;
-}
-
-#topbar{
-height:64px;
-background:#111113;
-border-bottom:1px solid #29292d;
-display:flex;
-align-items:center;
-gap:10px;
-padding:0 14px;
-z-index:500;
-flex-shrink:0;
-}
-
 .logo{
-font-size:21px;
-font-weight:800;
-margin-right:8px;
-white-space:nowrap;
-color:#f2f2f2;
+font-weight:bold;
+margin-left:5px
 }
-
-#searchInput{
-height:40px;
-width:240px;
-max-width:30vw;
-border:1px solid #36363b;
-border-radius:9px;
-padding:0 13px;
-outline:none;
-background:#1a1a1d;
-color:#eee;
-}
-
-#searchInput::placeholder{
-color:#666;
-}
-
-#searchInput:focus{
-border-color:#777;
-}
-
-.top-button{
-height:40px;
-padding:0 14px;
-border-radius:9px;
-background:#29292d;
-color:#ddd;
-font-weight:600;
-white-space:nowrap;
-}
-
-.top-button:hover{
-background:#39393e;
-}
-
-#newBoxButton{
-background:#eeeeee;
-color:#111;
-}
-
-#newBoxButton:hover{
-background:#d5d5d5;
-}
-
 .spacer{
-flex:1;
+flex:1
 }
-
-#profileName{
-font-size:14px;
-color:#aaa;
-max-width:180px;
-overflow:hidden;
-text-overflow:ellipsis;
-white-space:nowrap;
+.search,.add-friend{
+padding:9px 10px;
+border:1px solid #bbb;
+border-radius:7px
 }
-
-/* =========================================================
-WORKSPACE
-========================================================= */
-
-#workspace{
-position:relative;
-flex:1;
-overflow:hidden;
-touch-action:none;
-background-color:#0b0b0d;
-background-image:
-radial-gradient(#29292d 1px,transparent 1px);
-background-size:24px 24px;
-}
-
-#world{
-position:absolute;
-left:0;
-top:0;
-width:1px;
-height:1px;
-transform-origin:0 0;
-}
-
-/* =========================================================
-BOARDS
-========================================================= */
-
-.board{
-position:absolute;
-background:#171719;
-border:1px solid #343438;
-border-radius:14px;
-box-shadow:0 8px 30px rgba(0,0,0,.55);
-overflow:visible;
-user-select:none;
-touch-action:none;
-}
-
-.board.selected{
-border:2px solid #aaa;
-}
-
-.board-title{
-position:absolute;
-left:0;
-top:-38px;
-font-size:16px;
-font-weight:700;
-white-space:nowrap;
-max-width:350px;
-overflow:hidden;
-text-overflow:ellipsis;
-color:#ddd;
-}
-
-.board-actions{
-position:absolute;
-right:8px;
-top:8px;
-z-index:20;
-}
-
-.trash-button,
-.item-trash{
-width:30px;
-height:30px;
-border-radius:7px;
-background:#29292d;
-color:#ddd;
-font-size:14px;
-}
-
-.trash-button:hover,
-.item-trash:hover{
-background:#492929;
-color:#ff7777;
-}
-
-.board-inner{
-position:absolute;
-inset:14px;
-overflow:auto;
-padding-top:2px;
-}
-
-.add-url{
-width:100%;
-height:38px;
-border-radius:8px;
-background:#e8e8e8;
-color:#111;
-font-weight:600;
-margin-bottom:10px;
-}
-
-.add-url:hover{
-background:#ccc;
-}
-
-/* =========================================================
-ITEMS
-========================================================= */
-
-.item{
-position:relative;
+.search{width:190px}
+.add-friend{width:145px}
+.friends{
 display:flex;
 align-items:center;
-gap:10px;
-min-height:58px;
-padding:8px 42px 8px 9px;
-margin-bottom:8px;
-border:1px solid #343438;
-border-radius:9px;
-background:#202023;
-color:#eee;
-cursor:pointer;
+gap:5px;
+max-width:220px;
+overflow-x:auto
 }
-
-.item:hover{
-background:#2a2a2e;
-}
-
-.item img{
-width:42px;
-height:42px;
-object-fit:cover;
-border-radius:7px;
-flex-shrink:0;
-}
-
-.item-content{
-min-width:0;
-flex:1;
-}
-
-.item-nickname{
-font-size:11px;
-color:#888;
-margin-bottom:2px;
-}
-
-.item-title{
-font-size:14px;
-font-weight:600;
-overflow:hidden;
-text-overflow:ellipsis;
-white-space:nowrap;
-color:#eee;
-}
-
-.item-visibility{
-position:absolute;
-right:8px;
-top:7px;
-font-size:9px;
-color:#888;
-}
-
-.item-trash{
-position:absolute;
-right:7px;
-bottom:7px;
-width:25px;
-height:25px;
-font-size:11px;
-}
-
-/* =========================================================
-RESIZE
-========================================================= */
-
-.resize{
-position:absolute;
-right:0;
-bottom:0;
-width:22px;
-height:22px;
-cursor:nwse-resize;
-touch-action:none;
-}
-
-.resize::after{
-content:"";
-position:absolute;
-right:5px;
-bottom:5px;
-width:10px;
-height:10px;
-border-right:2px solid #777;
-border-bottom:2px solid #777;
-}
-
-/* =========================================================
-FRIENDS SIDEBAR
-========================================================= */
-
-#friendsPanel{
-position:absolute;
-right:14px;
-top:78px;
-width:260px;
-max-height:calc(100% - 92px);
-background:#171719;
-border:1px solid #343438;
-border-radius:12px;
-box-shadow:0 10px 35px rgba(0,0,0,.6);
-z-index:400;
-overflow:hidden;
-}
-
-.friends-header{
-padding:14px;
-font-weight:700;
-border-bottom:1px solid #303035;
-display:flex;
-align-items:center;
-justify-content:space-between;
-color:#eee;
-}
-
-#closeFriendsButton{
-width:30px;
-height:30px;
-border-radius:7px;
-background:#29292d;
-color:#ddd;
-font-size:20px;
-line-height:30px;
-text-align:center;
-padding:0;
-}
-
-#closeFriendsButton:hover{
-background:#3a3a3f;
-}
-
-#addFriendArea{
-padding:10px;
-border-bottom:1px solid #303035;
-}
-
-#addFriendInput{
-width:100%;
-height:38px;
-border:1px solid #35353a;
-border-radius:8px;
-padding:0 10px;
-margin-bottom:7px;
-background:#0f0f11;
-color:#eee;
-outline:none;
-}
-
-#addFriendInput::placeholder{
-color:#666;
-}
-
-#addFriendButton{
-width:100%;
-height:36px;
-border-radius:8px;
-background:#e8e8e8;
-color:#111;
-font-weight:600;
-}
-
-#addFriendButton:hover{
-background:#ccc;
-}
-
-#friendsList{
-padding:8px;
-max-height:180px;
-overflow:auto;
-}
-
 .friend{
-padding:9px;
-border-radius:7px;
-font-size:14px;
-color:#ddd;
+padding:6px 9px;
+border:1px solid #ddd;
+border-radius:15px;
+background:#f7f7f7;
+white-space:nowrap;
+font-size:12px
 }
-
-.friend:hover{
-background:#29292d;
-}
-
-/* =========================================================
-REQUESTS
-========================================================= */
-
+/* FRIEND REQUESTS */
 #requestsPanel{
-display:none;
-position:absolute;
-right:14px;
-top:78px;
+position:fixed;
+top:65px;
+right:12px;
 width:300px;
-max-height:calc(100% - 92px);
+max-height:400px;
 overflow:auto;
-background:#171719;
-border:1px solid #343438;
-border-radius:12px;
-box-shadow:0 10px 35px rgba(0,0,0,.6);
-z-index:450;
+background:#fff;
+border:1px solid #ccc;
+border-radius:10px;
+box-shadow:0 8px 30px #0003;
+z-index:200;
+display:none;
+padding:12px
 }
-
-.requests-header{
-padding:14px;
-font-weight:700;
-border-bottom:1px solid #303035;
-display:flex;
-align-items:center;
-justify-content:space-between;
-color:#eee;
+#requestsPanel h3{
+margin:3px 0 12px
 }
-
-#closeRequestsButton{
-width:30px;
-height:30px;
-border-radius:7px;
-background:#29292d;
-color:#ddd;
-font-size:20px;
-line-height:30px;
-text-align:center;
-padding:0;
-}
-
-#closeRequestsButton:hover{
-background:#3a3a3f;
-}
-
-#requestsList{
-padding:10px;
-}
-
 .request{
 display:flex;
 align-items:center;
 justify-content:space-between;
-gap:10px;
-padding:10px 0;
-border-bottom:1px solid #303035;
+gap:8px;
+padding:9px 0;
+border-bottom:1px solid #eee
 }
-
-.request-nickname{
-font-weight:600;
-font-size:14px;
+.request-email{
+font-size:13px;
 overflow:hidden;
-text-overflow:ellipsis;
-color:#ddd;
+text-overflow:ellipsis
 }
-
 .request-actions{
 display:flex;
-gap:5px;
+gap:5px
 }
-
 .request-actions button{
 padding:6px 8px;
-border-radius:6px;
-font-size:12px;
+font-size:12px
 }
-
-.request-actions button[data-action="accept"]{
-background:#e8e8e8;
-color:#111;
+/* WORKSPACE */
+#workspace{
+position:absolute;
+top:58px;
+left:0;
+right:0;
+bottom:0;
+overflow:hidden;
+background:#fafafa;
+touch-action:none;
+cursor:grab
 }
-
-.request-actions button[data-action="accept"]:hover{
-background:#ccc;
+#workspace:active{
+cursor:grabbing
 }
-
-.request-actions button[data-action="decline"]{
-background:#29292d;
-color:#ddd;
+#world{
+position:absolute;
+width:1px;
+height:1px;
+transform-origin:0 0
 }
-
-.request-actions button[data-action="decline"]:hover{
-background:#3a3a3f;
+/* BOARD */
+.board{
+position:absolute;
+background:#fff;
+border:1px solid #aaa;
+border-radius:10px;
+box-shadow:0 2px 10px #00000012
 }
-
-/* =========================================================
-MODAL
-========================================================= */
-
-#modalBackground{
+.board.selected{
+outline:2px solid #222
+}
+.board-title{
+position:absolute;
+top:-31px;
+left:10px;
+font-size:14px;
+font-weight:bold;
+white-space:nowrap
+}
+.board-actions{
+position:absolute;
+top:7px;
+right:7px;
+z-index:20
+}
+.trash-button{
+width:30px;
+height:30px;
+padding:0;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:16px
+}
+.trash-button:hover{
+background:#ffecec
+}
+.board-inner{
+width:100%;
+height:100%;
+padding:45px 12px 12px;
+overflow:auto;
+border-radius:10px
+}
+/* URL */
+.add-url{
+width:100%;
+margin-bottom:9px;
+padding:7px;
+font-size:12px
+}
+.item{
+position:relative;
+display:inline-flex;
+align-items:center;
+gap:8px;
+max-width:100%;
+margin:4px;
+padding:8px 32px 8px 9px;
+border:1px solid #ddd;
+background:#fff;
+border-radius:7px;
+cursor:pointer;
+word-break:break-word
+}
+.item:hover{
+background:#f5f5f5
+}
+.item img{
+width:34px;
+height:34px;
+object-fit:cover;
+border-radius:5px
+}
+.item-visibility{
+position:absolute;
+top:2px;
+right:5px;
+font-size:9px;
+color:#777
+}
+.item-trash{
+position:absolute;
+right:4px;
+bottom:2px;
+border:0;
+background:transparent;
+padding:1px 3px;
+font-size:11px;
+cursor:pointer
+}
+.item-trash:hover{
+background:#eee
+}
+/* RESIZE */
+.resize{
+position:absolute;
+width:12px;
+height:12px;
+right:-6px;
+bottom:-6px;
+background:#fff;
+border:1px solid #777;
+border-radius:3px;
+cursor:nwse-resize
+}
+/* AUTH */
+.auth{
 position:fixed;
 inset:0;
+background:#fff;
+display:flex;
+align-items:center;
+justify-content:center;
+z-index:500
+}
+.auth-box{
+width:min(400px,92vw);
+border:1px solid #ddd;
+border-radius:12px;
+padding:25px;
+box-shadow:0 5px 30px #0001
+}
+.auth-box input{
+width:100%;
+padding:11px;
+margin:6px 0 10px;
+border:1px solid #aaa;
+border-radius:7px
+}
+.auth-error{
+color:#c00;
+font-size:13px;
+min-height:20px;
+margin-bottom:8px
+}
+/* MODAL */
+.modal-bg{
+position:fixed;
+inset:0;
+background:#0008;
 display:none;
 align-items:center;
 justify-content:center;
-background:rgba(0,0,0,.78);
-z-index:9000;
+z-index:300
 }
-
-#modal{
-width:min(430px,calc(100% - 30px));
-background:#171719;
-border:1px solid #343438;
-border-radius:15px;
-padding:24px;
-box-shadow:0 20px 60px rgba(0,0,0,.7);
+.modal{
+width:min(440px,92vw);
+background:#fff;
+border-radius:12px;
+padding:20px;
+box-shadow:0 15px 50px #0004
 }
-
-#modal h2{
-margin:0 0 18px;
-color:#eee;
+.modal h2{
+margin-top:0
 }
-
-#modal input{
+.modal input{
 width:100%;
-height:44px;
-margin-bottom:10px;
-padding:0 12px;
-border:1px solid #35353a;
-border-radius:8px;
-outline:none;
-background:#0f0f11;
-color:#eee;
+padding:10px;
+margin:5px 0 12px;
+border:1px solid #aaa;
+border-radius:7px
 }
-
-#modal input::placeholder{
-color:#666;
-}
-
-#modal p{
-font-size:14px;
-color:#999;
-}
-
-.choice{
-display:flex;
-gap:8px;
-margin-bottom:15px;
-}
-
-.choice button{
-flex:1;
-height:40px;
-border-radius:8px;
-background:#e8e8e8;
-color:#111;
-font-weight:600;
-}
-
-.choice button:hover{
-background:#ccc;
-}
-
 .modal-actions{
 display:flex;
 justify-content:flex-end;
-gap:8px;
-margin-top:16px;
+gap:8px
 }
-
-.modal-actions button{
-height:38px;
-padding:0 14px;
-border-radius:8px;
-background:#29292d;
-color:#ddd;
-font-weight:600;
+.choice{
+display:flex;
+gap:10px;
+margin:15px 0
 }
-
-.modal-actions button:hover{
-background:#3a3a3f;
+.choice button{
+flex:1;
+padding:14px
 }
-
-.modal-actions button:last-child{
-background:#e8e8e8;
-color:#111;
-}
-
-.modal-actions button:last-child:hover{
-background:#ccc;
-}
-
-/* =========================================================
-CONTEXT MENU
-========================================================= */
-
-#contextMenu{
-display:none;
+/* CONTEXT MENU */
+.menu{
 position:fixed;
-width:150px;
-background:#171719;
-border:1px solid #343438;
-border-radius:9px;
-box-shadow:0 10px 30px rgba(0,0,0,.6);
-overflow:hidden;
-z-index:9500;
-}
-
-.context-option{
-width:100%;
-height:42px;
-text-align:left;
-padding:0 13px;
-background:#171719;
-color:#ddd;
-}
-
-.context-option:hover{
-background:#29292d;
-}
-
-/* =========================================================
-SCROLLBARS
-========================================================= */
-
-*{
-scrollbar-width:thin;
-scrollbar-color:#444 #171719;
-}
-
-::-webkit-scrollbar{
-width:8px;
-height:8px;
-}
-
-::-webkit-scrollbar-track{
-background:#171719;
-}
-
-::-webkit-scrollbar-thumb{
-background:#444;
-border-radius:10px;
-}
-
-::-webkit-scrollbar-thumb:hover{
-background:#555;
-}
-
-/* =========================================================
-MOBILE
-========================================================= */
-
-@media(max-width:700px){
-
-#topbar{
-height:auto;
-min-height:60px;
-padding:10px;
-flex-wrap:wrap;
-background:#111113;
-}
-
-.logo{
-width:100%;
-}
-
-#searchInput{
-max-width:none;
-width:100%;
-order:5;
-}
-
-#profileName{
 display:none;
+min-width:160px;
+background:#fff;
+border:1px solid #aaa;
+border-radius:7px;
+box-shadow:0 5px 20px #0003;
+z-index:400
 }
-
-.top-button{
-padding:0 10px;
+.menu div{
+padding:10px 13px;
+cursor:pointer
 }
-
-#friendsPanel,
+.menu div:hover{
+background:#eee
+}
+/* HINT */
+.hint{
+position:fixed;
+left:12px;
+bottom:12px;
+background:#fff;
+border:1px solid #ddd;
+border-radius:8px;
+padding:8px 10px;
+font-size:12px;
+color:#555;
+z-index:10
+}
+@media(max-width:900px){
+.search{width:130px}
+.add-friend{width:110px}
+.friends{max-width:150px}
+}
+@media(max-width:600px){
+.logo{
+display:none
+}
+.search{
+width:85px
+}
+.add-friend{
+width:95px
+}
+.friends{
+display:none
+}
+.topbar button{
+padding:7px
+}
 #requestsPanel{
-top:120px;
-right:10px;
-width:calc(100% - 20px);
+right:6px;
+width:290px
 }
-
-.board-title{
-font-size:14px;
 }
-
-}
-
 </style>
 </head>
-
 <body>
-
-<div id="authScreen">
-
-<div class="auth-card">
-
+<!-- LOGIN -->
+<div class="auth" id="authScreen">
+<div class="auth-box">
 <h1>Spaceboards</h1>
-
-<p id="authDescription" class="auth-description">
-Log in to Spaceboards.
-</p>
+<p>Create an account or log in.</p>
 
 <input
-id="authEmail"
-type="email"
-placeholder="Email"
-autocomplete="email"
->
+id=“authEmail”
+type=“email”
+placeholder=“Email”
+autocomplete=“email”
 
 <input
-id="authNickname"
-type="text"
-placeholder="Nickname"
-autocomplete="nickname"
->
+id=“authPassword”
+type=“password”
+placeholder=“Password”
+autocomplete=“current-password”
 
-<input
-id="authPassword"
-type="password"
-placeholder="Password"
-autocomplete="current-password"
->
-
-<div class="auth-buttons">
-
+<div id="authError" class="auth-error"></div>
 <button id="loginButton">
 Log in
 </button>
-
 <button id="signupButton">
 Create account
 </button>
-
 </div>
-
-<div id="authError" class="auth-error"></div>
-
 </div>
-
-</div>
-
-<div id="app">
-
-<div id="topbar">
-
+<!-- TOP BAR -->
+<header class="topbar">
 <div class="logo">
 Spaceboards
 </div>
-
-<input
-id="searchInput"
-type="text"
-placeholder="Search..."
->
-
-<button id="newBoxButton" class="top-button">
-New
+<button id="newUrlButton">
+New URL
 </button>
-
-<button id="newUrlButton" class="top-button">
-Add URL
+<button id="newBoxButton">
+New Box
 </button>
-
-<button id="friendRequestsButton" class="top-button">
-Requests
-</button>
-
-<button id="shareButton" class="top-button">
+<button id="shareButton">
 Share
 </button>
 
-<div class="spacer"></div>
-
-<div id="profileName"></div>
-
-<button id="logoutButton" class="top-button">
-Log out
-</button>
-
-</div>
-
-<div id="workspace">
-
-<div id="world"></div>
-
-<div id="friendsPanel">
-
-<div class="friends-header">
-
-<span>Friends</span>
-
-<button id="closeFriendsButton" type="button">
-×
-</button>
-
-</div>
-
-<div id="addFriendArea">
-
 <input
-id="addFriendInput"
-type="email"
-placeholder="Friend's email"
->
+id=“addFriendInput”
+class=“add-friend”
+placeholder=“Add friends”
 
 <button id="addFriendButton">
-Add friend
+Add
 </button>
-
+<button id="friendRequestsButton">
+Friend requests
+</button>
+<div
+id="friendsList"
+class="friends">
 </div>
+<div class="spacer"></div>
 
-<div id="friendsList"></div>
+<input
+id=“searchInput”
+class=“search”
+placeholder=“Search”
 
-</div>
-
+<button id="logoutButton">
+Logout
+</button>
+</header>
+<!-- FRIEND REQUESTS -->
 <div id="requestsPanel">
-
-<div class="requests-header">
-
-<span>Friend requests</span>
-
-<button id="closeRequestsButton" type="button">
-×
-</button>
-
+<h3>
+Friend requests
+</h3>
+<div id="requestsList">
+Loading...
 </div>
-
-<div id="requestsList"></div>
-
 </div>
-
+<!-- WORKSPACE -->
+<main id="workspace">
+<div id="world"></div>
+</main>
+<div class="hint">
+Pinch with two fingers to zoom • Drag empty space to move
 </div>
-
-</div>
-
-<div id="contextMenu">
-
-<button id="renameOption" class="context-option">
+<!-- CONTEXT MENU -->
+<div
+id="contextMenu"
+class="menu">
+<div id="renameOption">
 Rename
-</button>
-
-<button id="deleteOption" class="context-option">
+</div>
+<div id="deleteOption">
 Delete
-</button>
-
 </div>
-
-<div id="modalBackground">
-
-<div id="modal"></div>
-
 </div>
-
+<!-- MODAL -->
+<div
+id="modalBackground"
+class="modal-bg">
+<div
+id="modal"
+class="modal">
+</div>
+</div>
 <script type="module">
-
 import {
 createClient
 }
-from "https://esm.sh/@supabase/supabase-js@2";
-
+from
+"https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 /* =========================================================
 SUPABASE
 ========================================================= */
-
 const SUPABASE_URL =
 "https://uqpivlamfwbjoqvordcm.supabase.co";
-
 const SUPABASE_KEY =
 "sb_publishable_8CryzR2sR-y5nHprgLWJlA_Wfy_mTrj";
-
 const supabase =
 createClient(
 SUPABASE_URL,
-SUPABASE_KEY,
-{
-auth:{
-persistSession:true,
-autoRefreshToken:true,
-detectSessionInUrl:true
-}
-}
+SUPABASE_KEY
 );
-
 /* =========================================================
 STATE
 ========================================================= */
-
 let user=null;
-let currentProfile=null;
-
-let profilesCache=new Map();
-
 let boards=[];
 let friends=[];
-
 let selectedBoardId=null;
 let contextBoardId=null;
-
 let moving=null;
 let resizing=null;
 let panning=null;
-
 let panX=80;
 let panY=80;
 let zoom=1;
-
 let pointers=new Map();
-
 let pinchStartDistance=null;
 let pinchStartZoom=1;
 let pinchStartCenter=null;
 let pinchStartPanX=0;
 let pinchStartPanY=0;
-
-let authLoading=false;
-
 /* =========================================================
 HELPERS
 ========================================================= */
-
 function escapeHTML(value){
-
-return String(value ?? "")
+return String(value)
 .replace(/&/g,"&amp;")
 .replace(/</g,"&lt;")
 .replace(/>/g,"&gt;")
 .replace(/"/g,"&quot;")
 .replace(/'/g,"&#039;");
-
 }
-
 function openModal(html){
-
 document.getElementById("modal").innerHTML=html;
-
-document.getElementById("modalBackground").style.display="flex";
-
+document.getElementById("modalBackground")
+.style.display="flex";
 }
-
 function closeModal(){
-
-document.getElementById("modalBackground").style.display="none";
-
+document.getElementById("modalBackground")
+.style.display="none";
 }
-
 window.closeModal=closeModal;
-
 function showError(message){
-
 alert(message);
-
 }
-
 /* =========================================================
-AUTH UI
+AUTH
 ========================================================= */
-
-let signupMode=false;
-
-function updateAuthUI(){
-
-const description=
-document.getElementById("authDescription");
-
-const loginButton=
-document.getElementById("loginButton");
-
-const signupButton=
-document.getElementById("signupButton");
-
-const nickname=
-document.getElementById("authNickname");
-
-if(signupMode){
-
-description.textContent=
-"Create a new Spaceboards account.";
-
-loginButton.style.display="none";
-
-signupButton.textContent=
-"Create account";
-
-nickname.style.display="block";
-
-}else{
-
-description.textContent=
-"Log in to Spaceboards.";
-
-loginButton.style.display="inline-block";
-
-signupButton.textContent=
-"Create account";
-
-nickname.style.display="block";
-
-}
-
-}
-
-/* =========================================================
-PROFILE
-========================================================= */
-
-function updateProfileDisplay(){
-
-const element=
-document.getElementById("profileName");
-
-if(!element)return;
-
-element.textContent=
-currentProfile?.nickname||
-user?.email||
-"";
-
-}
-
-/* =========================================================
-LOGIN
-========================================================= */
-
 document.getElementById("loginButton")
 .addEventListener(
 "click",
 async()=>{
-
-if(authLoading)return;
-
-authLoading=true;
-
 const email=
 document.getElementById("authEmail")
-.value
-.trim()
-.toLowerCase();
-
+.value.trim();
 const password=
 document.getElementById("authPassword")
 .value;
-
 const errorBox=
 document.getElementById("authError");
-
 errorBox.textContent="";
-
 if(!email||!password){
-
 errorBox.textContent=
 "Enter your email and password.";
-
-authLoading=false;
-
 return;
-
 }
-
-const {
-data,
-error
-}=
+const {error}=
 await supabase.auth.signInWithPassword({
-
 email,
-
 password
-
 });
-
 if(error){
-
 errorBox.textContent=
 error.message;
-
-authLoading=false;
-
-return;
-
 }
-
-if(!data?.session||!data?.user){
-
-errorBox.textContent=
-"Login failed.";
-
-authLoading=false;
-
-return;
-
-}
-
-user=data.user;
-
-await finishLogin();
-
-authLoading=false;
-
 });
-
-/* =========================================================
-FINISH LOGIN
-========================================================= */
-
-async function finishLogin(){
-
-if(!user)return;
-
-await loadCurrentProfile();
-
-await loadProfiles();
-
-await loadFriends();
-
-await loadBoards();
-
-await loadFriendRequests();
-
-updateProfileDisplay();
-
-document.getElementById("authScreen")
-.style.display="none";
-
-render();
-
-renderFriends();
-
-}
-
-/* =========================================================
-CREATE ACCOUNT
-========================================================= */
-
 document.getElementById("signupButton")
 .addEventListener(
 "click",
 async()=>{
-
-if(!signupMode){
-
-signupMode=true;
-
-updateAuthUI();
-
-return;
-
-}
-
 const email=
 document.getElementById("authEmail")
-.value
-.trim()
-.toLowerCase();
-
-const nickname=
-document.getElementById("authNickname")
-.value
-.trim();
-
+.value.trim();
 const password=
 document.getElementById("authPassword")
 .value;
-
 const errorBox=
 document.getElementById("authError");
-
 errorBox.textContent="";
-
-if(!email||!nickname||!password){
-
+if(!email||!password){
 errorBox.textContent=
-"Enter your email, nickname and password.";
-
+"Enter your email and password.";
 return;
-
 }
-
-if(nickname.length<2){
-
-errorBox.textContent=
-"Nickname must be at least 2 characters.";
-
-return;
-
-}
-
-if(nickname.length>30){
-
-errorBox.textContent=
-"Nickname must be 30 characters or less.";
-
-return;
-
-}
-
 if(password.length<6){
-
 errorBox.textContent=
 "Password must be at least 6 characters.";
-
 return;
-
 }
-
-const {
-data:existingNickname,
-error:nicknameError
-}=
-await supabase
-.from("profiles")
-.select("id")
-.ilike("nickname",nickname)
-.limit(1)
-.maybeSingle();
-
-if(nicknameError){
-
-console.error(
-"Nickname check error:",
-nicknameError
-);
-
-}
-
-if(existingNickname){
-
-errorBox.textContent=
-"That nickname is already taken.";
-
-return;
-
-}
-
-const {
-data,
-error
-}=
+const {data,error}=
 await supabase.auth.signUp({
-
 email,
-
 password
-
 });
-
 if(error){
-
 errorBox.textContent=
 error.message;
-
 return;
-
 }
-
 if(data?.user){
-
-const {
-data:profile,
-error:profileError
-}=
 await supabase
 .from("profiles")
-.upsert({
+.upsert(
+{
 id:data.user.id,
-email,
-nickname
-},{
+email:email.toLowerCase()
+},
+{
 onConflict:"id"
-})
-.select()
-.single();
-
-if(profileError){
-
-console.error(
-"Profile creation error:",
-profileError
-);
-
-errorBox.textContent=
-"Account created, but the nickname could not be saved: "+
-profileError.message;
-
-return;
-
 }
-
-currentProfile=profile;
-
-profilesCache.set(
-String(data.user.id),
-profile
 );
-
-updateProfileDisplay();
-
 }
-
-if(data?.session){
-
-user=data.user;
-
-await finishLogin();
-
-}else{
-
 errorBox.textContent=
 "Account created. Check your email if confirmation is required.";
-
-signupMode=false;
-
-updateAuthUI();
-
-}
-
 });
-
 /* =========================================================
-AUTH KEYBOARD
+SESSION
 ========================================================= */
-
-document.getElementById("authEmail")
-.addEventListener(
-"keydown",
-event=>{
-
-if(event.key==="Enter"){
-
-document
-.getElementById("authNickname")
-.focus();
-
-}
-
-});
-
-document.getElementById("authNickname")
-.addEventListener(
-"keydown",
-event=>{
-
-if(event.key==="Enter"){
-
-document
-.getElementById("authPassword")
-.focus();
-
-}
-
-});
-
-document.getElementById("authPassword")
-.addEventListener(
-"keydown",
-event=>{
-
-if(event.key==="Enter"){
-
-if(signupMode){
-
-document
-.getElementById("signupButton")
-.click();
-
-}else{
-
-document
-.getElementById("loginButton")
-.click();
-
-}
-
-}
-
-});
-
-/* =========================================================
-AUTH STATE CHANGE
-========================================================= */
-
-/*
-Do NOT await database calls directly inside
-onAuthStateChange. Supabase can deadlock when
-auth state callbacks wait on Supabase requests.
-*/
-
 supabase.auth.onAuthStateChange(
-(event,session)=>{
-
-user=
-session?.user||
-null;
-
+async(event,session)=>{
+user=session?.user||null;
 if(user){
-
-setTimeout(
-async()=>{
-
-try{
-
-await finishLogin();
-
-}catch(error){
-
-console.error(
-"Session loading error:",
-error
-);
-
-}
-
-},
-0
-);
-
+document.getElementById("authScreen")
+.style.display="none";
+await loadFriends();
+await loadBoards();
+await loadFriendRequests();
 }else{
-
 document.getElementById("authScreen")
 .style.display="flex";
-
 boards=[];
 friends=[];
-
 selectedBoardId=null;
-
-currentProfile=null;
-
-profilesCache.clear();
-
-updateProfileDisplay();
-
 render();
-
 renderFriends();
-
 }
-
 });
-
-/* =========================================================
-INITIAL SESSION
-========================================================= */
-
-async function initializeApp(){
-
-try{
-
-const {
-data,
-error
-}=
+const sessionResult=
 await supabase.auth.getSession();
-
-if(error){
-
-console.error(
-"Session error:",
-error
-);
-
+if(sessionResult.data.session){
+user=
+sessionResult.data.session.user;
 document.getElementById("authScreen")
-.style.display="flex";
-
-return;
-
+.style.display="none";
+await loadFriends();
+await loadBoards();
+await loadFriendRequests();
 }
-
-if(data?.session){
-
-user=data.session.user;
-
-await finishLogin();
-
-}else{
-
-user=null;
-
-document.getElementById("authScreen")
-.style.display="flex";
-
-render();
-
-}
-
-}catch(error){
-
-console.error(
-"Initialization error:",
-error
-);
-
-document.getElementById("authScreen")
-.style.display="flex";
-
-}
-
-}
-
-/* =========================================================
-LOAD CURRENT PROFILE
-========================================================= */
-
-async function loadCurrentProfile(){
-
-if(!user)return;
-
-const {
-data,
-error
-}=
-await supabase
-.from("profiles")
-.select("id,email,nickname")
-.eq("id",user.id)
-.maybeSingle();
-
-if(error){
-
-console.error(
-"Current profile error:",
-error
-);
-
-return;
-
-}
-
-if(data){
-
-currentProfile=data;
-
-profilesCache.set(
-String(data.id),
-data
-);
-
-updateProfileDisplay();
-
-return;
-
-}
-
-const fallbackNickname=
-user.email?.split("@")[0]||
-"User";
-
-const {
-data:newProfile,
-error:newError
-}=
-await supabase
-.from("profiles")
-.upsert({
-id:user.id,
-email:user.email?.toLowerCase()||"",
-nickname:fallbackNickname
-},{
-onConflict:"id"
-})
-.select()
-.single();
-
-if(!newError&&newProfile){
-
-currentProfile=newProfile;
-
-profilesCache.set(
-String(newProfile.id),
-newProfile
-);
-
-updateProfileDisplay();
-
-}
-
-}
-
-/* =========================================================
-LOAD PROFILES
-========================================================= */
-
-async function loadProfiles(){
-
-if(!user)return;
-
-const ownProfile=currentProfile;
-
-profilesCache.clear();
-
-if(ownProfile){
-
-profilesCache.set(
-String(ownProfile.id),
-ownProfile
-);
-
-}
-
-const {
-data,
-error
-}=
-await supabase
-.from("profiles")
-.select("id,email,nickname");
-
-if(error){
-
-console.error(
-"Could not load profiles:",
-error
-);
-
-return;
-
-}
-
-(data||[]).forEach(profile=>{
-
-profilesCache.set(
-String(profile.id),
-profile
-);
-
-});
-
-}
-
-/* =========================================================
-GET NICKNAME
-========================================================= */
-
-function getNickname(ownerId){
-
-if(!ownerId)return "";
-
-const profile=
-profilesCache.get(
-String(ownerId)
-);
-
-if(profile?.nickname){
-
-return profile.nickname;
-
-}
-
-if(
-currentProfile &&
-String(currentProfile.id) ===
-String(ownerId)
-){
-
-return currentProfile.nickname||"";
-
-}
-
-return "";
-
-}
-
 /* =========================================================
 LOGOUT
 ========================================================= */
-
 document.getElementById("logoutButton")
 .addEventListener(
 "click",
 async()=>{
-
 await supabase.auth.signOut();
-
 });
-
 /* =========================================================
 FRIENDS
 ========================================================= */
-
 async function loadFriends(){
-
 if(!user)return;
-
-const {
-data,
-error
-}=
+const {data,error}=
 await supabase
 .from("friend_requests")
 .select("*")
 .or(
 `sender_id.eq.${user.id},receiver_id.eq.${user.id}`
 );
-
 if(error){
-
 console.error(error);
-
 return;
-
 }
-
 const accepted=
-(data||[])
-.filter(
-r=>
-r.status==="accepted"
+(data||[]).filter(
+r=>r.status==="accepted"
 );
-
 const ids=
 accepted.map(
 r=>
@@ -1832,220 +681,72 @@ r.sender_id===user.id
 ?r.receiver_id
 :r.sender_id
 );
-
 if(!ids.length){
-
 friends=[];
-
 renderFriends();
-
 return;
-
 }
-
-const {
-data:friendProfiles,
-error:profilesError
-}=
+const {data:profiles}=
 await supabase
 .from("profiles")
-.select("id,email,nickname")
+.select("id,email")
 .in("id",ids);
-
-if(profilesError){
-
-console.error(profilesError);
-
-return;
-
-}
-
-friends=
-friendProfiles||[];
-
-friends.forEach(friend=>{
-
-profilesCache.set(
-String(friend.id),
-friend
-);
-
-});
-
+friends=profiles||[];
 renderFriends();
-
 }
-
-/* =========================================================
-RENDER FRIENDS
-========================================================= */
-
 function renderFriends(){
-
 const list=
 document.getElementById("friendsList");
-
-if(!list)return;
-
 list.innerHTML="";
-
 friends.forEach(friend=>{
-
 const element=
 document.createElement("div");
-
 element.className="friend";
-
 element.textContent=
-friend.nickname||
-friend.email||
-"User";
-
+friend.email;
 list.appendChild(element);
-
 });
-
 }
-
 /* =========================================================
 ADD FRIEND
 ========================================================= */
-
 document.getElementById("addFriendButton")
 .addEventListener(
 "click",
 async()=>{
-
 const input=
 document.getElementById("addFriendInput");
-
 const email=
-input.value
-.trim()
-.toLowerCase();
-
+input.value.trim().toLowerCase();
 if(!email){
-
 showError(
 "Enter your friend's email."
 );
-
 return;
-
 }
-
-if(
-user.email &&
-email===user.email.toLowerCase()
-){
-
+if(email===user.email.toLowerCase()){
 showError(
 "You cannot add yourself."
 );
-
 return;
-
 }
-
-const {
-data:profile,
-error
-}=
+const {data:profile,error}=
 await supabase
 .from("profiles")
-.select("id,email,nickname")
+.select("id,email")
 .eq("email",email)
 .maybeSingle();
-
 if(error){
-
 showError(error.message);
-
 return;
-
 }
-
 if(!profile){
-
 showError(
 "No user with that email was found."
 );
-
 return;
-
 }
-
-if(profile.id===user.id){
-
-showError(
-"You cannot add yourself."
-);
-
-return;
-
-}
-
-profilesCache.set(
-String(profile.id),
-profile
-);
-
-const {
-data:existing,
-error:existingError
-}=
-await supabase
-.from("friend_requests")
-.select("id,status")
-.or(
-`and(sender_id.eq.${user.id},receiver_id.eq.${profile.id}),and(sender_id.eq.${profile.id},receiver_id.eq.${user.id})`
-);
-
-if(existingError){
-
-showError(existingError.message);
-
-return;
-
-}
-
-if(existing&&existing.length){
-
-if(
-existing.some(
-request=>
-request.status==="accepted"
-)
-){
-
-showError(
-"You are already friends with this user."
-);
-
-return;
-
-}
-
-if(
-existing.some(
-request=>
-request.status==="pending"
-)
-){
-
-showError(
-"A friend request already exists."
-);
-
-return;
-
-}
-
-}
-
-const {
-error:insertError
-}=
+const {error:insertError}=
 await supabase
 .from("friend_requests")
 .insert({
@@ -2053,191 +754,115 @@ sender_id:user.id,
 receiver_id:profile.id,
 status:"pending"
 });
-
 if(insertError){
-
-showError(insertError.message);
-
-return;
-
+if(insertError.code==="23505"){
+showError(
+"A friend request already exists."
+);
+}else{
+showError(
+insertError.message
+);
 }
-
+return;
+}
 input.value="";
-
 showError(
 "Friend request sent."
 );
-
 });
-
 /* =========================================================
 FRIEND REQUESTS
 ========================================================= */
-
 document.getElementById("friendRequestsButton")
 .addEventListener(
 "click",
 async()=>{
-
 const panel=
 document.getElementById("requestsPanel");
-
 if(panel.style.display==="block"){
-
 panel.style.display="none";
-
 return;
-
 }
-
 panel.style.display="block";
-
 await loadFriendRequests();
-
 });
-
 async function loadFriendRequests(){
-
 if(!user)return;
-
 const list=
 document.getElementById("requestsList");
-
 list.innerHTML="Loading...";
-
-const {
-data:requests,
-error
-}=
+const {data:requests,error}=
 await supabase
 .from("friend_requests")
 .select("*")
 .eq("receiver_id",user.id)
 .eq("status","pending");
-
 if(error){
-
 list.innerHTML=
-`<div style="color:#ff6666">
+`<div style="color:#c00">
 ${escapeHTML(error.message)}
 </div>`;
-
 return;
-
 }
-
-if(
-!requests ||
-requests.length===0
-){
-
+if(!requests||requests.length===0){
 list.innerHTML=
-"<p style='font-size:13px;color:#777'>No pending requests.</p>";
-
+"<p style='font-size:13px;color:#666'>No pending requests.</p>";
 return;
-
 }
-
 const ids=
 requests.map(
-request=>
-request.sender_id
+request=>request.sender_id
 );
-
-const {
-data:requestProfiles
-}=
+const {data:profiles}=
 await supabase
 .from("profiles")
-.select("id,email,nickname")
+.select("id,email")
 .in("id",ids);
-
-(requestProfiles||[]).forEach(profile=>{
-
-profilesCache.set(
-String(profile.id),
-profile
-);
-
-});
-
 list.innerHTML="";
-
 requests.forEach(request=>{
-
 const sender=
-(requestProfiles||[])
+(profiles||[])
 .find(
 profile=>
-String(profile.id) ===
-String(request.sender_id)
+profile.id===request.sender_id
 );
-
 const row=
 document.createElement("div");
-
 row.className="request";
-
 row.innerHTML=`
-
-<div class="request-nickname">
-
-${escapeHTML(
-sender?.nickname||
-sender?.email||
-"User"
-)}
-
+<div class="request-email">
+${escapeHTML(sender?.email||"Unknown user")}
 </div>
-
 <div class="request-actions">
-
 <button
 data-action="accept"
-data-id="${escapeHTML(request.id)}"
->
+data-id="${request.id}">
 Accept
 </button>
-
 <button
 data-action="decline"
-data-id="${escapeHTML(request.id)}"
->
+data-id="${request.id}">
 Decline
 </button>
-
 </div>
-
 `;
-
 list.appendChild(row);
-
 });
-
 }
-
-/* =========================================================
-REQUEST ACTIONS
-========================================================= */
-
 document.getElementById("requestsList")
 .addEventListener(
 "click",
 async event=>{
-
 const button=
 event.target.closest("button");
-
 if(!button)return;
-
-const id=button.dataset.id;
-const action=button.dataset.action;
-
+const id=
+button.dataset.id;
+const action=
+button.dataset.action;
 if(action==="accept"){
-
-const {
-error
-}=
+const {error}=
 await supabase
 .from("friend_requests")
 .update({
@@ -2245,58 +870,33 @@ status:"accepted"
 })
 .eq("id",id)
 .eq("receiver_id",user.id);
-
 if(error){
-
 showError(error.message);
-
 return;
-
 }
-
-await loadProfiles();
 await loadFriends();
 await loadFriendRequests();
-
 }
-
 if(action==="decline"){
-
-const {
-error
-}=
+const {error}=
 await supabase
 .from("friend_requests")
 .delete()
 .eq("id",id)
 .eq("receiver_id",user.id);
-
 if(error){
-
 showError(error.message);
-
 return;
-
 }
-
 await loadFriendRequests();
-
 }
-
 });
-
 /* =========================================================
-LOAD BOARDS
+LOAD BOXES
 ========================================================= */
-
 async function loadBoards(){
-
 if(!user)return;
-
-const {
-data,
-error
-}=
+const {data,error}=
 await supabase
 .from("boxes")
 .select(`
@@ -2315,1268 +915,643 @@ box_id,
 title,
 url,
 image,
-visibility,
-owner_nickname
+visibility
 )
 `)
 .order("created_at");
-
 if(error){
-
-console.error(
-"Load boards error:",
-error
-);
-
+console.error(error);
 showError(error.message);
-
 return;
-
 }
-
-await loadProfiles();
-
 boards=
 (data||[])
 .map(box=>{
-
 const items=
 Array.isArray(box.box_items)
 ?box.box_items
 :[];
-
-const ownerNickname=
-getNickname(box.owner_id);
-
 return{
-
 ...box,
-
 w:Number(box.width)||430,
-
 h:Number(box.height)||270,
-
-ownerNickname:
-ownerNickname||"",
-
-items:
-items.filter(
-item=>
+items:items.filter(item=>
 item.visibility==="public"||
-String(box.owner_id)===
-String(user.id)
+box.owner_id===user.id
 )
-
 };
-
 });
-
 render();
-
 }
-
 /* =========================================================
 NEW BOX
 ========================================================= */
-
 document.getElementById("newBoxButton")
 .addEventListener(
 "click",
 async()=>{
-
 if(!user)return;
-
 const ownBoards=
-boards
-.filter(
-b=>
-String(b.owner_id)===
-String(user.id)
-)
-.sort(
-(a,b)=>
-new Date(a.created_at||0)-
-new Date(b.created_at||0)
+boards.filter(
+b=>b.owner_id===user.id
 );
-
-const boxWidth=430;
-const boxHeight=270;
-const gap=40;
-
-const index=ownBoards.length;
-
-const column=index%3;
-const row=Math.floor(index/3);
-
-const x=
-120+
-column*(boxWidth+gap);
-
-const y=
-120+
-row*(boxHeight+gap);
-
-const {
-data,
-error
-}=
+const previous=
+ownBoards.length
+?ownBoards[ownBoards.length-1]
+:null;
+let x=120;
+let y=120;
+if(previous){
+x=
+Number(previous.x)+
+Number(previous.w)+
+40;
+y=
+Number(previous.y);
+}
+const {data,error}=
 await supabase
 .from("boxes")
 .insert({
 owner_id:user.id,
 title:"New box",
-x,
-y,
-width:boxWidth,
-height:boxHeight,
+x:x,
+y:y,
+width:430,
+height:270,
 visibility:"public"
 })
 .select()
 .single();
-
 if(error){
-
 showError(error.message);
-
 return;
-
 }
-
 boards.push({
-
 ...data,
-
-w:boxWidth,
-
-h:boxHeight,
-
-ownerNickname:
-currentProfile?.nickname||"",
-
+w:Number(data.width)||430,
+h:Number(data.height)||270,
 items:[]
-
 });
-
 selectedBoardId=data.id;
-
 render();
-
 });
-
 /* =========================================================
 NEW URL
 ========================================================= */
-
 document.getElementById("newUrlButton")
 .addEventListener(
 "click",
 ()=>{
-
-if(!user)return;
-
 const ownBoxes=
 boards.filter(
-board=>
-String(board.owner_id)===
-String(user.id)
+board=>board.owner_id===user.id
 );
-
 if(!ownBoxes.length){
-
 showError(
 "Create a box first."
 );
-
 return;
-
 }
-
 openURLModal(
 ownBoxes[ownBoxes.length-1]
 );
-
 });
-
 /* =========================================================
-ADD URL MODAL
+URL MODAL
 ========================================================= */
-
 function openURLModal(board){
-
 openModal(`
-
-<h2>Add URL</h2>
-
+<h2>
+Add URL
+</h2>
 <input
 id="urlTitle"
 placeholder="Name (optional)"
 >
-
 <input
 id="urlAddress"
 placeholder="https://example.com"
 >
-
 <input
 id="urlImage"
 placeholder="Image URL (optional)"
 >
-
 <p>
 Who should be able to see this URL?
 </p>
-
 <div class="choice">
-
 <button id="publicURLButton">
 Public
 </button>
-
 <button id="privateURLButton">
 Private
 </button>
-
 </div>
-
 <div class="modal-actions">
-
 <button id="cancelURLButton">
 Cancel
 </button>
-
 </div>
-
 `);
-
 document.getElementById("cancelURLButton")
 .onclick=closeModal;
-
 document.getElementById("publicURLButton")
 .onclick=
 ()=>saveURL(board,"public");
-
 document.getElementById("privateURLButton")
 .onclick=
 ()=>saveURL(board,"private");
-
 }
-
 /* =========================================================
 SAVE URL
 ========================================================= */
-
-async function saveURL(
-board,
-visibility
-){
-
+async function saveURL(board,visibility){
 let url=
 document.getElementById("urlAddress")
-.value
-.trim();
-
+.value.trim();
 const title=
 document.getElementById("urlTitle")
-.value
-.trim();
-
+.value.trim();
 const image=
 document.getElementById("urlImage")
-.value
-.trim();
-
+.value.trim();
 if(!url){
-
-showError("Enter a URL.");
-
+showError(
+"Enter a URL."
+);
 return;
-
 }
-
 if(!/^https?:\/\//i.test(url)){
-
 url="https://"+url;
-
 }
-
-await loadCurrentProfile();
-
-const ownerNickname=
-currentProfile?.nickname||
-getNickname(board.owner_id)||
-"";
-
-const insertData={
-
-box_id:board.id,
-
-title:title||url,
-
-url,
-
-image:image||null,
-
-visibility,
-
-owner_nickname:ownerNickname
-
-};
-
-let {
-data,
-error
-}=
-await supabase
-.from("box_items")
-.insert(insertData)
-.select()
-.single();
-
-if(
-error &&
-(
-error.code==="42703" ||
-String(error.message)
-.toLowerCase()
-.includes("owner_nickname")
-)
-){
-
-const fallback=
+const {data,error}=
 await supabase
 .from("box_items")
 .insert({
 box_id:board.id,
 title:title||url,
-url,
+url:url,
 image:image||null,
-visibility
+visibility:visibility
 })
 .select()
 .single();
-
-data=fallback.data;
-error=fallback.error;
-
-}
-
 if(error){
-
-showError(
-"Could not save URL: "+
-error.message
-);
-
+showError(error.message);
 return;
-
 }
-
-if(!data){
-
-showError(
-"Could not save URL."
-);
-
-return;
-
+/* Keep every previous URL */
+if(!Array.isArray(board.items)){
+board.items=[];
 }
-
-data.owner_nickname=
-ownerNickname;
-
-board.ownerNickname=
-ownerNickname||
-board.ownerNickname||
-"";
-
 board.items.push(data);
-
 closeModal();
-
 render();
-
 }
-
 /* =========================================================
 DELETE URL
 ========================================================= */
-
-async function deleteURL(
-board,
-itemId
-){
-
-if(!confirm("Delete this URL?"))return;
-
-const {
-error
-}=
+async function deleteURL(board,itemId){
+if(!confirm("Delete this URL?")){
+return;
+}
+const {error}=
 await supabase
 .from("box_items")
 .delete()
 .eq("id",itemId)
 .eq("box_id",board.id);
-
 if(error){
-
-showError(
-"Could not delete URL: "+
-error.message
-);
-
+showError(error.message);
 return;
-
 }
-
 board.items=
 board.items.filter(
 item=>
 String(item.id)!==
 String(itemId)
 );
-
 render();
-
 }
-
 /* =========================================================
 DELETE BOX
 ========================================================= */
-
 async function deleteBoard(board){
-
 if(!user){
-
-showError(
-"You must be logged in."
-);
-
 return;
-
 }
-
-if(
-String(board.owner_id)!==
-String(user.id)
-){
-
+if(board.owner_id!==user.id){
 showError(
 "You can only delete your own boxes."
 );
-
 return;
-
 }
-
 if(!confirm(
 "Delete this box and all of its URLs?"
-))return;
-
-const {
-error:itemError
-}=
+)){
+return;
+}
+/*
+First delete URLs.
+*/
+const {error:itemError}=
 await supabase
 .from("box_items")
 .delete()
 .eq("box_id",board.id);
-
 if(itemError){
-
 showError(
-"Could not delete the URLs in this box: "+
+"Could not delete URLs: "+
 itemError.message
 );
-
 return;
-
 }
-
-const {
-data:deleted,
-error:boxError
-}=
+/*
+IMPORTANT FIX:
+Delete using BOTH the box ID and owner ID.
+This prevents another user's box from being deleted,
+but allows your own box to be removed.
+*/
+const {data:deleted,error:boxError}=
 await supabase
 .from("boxes")
 .delete()
 .eq("id",board.id)
 .eq("owner_id",user.id)
 .select();
-
 if(boxError){
-
 showError(
 "Could not delete box: "+
 boxError.message
 );
-
 return;
-
 }
-
-if(
-!deleted ||
-deleted.length===0
-){
-
+/*
+If Supabase returned no deleted row,
+the database RLS policy is blocking deletion.
+*/
+if(!deleted||deleted.length===0){
 showError(
-"Supabase did not allow this box to be deleted. Check the DELETE policy for the boxes table."
+"The box was not deleted. Your Supabase RLS policy may be blocking DELETE operations on the boxes table."
 );
-
 return;
-
 }
-
 boards=
 boards.filter(
 b=>
 String(b.id)!==
 String(board.id)
 );
-
-if(
-String(selectedBoardId)===
-String(board.id)
-){
-
+if(selectedBoardId===board.id){
 selectedBoardId=null;
-
 }
-
 render();
-
 }
-
-/* =========================================================
-UPDATE BOARD ELEMENT
-========================================================= */
-
-function updateBoardElement(board){
-
-const element=
-document.querySelector(
-`.board[data-id="${CSS.escape(String(board.id))}"]`
-);
-
-if(!element)return;
-
-element.style.left=
-Number(board.x)+"px";
-
-element.style.top=
-Number(board.y)+"px";
-
-element.style.width=
-Number(board.w)+"px";
-
-element.style.height=
-Number(board.h)+"px";
-
-}
-
 /* =========================================================
 RENDER
 ========================================================= */
-
 function render(){
-
 const world=
 document.getElementById("world");
-
 world.style.transform=
 `translate(${panX}px,${panY}px) scale(${zoom})`;
-
 world.innerHTML="";
-
-if(!user)return;
-
 boards.forEach(board=>{
-
 const element=
 document.createElement("section");
-
 element.className=
 "board"+
 (
-String(selectedBoardId)===
-String(board.id)
+selectedBoardId===board.id
 ?" selected"
 :""
 );
-
 element.dataset.id=
 board.id;
-
 element.style.left=
 Number(board.x)+"px";
-
 element.style.top=
 Number(board.y)+"px";
-
 element.style.width=
 Number(board.w)+"px";
-
 element.style.height=
 Number(board.h)+"px";
-
 const owner=
-String(board.owner_id)===
-String(user.id);
-
-let boardNickname=
-board.ownerNickname||
-"";
-
-if(
-owner &&
-currentProfile?.nickname
-){
-
-boardNickname=
-currentProfile.nickname;
-
-}
-
-if(!boardNickname){
-
-boardNickname=
-getNickname(board.owner_id)||
-"";
-
-}
-
+board.owner_id===user?.id;
 element.innerHTML=`
-
 <div class="board-title">
 ${escapeHTML(board.title)}
 </div>
-
 ${
 owner
-?
-`
+?`
 <div class="board-actions">
-
 <button
 class="trash-button"
 title="Delete box"
-data-delete-board="${escapeHTML(board.id)}"
->
-×
+data-delete-board="${board.id}">
+🗑
 </button>
-
 </div>
 `
 :""
 }
-
 <div class="board-inner">
-
 ${
 owner
-?
-`
+?`
 <button
 class="add-url"
-data-add-url="${escapeHTML(board.id)}"
->
+data-add-url="${board.id}">
 + Add URL
 </button>
 `
 :""
 }
-
 ${
-board.items.map(item=>{
-
-const itemNickname=
-item.owner_nickname||
-boardNickname||
-"";
-
-return `
-
+board.items.map(item=>`
 <div
 class="item"
-data-item-id="${escapeHTML(item.id)}"
-data-url="${escapeHTML(item.url)}"
->
-
+data-item-id="${item.id}"
+data-url="${escapeHTML(item.url)}">
 ${
 item.image
-?
-`
+?`
 <img
 src="${escapeHTML(item.image)}"
 alt=""
-onerror="this.style.display='none'"
 >
 `
 :""
 }
-
-<div class="item-content">
-
-<div class="item-nickname">
-${escapeHTML(itemNickname)}
-</div>
-
-<div class="item-title">
+<span>
 ${escapeHTML(item.title||item.url)}
-</div>
-
-</div>
-
-<span class="item-visibility">
-${item.visibility==="public"?"Public":"Private"}
 </span>
-
+<span class="item-visibility">
+${item.visibility==="public"
+?"Public"
+:"Private"}
+</span>
 ${
 owner
-?
-`
+?`
 <button
 class="item-trash"
 title="Delete URL"
-data-delete-item="${escapeHTML(item.id)}"
->
-×
+data-delete-item="${item.id}">
+🗑
 </button>
 `
 :""
 }
-
 </div>
-
-`;
-
-}).join("")
+`).join("")
 }
-
 </div>
-
 ${
 owner
-?
-`
+?`
 <div class="resize"></div>
 `
 :""
 }
-
 `;
-
-/* =========================================================
-BOARD CLICK
-========================================================= */
-
+/* BOARD CLICK */
 element.addEventListener(
 "click",
 event=>{
-
 if(event.target.closest(".trash-button"))return;
 if(event.target.closest(".item-trash"))return;
 if(event.target.closest(".add-url"))return;
 if(event.target.closest(".resize"))return;
-
 selectedBoardId=board.id;
-
-document
-.querySelectorAll(".board")
-.forEach(b=>
-b.classList.remove("selected")
-);
-
-element.classList.add("selected");
-
 });
-
-/* =========================================================
-DELETE BOARD
-========================================================= */
-
-const deleteBoardButton=
+/* DELETE BOX BUTTON */
+const deleteButton=
 element.querySelector(
 "[data-delete-board]"
 );
-
-if(deleteBoardButton){
-
-deleteBoardButton.addEventListener(
+if(deleteButton){
+deleteButton.addEventListener(
 "click",
 async event=>{
-
-event.preventDefault();
 event.stopPropagation();
-
 await deleteBoard(board);
-
 });
-
 }
-
-/* =========================================================
-ADD URL
-========================================================= */
-
+/* ADD URL */
 const addButton=
 element.querySelector(
 "[data-add-url]"
 );
-
 if(addButton){
-
 addButton.addEventListener(
 "click",
 event=>{
-
-event.preventDefault();
 event.stopPropagation();
-
 openURLModal(board);
-
 });
-
 }
-
-/* =========================================================
-DELETE URL
-========================================================= */
-
-element
-.querySelectorAll("[data-delete-item]")
+/* DELETE URL */
+element.querySelectorAll(
+"[data-delete-item]"
+)
 .forEach(button=>{
-
 button.addEventListener(
 "click",
 async event=>{
-
-event.preventDefault();
 event.stopPropagation();
-
 await deleteURL(
 board,
 button.dataset.deleteItem
 );
-
 });
-
 });
-
-/* =========================================================
-OPEN URL
-========================================================= */
-
-element
-.querySelectorAll(".item")
+/* OPEN URL */
+element.querySelectorAll(
+".item"
+)
 .forEach(item=>{
-
 item.addEventListener(
 "click",
 event=>{
-
-if(event.target.closest(".item-trash"))return;
-
+if(event.target.closest(".item-trash")){
+return;
+}
 const url=
 item.dataset.url;
-
 if(url){
-
 window.open(
 url,
-"_blank",
-"noopener,noreferrer"
+"_blank"
 );
-
 }
-
 });
-
 });
-
-/* =========================================================
-CONTEXT MENU
-========================================================= */
-
+/* CONTEXT MENU */
 element.addEventListener(
 "contextmenu",
 event=>{
-
 if(!owner)return;
-
 event.preventDefault();
-
 contextBoardId=
 board.id;
-
 const menu=
 document.getElementById("contextMenu");
-
 menu.style.display="block";
-
 menu.style.left=
 event.clientX+"px";
-
 menu.style.top=
 event.clientY+"px";
-
 });
-
-/* =========================================================
-INDIVIDUAL BOARD MOVE + RESIZE
-========================================================= */
-
+/* MOVE / RESIZE */
 if(owner){
-
 element.addEventListener(
 "pointerdown",
 event=>{
-
-/*
-Ignore touch here because touch movement is handled
-by the workspace touch system.
-*/
-
 if(event.pointerType==="touch")return;
-
-/*
-Anything inside an item should never move the board.
-*/
-
 if(event.target.closest(".item"))return;
 if(event.target.closest(".add-url"))return;
 if(event.target.closest(".trash-button"))return;
-
-event.stopPropagation();
-
-const rect=
-element.getBoundingClientRect();
-
 if(event.target.closest(".resize")){
-
 resizing={
-
-id:String(board.id),
-
-pointerId:event.pointerId,
-
+id:board.id,
 startX:event.clientX,
-
 startY:event.clientY,
-
-width:Number(board.w)||430,
-
-height:Number(board.h)||270
-
+width:board.w,
+height:board.h
 };
-
 element.setPointerCapture(
 event.pointerId
 );
-
-event.preventDefault();
-
 return;
-
 }
-
 moving={
-
-id:String(board.id),
-
-pointerId:event.pointerId,
-
+id:board.id,
 startX:event.clientX,
-
 startY:event.clientY,
-
-x:Number(board.x)||0,
-
-y:Number(board.y)||0
-
+x:board.x,
+y:board.y
 };
-
 element.setPointerCapture(
 event.pointerId
 );
-
-selectedBoardId=board.id;
-
-element.classList.add("selected");
-
-event.preventDefault();
-
 });
-
 element.addEventListener(
 "pointermove",
 event=>{
-
-if(
-resizing &&
-resizing.id===String(board.id) &&
-resizing.pointerId===event.pointerId
-){
-
+if(resizing?.id===board.id){
 board.w=
 Math.max(
 180,
 resizing.width+
 (event.clientX-resizing.startX)/zoom
 );
-
 board.h=
 Math.max(
 120,
 resizing.height+
 (event.clientY-resizing.startY)/zoom
 );
-
-element.style.width=
-board.w+"px";
-
-element.style.height=
-board.h+"px";
-
-event.preventDefault();
-
+render();
 return;
-
 }
-
-if(
-moving &&
-moving.id===String(board.id) &&
-moving.pointerId===event.pointerId
-){
-
+if(moving?.id===board.id){
 board.x=
 moving.x+
 (event.clientX-moving.startX)/zoom;
-
 board.y=
 moving.y+
 (event.clientY-moving.startY)/zoom;
-
-element.style.left=
-board.x+"px";
-
-element.style.top=
-board.y+"px";
-
-event.preventDefault();
-
+render();
 }
-
 });
-
 element.addEventListener(
 "pointerup",
-async event=>{
-
-if(
-moving &&
-moving.id===String(board.id) &&
-moving.pointerId===event.pointerId
-){
-
-const finalX=
-Number(board.x);
-
-const finalY=
-Number(board.y);
-
-moving=null;
-
-try{
-
+async()=>{
+if(moving){
 await supabase
 .from("boxes")
 .update({
-x:finalX,
-y:finalY
+x:board.x,
+y:board.y
 })
 .eq("id",board.id)
 .eq("owner_id",user.id);
-
-}catch(error){
-
-console.error(
-"Could not save board position:",
-error
-);
-
 }
-
-}
-
-if(
-resizing &&
-resizing.id===String(board.id) &&
-resizing.pointerId===event.pointerId
-){
-
-const finalWidth=
-Number(board.w);
-
-const finalHeight=
-Number(board.h);
-
-resizing=null;
-
-try{
-
+if(resizing){
 await supabase
 .from("boxes")
 .update({
-width:finalWidth,
-height:finalHeight
+width:board.w,
+height:board.h
 })
 .eq("id",board.id)
 .eq("owner_id",user.id);
-
-}catch(error){
-
-console.error(
-"Could not save board size:",
-error
-);
-
 }
-
-}
-
-});
-
-element.addEventListener(
-"pointercancel",
-event=>{
-
-if(
-moving &&
-moving.id===String(board.id) &&
-moving.pointerId===event.pointerId
-){
-
 moving=null;
-
-}
-
-if(
-resizing &&
-resizing.id===String(board.id) &&
-resizing.pointerId===event.pointerId
-){
-
 resizing=null;
-
-}
-
 });
-
 }
-
+world.appendChild(element);
 });
-
+}
 /* =========================================================
 DESKTOP PAN
 ========================================================= */
-
 const workspace=
 document.getElementById("workspace");
-
 workspace.addEventListener(
 "pointerdown",
 event=>{
-
 if(event.pointerType==="touch")return;
-
 if(event.target.closest(".board"))return;
-
-if(event.target.closest("button"))return;
-
 panning={
-
 x:event.clientX,
-
 y:event.clientY,
-
 panX:panX,
-
 panY:panY
-
 };
-
-workspace.setPointerCapture?.(
-event.pointerId
-);
-
 });
-
-workspace.addEventListener(
+document.addEventListener(
 "pointermove",
 event=>{
-
 if(!panning)return;
-
 panX=
 panning.panX+
 event.clientX-
 panning.x;
-
 panY=
 panning.panY+
 event.clientY-
 panning.y;
-
-document.getElementById("world")
-.style.transform=
-`translate(${panX}px,${panY}px) scale(${zoom})`;
-
+render();
 });
-
-workspace.addEventListener(
+document.addEventListener(
 "pointerup",
 ()=>{
 panning=null;
 });
-
-workspace.addEventListener(
-"pointercancel",
-()=>{
-panning=null;
-});
-
 /* =========================================================
-TOUCH PAN + PINCH
+PINCH ZOOM
 ========================================================= */
-
 function distance(a,b){
-
 return Math.hypot(
 a.clientX-b.clientX,
 a.clientY-b.clientY
 );
-
 }
-
 function midpoint(a,b){
-
 return{
-
 x:(a.clientX+b.clientX)/2,
-
 y:(a.clientY+b.clientY)/2
-
 };
-
 }
-
 workspace.addEventListener(
 "pointerdown",
 event=>{
-
 if(event.pointerType!=="touch")return;
-
 pointers.set(
 event.pointerId,
 {
@@ -3584,63 +1559,40 @@ clientX:event.clientX,
 clientY:event.clientY
 }
 );
-
 if(pointers.size===1){
-
 if(!event.target.closest(".board")){
-
 panning={
-
 x:event.clientX,
-
 y:event.clientY,
-
 panX:panX,
-
 panY:panY
-
 };
-
 }
-
 }
-
 if(pointers.size===2){
-
 panning=null;
-
 const points=
 [...pointers.values()];
-
 pinchStartDistance=
 distance(
 points[0],
 points[1]
 );
-
 pinchStartZoom=zoom;
-
 pinchStartCenter=
 midpoint(
 points[0],
 points[1]
 );
-
 pinchStartPanX=panX;
 pinchStartPanY=panY;
-
 }
-
 });
-
 workspace.addEventListener(
 "pointermove",
 event=>{
-
 if(event.pointerType!=="touch")return;
-
 if(!pointers.has(event.pointerId))return;
-
 pointers.set(
 event.pointerId,
 {
@@ -3648,50 +1600,36 @@ clientX:event.clientX,
 clientY:event.clientY
 }
 );
-
 if(
-pointers.size===1 &&
+pointers.size===1&&
 panning
 ){
-
 panX=
 panning.panX+
 event.clientX-
 panning.x;
-
 panY=
 panning.panY+
 event.clientY-
 panning.y;
-
-document.getElementById("world")
-.style.transform=
-`translate(${panX}px,${panY}px) scale(${zoom})`;
-
+render();
 return;
-
 }
-
 if(pointers.size===2){
-
 const points=
 [...pointers.values()];
-
 const currentDistance=
 distance(
 points[0],
 points[1]
 );
-
 if(!pinchStartDistance)return;
-
 let newZoom=
 pinchStartZoom*
 (
 currentDistance/
 pinchStartDistance
 );
-
 newZoom=
 Math.max(
 0.25,
@@ -3700,16 +1638,13 @@ Math.min(
 newZoom
 )
 );
-
 const center=
 midpoint(
 points[0],
 points[1]
 );
-
 const rect=
 workspace.getBoundingClientRect();
-
 const worldX=
 (
 pinchStartCenter.x-
@@ -3717,7 +1652,6 @@ rect.left-
 pinchStartPanX
 )/
 pinchStartZoom;
-
 const worldY=
 (
 pinchStartCenter.y-
@@ -3725,93 +1659,61 @@ rect.top-
 pinchStartPanY
 )/
 pinchStartZoom;
-
 panX=
 center.x-
 rect.left-
 worldX*newZoom;
-
 panY=
 center.y-
 rect.top-
 worldY*newZoom;
-
 zoom=newZoom;
-
-document.getElementById("world")
-.style.transform=
-`translate(${panX}px,${panY}px) scale(${zoom})`;
-
+render();
 }
-
 });
-
 function endTouch(event){
-
 if(event.pointerType!=="touch")return;
-
 pointers.delete(
 event.pointerId
 );
-
 if(pointers.size<2){
-
 pinchStartDistance=null;
-
 }
-
 if(pointers.size===0){
-
 panning=null;
-
 }
-
 }
-
 workspace.addEventListener(
 "pointerup",
 endTouch
 );
-
 workspace.addEventListener(
 "pointercancel",
 endTouch
 );
-
 /* =========================================================
 MOUSE WHEEL ZOOM
 ========================================================= */
-
 workspace.addEventListener(
 "wheel",
 event=>{
-
 event.preventDefault();
-
 const rect=
 workspace.getBoundingClientRect();
-
 const mouseX=
 event.clientX-
 rect.left;
-
 const mouseY=
 event.clientY-
 rect.top;
-
 const worldX=
-(mouseX-panX)/
-zoom;
-
+(mouseX-panX)/zoom;
 const worldY=
-(mouseY-panY)/
-zoom;
-
+(mouseY-panY)/zoom;
 const factor=
 event.deltaY<0
 ?1.1
 :0.9;
-
 zoom=
 Math.max(
 0.25,
@@ -3820,355 +1722,196 @@ Math.min(
 zoom*factor
 )
 );
-
 panX=
 mouseX-
 worldX*zoom;
-
 panY=
 mouseY-
 worldY*zoom;
-
-document.getElementById("world")
-.style.transform=
-`translate(${panX}px,${panY}px) scale(${zoom})`;
-
+render();
 },
-{
-passive:false
-}
+{passive:false}
 );
-
 /* =========================================================
-CONTEXT MENU CLOSE
+CONTEXT MENU
 ========================================================= */
-
 document.addEventListener(
 "pointerdown",
 event=>{
-
-if(
-!event.target.closest("#contextMenu")
-){
-
+if(!event.target.closest("#contextMenu")){
 document.getElementById("contextMenu")
 .style.display="none";
-
 }
-
 });
-
 /* =========================================================
 RENAME
 ========================================================= */
-
 document.getElementById("renameOption")
 .addEventListener(
 "click",
 async()=>{
-
 document.getElementById("contextMenu")
 .style.display="none";
-
 const board=
 boards.find(
-b=>
-String(b.id)===
-String(contextBoardId)
+b=>b.id===contextBoardId
 );
-
 if(!board)return;
-
-if(
-String(board.owner_id)!==
-String(user.id)
-){
-
-showError(
-"You can only rename your own boxes."
-);
-
-return;
-
-}
-
 openModal(`
-
-<h2>Rename box</h2>
-
+<h2>
+Rename box
+</h2>
 <input
 id="renameInput"
 value="${escapeHTML(board.title)}"
 >
-
 <div class="modal-actions">
-
 <button id="renameCancel">
 Cancel
 </button>
-
 <button id="renameSave">
 Save
 </button>
-
 </div>
-
 `);
-
 document.getElementById("renameCancel")
 .onclick=closeModal;
-
 document.getElementById("renameSave")
-.onclick=
-async()=>{
-
+.onclick=async()=>{
 const title=
-document
-.getElementById("renameInput")
-.value
-.trim();
-
+document.getElementById("renameInput")
+.value.trim();
 if(!title)return;
-
-const {
-error
-}=
+const {error}=
 await supabase
 .from("boxes")
 .update({
-title
+title:title
 })
 .eq("id",board.id)
 .eq("owner_id",user.id);
-
 if(error){
-
 showError(error.message);
-
 return;
-
 }
-
 board.title=title;
-
 closeModal();
-
 render();
-
 };
-
 });
-
 /* =========================================================
 DELETE CONTEXT MENU
 ========================================================= */
-
 document.getElementById("deleteOption")
 .addEventListener(
 "click",
 async()=>{
-
 document.getElementById("contextMenu")
 .style.display="none";
-
 const board=
 boards.find(
-b=>
-String(b.id)===
-String(contextBoardId)
+b=>b.id===contextBoardId
 );
-
 if(board){
-
 await deleteBoard(board);
-
 }
-
 });
-
 /* =========================================================
 SEARCH
 ========================================================= */
-
 document.getElementById("searchInput")
 .addEventListener(
 "input",
 event=>{
-
 const query=
 event.target.value
 .toLowerCase()
 .trim();
-
 document
 .querySelectorAll(".board")
 .forEach(element=>{
-
 const board=
 boards.find(
 b=>
 String(b.id)===
 String(element.dataset.id)
 );
-
 if(!board)return;
-
 const matches=
 !query||
-
-String(board.title||"")
+board.title
 .toLowerCase()
 .includes(query)||
-
 board.items.some(
 item=>
-
-String(item.title||"")
+(item.title||"")
 .toLowerCase()
 .includes(query)||
-
-String(item.url||"")
+(item.url||"")
 .toLowerCase()
 .includes(query)
-
 );
-
 element.style.opacity=
 matches
 ?"1"
 :"0.2";
-
 });
-
 });
-
 /* =========================================================
 SHARE
 ========================================================= */
-
 document.getElementById("shareButton")
 .addEventListener(
 "click",
 async()=>{
-
 const data={
-
 title:"Spaceboards",
-
 text:"Check out my Spaceboards!",
-
 url:window.location.href
-
 };
-
 try{
-
 if(navigator.share){
-
 await navigator.share(data);
-
 }else{
-
 await navigator.clipboard.writeText(
 window.location.href
 );
-
 alert(
 "Website link copied to clipboard."
 );
-
 }
-
 }catch(error){
-
 if(error.name!=="AbortError"){
-
 try{
-
 await navigator.clipboard.writeText(
 window.location.href
 );
-
 alert(
 "Website link copied to clipboard."
 );
-
 }catch(e){
-
 prompt(
 "Copy this link:",
 window.location.href
 );
-
 }
-
 }
-
-}
-
 });
-
 /* =========================================================
 MODAL CLOSE
 ========================================================= */
-
 document.getElementById("modalBackground")
 .addEventListener(
 "click",
 event=>{
-
-if(
-event.target.id===
-"modalBackground"
-){
-
+if(event.target.id==="modalBackground"){
 closeModal();
-
 }
-
 });
-
 /* =========================================================
-FRIENDS CLOSE
+INITIAL
 ========================================================= */
-
-document.getElementById("closeFriendsButton")
-.addEventListener(
-"click",
-()=>{
-
-document.getElementById("friendsPanel")
-.style.display="none";
-
-});
-
-/* =========================================================
-REQUESTS CLOSE
-========================================================= */
-
-document.getElementById("closeRequestsButton")
-.addEventListener(
-"click",
-()=>{
-
-document.getElementById("requestsPanel")
-.style.display="none";
-
-});
-
-/* =========================================================
-INITIAL AUTH UI
-========================================================= */
-
-updateAuthUI();
-
-/* =========================================================
-START
-========================================================= */
-
-initializeApp();
-
+render();
 </script>
-
 </body>
 </html>
