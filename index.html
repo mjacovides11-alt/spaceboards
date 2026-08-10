@@ -2570,16 +2570,19 @@ function openURLModal(board){
         url = "https://" + url;
       }
 
-      if(titleInput.value || imageInput.value)return;
+if(titleInput.value || imageInput.value)return;
 
-      statusText.style.display = "block";
+statusText.style.display = "block";
 
-      const preview =
-        await fetchURLPreview(url);
+const preview =
+  await fetchURLPreview(url);
 
-      statusText.style.display = "none";
+statusText.style.display = "none";
 
-      if(preview){
+alert("Preview result: " + JSON.stringify(preview));
+
+if(preview){
+
 
         if(!titleInput.value && preview.title){
           titleInput.value = preview.title;
