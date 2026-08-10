@@ -4583,6 +4583,8 @@ workspace.addEventListener(
   "pointermove",
   event=>{
 
+    if(mobileListMode)return;
+
     if(
       event.pointerType !== "touch"
     ){
@@ -4598,6 +4600,7 @@ workspace.addEventListener(
       return;
 
     }
+
 
     pointers.set(
       event.pointerId,
