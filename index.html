@@ -3275,45 +3275,129 @@ function render(){
       }
     );
 
-    /*
-      ========================================================
-      DOUBLE CLICK TO RENAME
-      ========================================================
-    */
+    /* DOUBLE CLICK TO RENAME */
 
-    element.addEventListener(
-      "dblclick",
-      event=>{
+element.addEventListener("dblclick", async event => {
 
-        /*
-          Do NOT rename when double-clicking
-          an item, button or resize handle.
-        */
+    if(!owner) return;
 
-        if(
-          event.target.closest(".item") ||
-          event.target.closest("button") ||
-          event.target.closest(".resize")
-        ){
+    // Don't rename when double-clicking buttons, URLs, or resize handle
+    if(event.target.closest(".item")) return;
+    if(event.target.closest(".add-url")) return;
+    if(event.target.closest(".trash-button")) return;
+    if(event.target.closest(".resize")) return;
 
-          return;
+    event.preventDefault();
+    event.stopPropagation();
 
+    openModal(`
+
+        <h2>Rename box</h2>
+
+        <input
+            id="renameInput"
+            type="text"
+            value="${escapeHTML(board.title)}"
+            maxlength="100"
+        >
+
+        <div class="modal-actions">
+
+            <button id="renameCancel">
+                Cancel
+            </button>
+
+            <button id="renameSave">
+                Save
+            </button>
+
+        </div>
+
+    `);
+
+    const input =
+        document.getElementById("renameInput");
+
+    const cancelButton =
+        document.getElementById("renameCancel");
+
+    const saveButton =
+        document.getElementById("renameSave");
+
+    cancelButton.onclick = () => {
+        closeModal();
+    };
+
+    async function saveRename(){
+
+        const title =
+            input.value.trim();
+
+        if(!title){
+            showError("Enter a name for the box.");
+            return;
         }
 
-        if(!owner){
+        saveButton.disabled = true;
 
-          return;
+        const {
+            error
+        } = await supabase
+            .from("boxes")
+            .update({
+                title: title
+            })
+            .eq("id", board.id)
+            .eq("owner_id", user.id);
 
+        if(error){
+
+            console.error(
+                "Rename box error:",
+                error
+            );
+
+            saveButton.disabled = false;
+
+            showError(
+                "Could not rename box: " +
+                error.message
+            );
+
+            return;
         }
 
-        event.preventDefault();
-        event.stopPropagation();
+        board.title = title;
 
-        openRenameModal(board);
+        closeModal();
 
-      }
+        render();
+    }
+
+    saveButton.onclick = saveRename;
+
+    input.addEventListener(
+        "keydown",
+        event => {
+
+            if(event.key === "Enter"){
+                saveRename();
+            }
+
+            if(event.key === "Escape"){
+                closeModal();
+            }
+
+        }
     );
 
+    setTimeout(() => {
+        input.focus();
+        input.select();
+    }, 50);
+
+});
+    
     /*
       ========================================================
       RIGHT CLICK
