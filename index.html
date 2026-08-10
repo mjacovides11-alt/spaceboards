@@ -888,13 +888,14 @@ APP
       New
     </button>
 
-    <button
-      id="newUrlButton"
+       <button
+      id="addFriendsPanelButton"
       class="top-button"
       type="button"
     >
-      Add URL
+      Add Friends
     </button>
+
 
     <button
       id="friendRequestsButton"
@@ -2527,40 +2528,28 @@ document
   );
 
 /* =========================================================
-ADD URL BUTTON
+ADD FRIENDS BUTTON
 ========================================================= */
 
 document
-  .getElementById("newUrlButton")
+  .getElementById("addFriendsPanelButton")
   .addEventListener(
     "click",
     ()=>{
 
       if(!user)return;
 
-      const ownBoxes =
-        boards.filter(
-          board =>
-            String(board.owner_id) ===
-            String(user.id)
-        );
+      const panel =
+        document.getElementById("friendsPanel");
 
-      if(!ownBoxes.length){
-
-        showError(
-          "Create a box first."
-        );
-
-        return;
-
-      }
-
-      openURLModal(
-        ownBoxes[ownBoxes.length - 1]
-      );
+      panel.style.display =
+        panel.style.display === "block"
+          ? "none"
+          : "block";
 
     }
   );
+
 
 /* =========================================================
 URL PREVIEW
