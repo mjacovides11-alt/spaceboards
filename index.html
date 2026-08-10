@@ -3478,7 +3478,7 @@ element.addEventListener("dblclick", event => {
     */
 
     const deleteBoardButton =
-    element.querySelector("[data-delete-board]");
+element.querySelector('[data-action="delete-board"]');
 
 if(deleteBoardButton){
 
@@ -3489,26 +3489,14 @@ if(deleteBoardButton){
             event.preventDefault();
             event.stopPropagation();
 
-            const boardId =
-                deleteBoardButton.dataset.deleteBoard;
-
-            const boardToDelete =
-                boards.find(
-                    b => String(b.id) === String(boardId)
-                );
-
-            if(!boardToDelete){
-                showError("Box not found.");
-                return;
-            }
-
-            await deleteBoard(boardToDelete);
+            await deleteBoard(board);
 
         }
     );
 
 }
 
+    
     /*
       ========================================================
       ADD URL
