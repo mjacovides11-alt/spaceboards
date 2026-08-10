@@ -2548,8 +2548,14 @@ function openURLModal(board){
 
   document
     .getElementById("urlAddress")
-    .addEventListener("blur", async ()=>{
+    .addEventListener("input", ()=>{
 
+      clearTimeout(window._previewTimer);
+
+      window._previewTimer =
+        setTimeout(async ()=>{
+
+  
       const titleInput =
         document.getElementById("urlTitle");
 
@@ -2579,8 +2585,7 @@ statusText.style.display = "none";
 
 alert("Preview result: " + JSON.stringify(preview));
 
-if(preview){
-
+      if(preview){
 
         if(!titleInput.value && preview.title){
           titleInput.value = preview.title;
@@ -2592,9 +2597,12 @@ if(preview){
 
       }
 
+        },800);
+
     });
 
 }
+
 
 
 /* =========================================================
