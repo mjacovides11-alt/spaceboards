@@ -1689,7 +1689,7 @@ if(sessionResult.data.session){
   await loadProfiles();
   await loadFriends();
   await loadBoards();
-  await loadFriendRequests();
+    await loadFriendRequests();
 
   updateProfileDisplay();
 
@@ -1698,9 +1698,12 @@ if(sessionResult.data.session){
 
   maybeAskMobileMode();
 
+  checkForSharedURL();
+
 }else{
 
   user = null;
+
 
 
   document.getElementById("authScreen")
