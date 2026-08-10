@@ -3079,6 +3079,93 @@ element.classList.add("selected");
 
 });
 
+/* DOUBLE CLICK TO RENAME */
+
+element.addEventListener("dblclick", event => {
+
+    if (!owner) return;
+
+    if (event.target.closest(".item")) return;
+    if (event.target.closest(".add-url")) return;
+    if (event.target.closest(".trash-button")) return;
+    if (event.target.closest(".resize")) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    contextBoardId = board.id;
+
+    openModal(`
+        <h2>Rename box</h2>
+
+        <input
+            id="renameInput"
+            value="${escapeHTML(board.title)}"
+        >
+
+        <div class="modal-actions">
+
+            <button id="renameCancel">
+                Cancel
+            </button>
+
+            <button id="renameSave">
+                Save
+            </button>
+
+        </div>
+    `);
+
+    document.getElementById("renameCancel").onclick = closeModal;
+
+    document.getElementById("renameSave").onclick = async () => {
+
+        const input = document.getElementById("renameInput");
+
+        const title = input.value.trim();
+
+        if (!title) return;
+
+        const { error } = await supabase
+            .from("boxes")
+            .update({
+                title: title
+            })
+            .eq("id", board.id)
+            .eq("owner_id", user.id);
+
+        if (error) {
+
+            showError(error.message);
+
+            return;
+
+        }
+
+        board.title = title;
+
+        closeModal();
+
+        render();
+
+    };
+
+    setTimeout(() => {
+
+        const input =
+            document.getElementById("renameInput");
+
+        if (input) {
+
+            input.focus();
+            input.select();
+
+        }
+
+    }, 50);
+
+});
+
 /* DELETE BOARD */
 
 const deleteBoardButton=
