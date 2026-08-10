@@ -2581,7 +2581,7 @@ async function fetchURLPreview(url){
 
 }catch(error){
 
-    alert("Preview fetch failed: " + error.message);
+    console.error("Preview fetch failed:", error);
 
     return null;
 
@@ -2589,6 +2589,7 @@ async function fetchURLPreview(url){
 
 
 }
+
 
 /* =========================================================
 URL MODAL
