@@ -2429,8 +2429,54 @@ document
   );
 
 /* =========================================================
+URL PREVIEW
+========================================================= */
+
+async function fetchURLPreview(url){
+
+  try{
+
+    const response =
+      await fetch(
+        `https://api.microlink.io/?url=${encodeURIComponent(url)}`
+      );
+
+    const result =
+      await response.json();
+
+    if(result.status !== "success")return null;
+
+    return {
+
+      title:
+        result.data?.title || "",
+
+      image:
+        result.data?.image?.url || ""
+
+    };
+
+  }catch(error){
+
+    console.error(
+      "Preview fetch failed:",
+      error
+    );
+
+    return null;
+
+  }
+
+}
+
+/* =========================================================
 URL MODAL
 ========================================================= */
+
+function openURLModal(board){
+
+
+
 
 function openURLModal(board){
 
