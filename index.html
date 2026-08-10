@@ -1295,12 +1295,23 @@ document
     "click",
     async()=>{
 
+      const rememberMe =
+        document
+          .getElementById("rememberMeCheckbox")
+          .checked;
+
+      localStorage.setItem(
+        "spaceboards_remember",
+        rememberMe ? "true" : "false"
+      );
+
       const email =
         document
           .getElementById("authEmail")
           .value
           .trim()
           .toLowerCase();
+
 
       const password =
         document
