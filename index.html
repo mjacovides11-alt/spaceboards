@@ -2694,129 +2694,61 @@ DELETE BOX
 
 async function deleteBoard(board){
 
-  if(!user){
+    if(!user){
+        showError("You must be logged in.");
+        return;
+    }
 
-    showError(
-      "You must be logged in."
+    if(String(board.owner_id) !== String(user.id)){
+        showError("You can only delete your own boxes.");
+        return;
+    }
+
+    if(!confirm("Delete this box and all of its URLs?")){
+        return;
+    }
+
+    // Delete the URLs first
+    const {
+        error: itemError
+    } = await supabase
+        .from("box_items")
+        .delete()
+        .eq("box_id", board.id);
+
+    if(itemError){
+        console.error("Delete items error:", itemError);
+        showError("Could not delete the URLs: " + itemError.message);
+        return;
+    }
+
+    // Delete the box
+    const {
+        error: boxError
+    } = await supabase
+        .from("boxes")
+        .delete()
+        .eq("id", board.id)
+        .eq("owner_id", user.id);
+
+    if(boxError){
+        console.error("Delete box error:", boxError);
+        showError("Could not delete box: " + boxError.message);
+        return;
+    }
+
+    // Remove it locally
+    boards = boards.filter(
+        b => String(b.id) !== String(board.id)
     );
 
-    return;
+    if(String(selectedBoardId) === String(board.id)){
+        selectedBoardId = null;
+    }
 
-  }
+    contextBoardId = null;
 
-  if(
-    String(board.owner_id) !==
-    String(user.id)
-  ){
-
-    showError(
-      "You can only delete your own boxes."
-    );
-
-    return;
-
-  }
-
-  if(
-    !confirm(
-      "Delete this box and all of its URLs?"
-    )
-  ){
-
-    return;
-
-  }
-
-  /*
-    First delete the URLs.
-  */
-
-  const {
-    error:itemError
-  } =
-    await supabase
-      .from("box_items")
-      .delete()
-      .eq("box_id",board.id);
-
-  if(itemError){
-
-    showError(
-      "Could not delete the URLs in this box: " +
-      itemError.message
-    );
-
-    return;
-
-  }
-
-  /*
-    Then delete the box itself.
-  */
-
-  const {
-    data:deleted,
-    error:boxError
-  } =
-    await supabase
-      .from("boxes")
-      .delete()
-      .eq("id",board.id)
-      .eq("owner_id",user.id)
-      .select();
-
-  if(boxError){
-
-    showError(
-      "Could not delete box: " +
-      boxError.message
-    );
-
-    return;
-
-  }
-
-  /*
-    IMPORTANT:
-    If Supabase returns no deleted row,
-    the database RLS policy is blocking it.
-  */
-
-  if(
-    !deleted ||
-    deleted.length === 0
-  ){
-
-    showError(
-      "The box could not be deleted. " +
-      "Supabase is blocking the DELETE operation. " +
-      "Check the DELETE policy on the boxes table."
-    );
-
-    return;
-
-  }
-
-  boards =
-    boards.filter(
-      b =>
-        String(b.id) !==
-        String(board.id)
-    );
-
-  if(
-    String(selectedBoardId) ===
-    String(board.id)
-  ){
-
-    selectedBoardId = null;
-
-  }
-
-  contextBoardId = null;
-
-  render();
-
+    render();
 }
 
 /* =========================================================
