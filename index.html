@@ -3447,7 +3447,7 @@ function render(){
           Delete button.
         */
 
-        if(
+                if(
           target.closest(
             '[data-action="delete-board"]'
           )
@@ -3456,6 +3456,23 @@ function render(){
           return;
 
         }
+
+        if(
+          target.closest(
+            '[data-action="rename-title"]'
+          )
+        ){
+
+          if(owner){
+
+            openRenameModal(board);
+
+          }
+
+          return;
+
+        }
+
 
         /*
           Add URL.
