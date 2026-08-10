@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
 
 <meta
@@ -41,7 +42,9 @@ border:0;
 display:none!important;
 }
 
-/* AUTH */
+/* =========================================================
+AUTH
+========================================================= */
 
 #authScreen{
 position:fixed;
@@ -134,7 +137,9 @@ font-size:13px;
 color:#ff6666;
 }
 
-/* TOP BAR */
+/* =========================================================
+TOP BAR
+========================================================= */
 
 #app{
 position:fixed;
@@ -219,7 +224,9 @@ text-overflow:ellipsis;
 white-space:nowrap;
 }
 
-/* WORKSPACE */
+/* =========================================================
+WORKSPACE
+========================================================= */
 
 #workspace{
 position:relative;
@@ -241,7 +248,9 @@ height:1px;
 transform-origin:0 0;
 }
 
-/* BOARDS */
+/* =========================================================
+BOARDS
+========================================================= */
 
 .board{
 position:absolute;
@@ -315,7 +324,9 @@ margin-bottom:10px;
 background:#ccc;
 }
 
-/* ITEMS */
+/* =========================================================
+ITEMS
+========================================================= */
 
 .item{
 position:relative;
@@ -381,7 +392,9 @@ height:25px;
 font-size:11px;
 }
 
-/* RESIZE */
+/* =========================================================
+RESIZE
+========================================================= */
 
 .resize{
 position:absolute;
@@ -390,7 +403,6 @@ bottom:0;
 width:22px;
 height:22px;
 cursor:nwse-resize;
-touch-action:none;
 }
 
 .resize::after{
@@ -404,7 +416,9 @@ border-right:2px solid #777;
 border-bottom:2px solid #777;
 }
 
-/* FRIENDS */
+/* =========================================================
+FRIENDS SIDEBAR
+========================================================= */
 
 #friendsPanel{
 position:absolute;
@@ -497,7 +511,9 @@ color:#ddd;
 background:#29292d;
 }
 
-/* REQUESTS */
+/* =========================================================
+REQUESTS
+========================================================= */
 
 #requestsPanel{
 display:none;
@@ -534,6 +550,10 @@ font-size:20px;
 line-height:30px;
 text-align:center;
 padding:0;
+}
+
+#closeRequestsButton:hover{
+background:#3a3a3f;
 }
 
 #requestsList{
@@ -573,12 +593,22 @@ background:#e8e8e8;
 color:#111;
 }
 
+.request-actions button[data-action="accept"]:hover{
+background:#ccc;
+}
+
 .request-actions button[data-action="decline"]{
 background:#29292d;
 color:#ddd;
 }
 
-/* MODAL */
+.request-actions button[data-action="decline"]:hover{
+background:#3a3a3f;
+}
+
+/* =========================================================
+MODAL
+========================================================= */
 
 #modalBackground{
 position:fixed;
@@ -616,6 +646,10 @@ background:#0f0f11;
 color:#eee;
 }
 
+#modal input::placeholder{
+color:#666;
+}
+
 #modal p{
 font-size:14px;
 color:#999;
@@ -636,6 +670,10 @@ color:#111;
 font-weight:600;
 }
 
+.choice button:hover{
+background:#ccc;
+}
+
 .modal-actions{
 display:flex;
 justify-content:flex-end;
@@ -652,12 +690,22 @@ color:#ddd;
 font-weight:600;
 }
 
+.modal-actions button:hover{
+background:#3a3a3f;
+}
+
 .modal-actions button:last-child{
 background:#e8e8e8;
 color:#111;
 }
 
-/* CONTEXT MENU */
+.modal-actions button:last-child:hover{
+background:#ccc;
+}
+
+/* =========================================================
+CONTEXT MENU
+========================================================= */
 
 #contextMenu{
 display:none;
@@ -684,7 +732,9 @@ color:#ddd;
 background:#29292d;
 }
 
-/* SCROLLBARS */
+/* =========================================================
+SCROLLBARS
+========================================================= */
 
 *{
 scrollbar-width:thin;
@@ -705,7 +755,13 @@ background:#444;
 border-radius:10px;
 }
 
-/* MOBILE */
+::-webkit-scrollbar-thumb:hover{
+background:#555;
+}
+
+/* =========================================================
+MOBILE
+========================================================= */
 
 @media(max-width:700px){
 
@@ -714,6 +770,7 @@ height:auto;
 min-height:60px;
 padding:10px;
 flex-wrap:wrap;
+background:#111113;
 }
 
 .logo{
@@ -748,9 +805,14 @@ font-size:14px;
 }
 
 </style>
+
 </head>
 
 <body>
+
+<!-- =======================================================
+AUTH SCREEN
+======================================================== -->
 
 <div id="authScreen">
 
@@ -758,7 +820,10 @@ font-size:14px;
 
 <h1>Spaceboards</h1>
 
-<p id="authDescription" class="auth-description">
+<p
+id="authDescription"
+class="auth-description"
+>
 Log in to Spaceboards.
 </p>
 
@@ -795,17 +860,26 @@ Create account
 
 </div>
 
-<div id="authError" class="auth-error"></div>
+<div
+id="authError"
+class="auth-error"
+></div>
 
 </div>
 
 </div>
+
+<!-- =======================================================
+APPLICATION
+======================================================== -->
 
 <div id="app">
 
 <div id="topbar">
 
-<div class="logo">Spaceboards</div>
+<div class="logo">
+Spaceboards
+</div>
 
 <input
 id="searchInput"
@@ -813,15 +887,31 @@ type="text"
 placeholder="Search..."
 >
 
-<button id="newBoxButton" class="top-button">New</button>
+<button
+id="newBoxButton"
+class="top-button"
+>
+New
+</button>
 
-<button id="newUrlButton" class="top-button">Add URL</button>
+<button
+id="newUrlButton"
+class="top-button"
+>
+Add URL
+</button>
 
-<button id="friendRequestsButton" class="top-button">
+<button
+id="friendRequestsButton"
+class="top-button"
+>
 Requests
 </button>
 
-<button id="shareButton" class="top-button">
+<button
+id="shareButton"
+class="top-button"
+>
 Share
 </button>
 
@@ -829,7 +919,10 @@ Share
 
 <div id="profileName"></div>
 
-<button id="logoutButton" class="top-button">
+<button
+id="logoutButton"
+class="top-button"
+>
 Log out
 </button>
 
@@ -842,8 +935,16 @@ Log out
 <div id="friendsPanel">
 
 <div class="friends-header">
+
 <span>Friends</span>
-<button id="closeFriendsButton" type="button">×</button>
+
+<button
+id="closeFriendsButton"
+type="button"
+>
+×
+</button>
+
 </div>
 
 <div id="addFriendArea">
@@ -870,7 +971,10 @@ Add friend
 
 <span>Friend requests</span>
 
-<button id="closeRequestsButton" type="button">
+<button
+id="closeRequestsButton"
+type="button"
+>
 ×
 </button>
 
@@ -884,17 +988,31 @@ Add friend
 
 </div>
 
+<!-- =======================================================
+CONTEXT MENU
+======================================================== -->
+
 <div id="contextMenu">
 
-<button id="renameOption" class="context-option">
+<button
+id="renameOption"
+class="context-option"
+>
 Rename
 </button>
 
-<button id="deleteOption" class="context-option">
+<button
+id="deleteOption"
+class="context-option"
+>
 Delete
 </button>
 
 </div>
+
+<!-- =======================================================
+MODAL
+======================================================== -->
 
 <div id="modalBackground">
 
@@ -904,9 +1022,7 @@ Delete
 
 <script type="module">
 
-import {
-createClient
-}
+import { createClient }
 from "https://esm.sh/@supabase/supabase-js@2";
 
 /* =========================================================
@@ -925,7 +1041,7 @@ SUPABASE_URL,
 SUPABASE_KEY,
 {
 auth:{
-persistSession:true,
+persistSession:false,
 autoRefreshToken:true,
 detectSessionInUrl:true
 }
@@ -962,10 +1078,6 @@ let pinchStartZoom=1;
 let pinchStartCenter=null;
 let pinchStartPanX=0;
 let pinchStartPanY=0;
-
-let authLoading=false;
-let appInitialized=false;
-let loginRequestId=0;
 
 /* =========================================================
 HELPERS
@@ -1004,29 +1116,8 @@ alert(message);
 
 }
 
-function setAuthError(message){
-
-document.getElementById("authError").textContent=
-message||"";
-
-}
-
-function showAuthScreen(){
-
-document.getElementById("authScreen").style.display=
-"flex";
-
-}
-
-function hideAuthScreen(){
-
-document.getElementById("authScreen").style.display=
-"none";
-
-}
-
 /* =========================================================
-AUTH UI
+AUTH MODE
 ========================================================= */
 
 let signupMode=false;
@@ -1045,6 +1136,10 @@ document.getElementById("signupButton");
 const nickname=
 document.getElementById("authNickname");
 
+nickname.style.display="block";
+
+nickname.required=false;
+
 if(signupMode){
 
 description.textContent=
@@ -1055,7 +1150,7 @@ loginButton.style.display="none";
 signupButton.textContent=
 "Create account";
 
-nickname.style.display="block";
+nickname.placeholder="Nickname";
 
 }else{
 
@@ -1067,14 +1162,14 @@ loginButton.style.display="inline-block";
 signupButton.textContent=
 "Create account";
 
-nickname.style.display="block";
+nickname.placeholder="Nickname";
 
 }
 
 }
 
 /* =========================================================
-PROFILE
+UPDATE PROFILE
 ========================================================= */
 
 function updateProfileDisplay(){
@@ -1093,293 +1188,12 @@ user?.email||
 
 /* =========================================================
 LOGIN
-FIXED AUTHENTICATION FLOW
 ========================================================= */
 
 document.getElementById("loginButton")
 .addEventListener(
 "click",
 async()=>{
-
-if(authLoading)return;
-
-authLoading=true;
-
-const email=
-document.getElementById("authEmail")
-.value
-.trim()
-.toLowerCase();
-
-const password=
-document.getElementById("authPassword")
-.value;
-
-setAuthError("");
-
-if(!email){
-
-setAuthError(
-"Enter your email."
-);
-
-authLoading=false;
-return;
-
-}
-
-if(!password){
-
-setAuthError(
-"Enter your password."
-);
-
-authLoading=false;
-return;
-
-}
-
-const button=
-document.getElementById("loginButton");
-
-const oldText=
-button.textContent;
-
-button.disabled=true;
-button.textContent="Logging in...";
-
-try{
-
-const {
-data,
-error
-}=
-await supabase.auth.signInWithPassword({
-
-email:email,
-
-password:password
-
-});
-
-if(error){
-
-setAuthError(
-error.message
-);
-
-return;
-
-}
-
-if(!data?.user){
-
-setAuthError(
-"Login failed. No user was returned."
-);
-
-return;
-
-}
-
-/*
-IMPORTANT:
-Do not wait for finishLogin here.
-
-Supabase's onAuthStateChange callback will
-handle the authenticated session.
-
-This prevents duplicate session loading.
-*/
-
-user=data.user;
-
-setAuthError("");
-
-await finishLogin(data.user);
-
-}catch(error){
-
-console.error(
-"Login error:",
-error
-);
-
-setAuthError(
-error?.message||
-"Unable to log in. Please try again."
-);
-
-}finally{
-
-authLoading=false;
-
-button.disabled=false;
-button.textContent=oldText;
-
-}
-
-});
-
-/* =========================================================
-FINISH LOGIN
-FIXED TO NEVER BLOCK AUTH SCREEN
-========================================================= */
-
-async function finishLogin(authUser=null){
-
-const loggedUser=
-authUser||
-user;
-
-if(!loggedUser)return;
-
-user=loggedUser;
-
-const requestId=
-++loginRequestId;
-
-try{
-
-/*
-The authentication itself is already successful.
-
-Load profile/data separately. If one database table
-has an RLS problem, the user is still allowed into
-the application instead of being stuck on login.
-*/
-
-try{
-
-await loadCurrentProfile();
-
-}catch(error){
-
-console.error(
-"Profile loading failed:",
-error
-);
-
-}
-
-if(requestId!==loginRequestId)return;
-
-try{
-
-await loadProfiles();
-
-}catch(error){
-
-console.error(
-"Profiles loading failed:",
-error
-);
-
-}
-
-if(requestId!==loginRequestId)return;
-
-try{
-
-await loadFriends();
-
-}catch(error){
-
-console.error(
-"Friends loading failed:",
-error
-);
-
-}
-
-if(requestId!==loginRequestId)return;
-
-try{
-
-await loadBoards();
-
-}catch(error){
-
-console.error(
-"Boards loading failed:",
-error
-);
-
-}
-
-if(requestId!==loginRequestId)return;
-
-try{
-
-await loadFriendRequests();
-
-}catch(error){
-
-console.error(
-"Friend requests loading failed:",
-error
-);
-
-}
-
-if(requestId!==loginRequestId)return;
-
-updateProfileDisplay();
-
-hideAuthScreen();
-
-render();
-
-renderFriends();
-
-}catch(error){
-
-console.error(
-"finishLogin error:",
-error
-);
-
-/*
-The account is authenticated even if loading one
-of the application tables fails.
-*/
-
-updateProfileDisplay();
-
-hideAuthScreen();
-
-render();
-
-renderFriends();
-
-}
-
-}
-
-/* =========================================================
-CREATE ACCOUNT
-========================================================= */
-
-document.getElementById("signupButton")
-.addEventListener(
-"click",
-async()=>{
-
-if(!signupMode){
-
-signupMode=true;
-
-setAuthError("");
-
-updateAuthUI();
-
-return;
-
-}
-
-if(authLoading)return;
-
-authLoading=true;
 
 const email=
 document.getElementById("authEmail")
@@ -1396,24 +1210,145 @@ const password=
 document.getElementById("authPassword")
 .value;
 
-setAuthError("");
+const errorBox=
+document.getElementById("authError");
 
-const button=
-document.getElementById("signupButton");
+errorBox.textContent="";
 
-const oldText=
-button.textContent;
+if(!email||!password){
 
-button.disabled=true;
-button.textContent="Creating...";
+errorBox.textContent=
+"Enter your email and password.";
 
-try{
+return;
+
+}
+
+const {
+data,
+error
+}=
+await supabase.auth.signInWithPassword({
+
+email:email,
+
+password:password
+
+});
+
+if(error){
+
+errorBox.textContent=
+error.message;
+
+return;
+
+}
+
+user=data?.user||null;
+
+if(!user){
+
+errorBox.textContent=
+"Login failed.";
+
+return;
+
+}
+
+await loadCurrentProfile();
+
+if(
+nickname &&
+currentProfile &&
+(!currentProfile.nickname ||
+currentProfile.nickname.trim()==="")
+){
+
+const {
+data:updatedProfile,
+error:updateError
+}=
+await supabase
+.from("profiles")
+.update({
+nickname:nickname
+})
+.eq("id",user.id)
+.select()
+.maybeSingle();
+
+if(!updateError&&updatedProfile){
+
+currentProfile=updatedProfile;
+
+profilesCache.set(
+updatedProfile.id,
+updatedProfile
+);
+
+}
+
+}
+
+await loadProfiles();
+await loadFriends();
+await loadBoards();
+await loadFriendRequests();
+
+document.getElementById("authScreen")
+.style.display="none";
+
+updateProfileDisplay();
+
+render();
+renderFriends();
+
+});
+
+/* =========================================================
+CREATE ACCOUNT
+========================================================= */
+
+document.getElementById("signupButton")
+.addEventListener(
+"click",
+async()=>{
+
+if(!signupMode){
+
+signupMode=true;
+
+updateAuthUI();
+
+return;
+
+}
+
+const email=
+document.getElementById("authEmail")
+.value
+.trim()
+.toLowerCase();
+
+const nickname=
+document.getElementById("authNickname")
+.value
+.trim();
+
+const password=
+document.getElementById("authPassword")
+.value;
+
+const errorBox=
+document.getElementById("authError");
+
+errorBox.textContent="";
 
 if(!email||!nickname||!password){
 
-setAuthError(
-"Enter your email, nickname and password."
-);
+errorBox.textContent=
+"Enter your email, nickname and password.";
 
 return;
 
@@ -1421,9 +1356,8 @@ return;
 
 if(nickname.length<2){
 
-setAuthError(
-"Nickname must be at least 2 characters."
-);
+errorBox.textContent=
+"Nickname must be at least 2 characters.";
 
 return;
 
@@ -1431,9 +1365,8 @@ return;
 
 if(nickname.length>30){
 
-setAuthError(
-"Nickname must be 30 characters or less."
-);
+errorBox.textContent=
+"Nickname must be 30 characters or less.";
 
 return;
 
@@ -1441,18 +1374,12 @@ return;
 
 if(password.length<6){
 
-setAuthError(
-"Password must be at least 6 characters."
-);
+errorBox.textContent=
+"Password must be at least 6 characters.";
 
 return;
 
 }
-
-/*
-Do not let a failure in the profiles table prevent
-Supabase from creating the authentication account.
-*/
 
 const {
 data:existingNickname,
@@ -1467,8 +1394,8 @@ await supabase
 
 if(nicknameError){
 
-console.warn(
-"Nickname check failed:",
+console.error(
+"Nickname check error:",
 nicknameError
 );
 
@@ -1476,9 +1403,8 @@ nicknameError
 
 if(existingNickname){
 
-setAuthError(
-"That nickname is already taken."
-);
+errorBox.textContent=
+"That nickname is already taken.";
 
 return;
 
@@ -1498,30 +1424,14 @@ password:password
 
 if(error){
 
-setAuthError(
-error.message
-);
+errorBox.textContent=
+error.message;
 
 return;
 
 }
 
-if(!data?.user){
-
-setAuthError(
-"Account could not be created."
-);
-
-return;
-
-}
-
-/*
-Only create the profile when Supabase returned a user.
-If email confirmation is enabled, there may be no session yet.
-*/
-
-try{
+if(data?.user){
 
 const {
 data:profile,
@@ -1541,69 +1451,32 @@ onConflict:"id"
 
 if(profileError){
 
-console.warn(
-"Profile creation warning:",
+console.error(
+"Profile creation error:",
 profileError
 );
 
-}else if(profile){
+errorBox.textContent=
+"Account created, but the nickname could not be saved: "+
+profileError.message;
+
+return;
+
+}
 
 currentProfile=profile;
 
 profilesCache.set(
-String(profile.id),
+data.user.id,
 profile
 );
 
-}
-
-}catch(error){
-
-console.warn(
-"Profile creation failed:",
-error
-);
+updateProfileDisplay();
 
 }
 
-if(data.session){
-
-user=data.user;
-
-await finishLogin(data.user);
-
-}else{
-
-setAuthError(
-"Account created. Check your email if email confirmation is required."
-);
-
-signupMode=false;
-
-updateAuthUI();
-
-}
-
-}catch(error){
-
-console.error(
-"Signup error:",
-error
-);
-
-setAuthError(
-error?.message||
-"Unable to create the account."
-);
-
-}finally{
-
-authLoading=false;
-
-button.disabled=false;
-button.textContent=oldText;
-
-}
+errorBox.textContent=
+"Account created. Check your email if confirmation is required.";
 
 });
 
@@ -1618,9 +1491,7 @@ event=>{
 
 if(event.key==="Enter"){
 
-document
-.getElementById("authNickname")
-.focus();
+document.getElementById("authNickname").focus();
 
 }
 
@@ -1633,9 +1504,7 @@ event=>{
 
 if(event.key==="Enter"){
 
-document
-.getElementById("authPassword")
-.focus();
+document.getElementById("authPassword").focus();
 
 }
 
@@ -1650,15 +1519,11 @@ if(event.key==="Enter"){
 
 if(signupMode){
 
-document
-.getElementById("signupButton")
-.click();
+document.getElementById("signupButton").click();
 
 }else{
 
-document
-.getElementById("loginButton")
-.click();
+document.getElementById("loginButton").click();
 
 }
 
@@ -1667,65 +1532,46 @@ document
 });
 
 /* =========================================================
-AUTH STATE CHANGE
-FIXED
+SESSION
 ========================================================= */
 
 supabase.auth.onAuthStateChange(
-(event,session)=>{
-
-console.log(
-"Supabase auth event:",
-event
-);
+async(event,session)=>{
 
 user=
-session?.user||
-null;
+session?.user||null;
 
 if(user){
 
-/*
-Never await Supabase database requests directly inside
-the auth callback.
-*/
+document.getElementById("authScreen")
+.style.display="none";
 
-setTimeout(
-()=>{
+await loadCurrentProfile();
+await loadProfiles();
+await loadFriends();
+await loadBoards();
+await loadFriendRequests();
 
-finishLogin(user)
-.catch(
-error=>{
-console.error(
-"Session loading error:",
-error
-);
-}
-);
+updateProfileDisplay();
 
-},
-0
-);
+render();
+renderFriends();
 
 }else{
 
-loginRequestId++;
-
-currentProfile=null;
+document.getElementById("authScreen")
+.style.display="flex";
 
 boards=[];
 friends=[];
-
 selectedBoardId=null;
 
+currentProfile=null;
 profilesCache.clear();
 
 updateProfileDisplay();
 
-showAuthScreen();
-
 render();
-
 renderFriends();
 
 }
@@ -1734,71 +1580,33 @@ renderFriends();
 
 /* =========================================================
 INITIAL SESSION
-FIXED
 ========================================================= */
 
-async function initializeApp(){
-
-if(appInitialized)return;
-
-appInitialized=true;
-
-try{
-
-const {
-data,
-error
-}=
+const sessionResult=
 await supabase.auth.getSession();
 
-if(error){
+if(sessionResult.data.session){
 
-console.error(
-"Session error:",
-error
-);
+user=
+sessionResult.data.session.user;
 
-user=null;
+document.getElementById("authScreen")
+.style.display="none";
 
-showAuthScreen();
+await loadCurrentProfile();
+await loadProfiles();
+await loadFriends();
+await loadBoards();
+await loadFriendRequests();
 
-return;
-
-}
-
-if(data?.session?.user){
-
-/*
-Do not rely on onAuthStateChange to initialize the
-application. Explicitly initialize the current session.
-*/
-
-user=data.session.user;
-
-await finishLogin(user);
+updateProfileDisplay();
 
 }else{
 
 user=null;
 
-showAuthScreen();
-
-render();
-
-}
-
-}catch(error){
-
-console.error(
-"Initialization error:",
-error
-);
-
-user=null;
-
-showAuthScreen();
-
-}
+document.getElementById("authScreen")
+.style.display="flex";
 
 }
 
@@ -1822,7 +1630,7 @@ await supabase
 
 if(error){
 
-console.warn(
+console.error(
 "Current profile error:",
 error
 );
@@ -1912,7 +1720,7 @@ await supabase
 
 if(error){
 
-console.warn(
+console.error(
 "Could not load profiles:",
 error
 );
@@ -1974,18 +1782,7 @@ document.getElementById("logoutButton")
 "click",
 async()=>{
 
-try{
-
 await supabase.auth.signOut();
-
-}catch(error){
-
-console.error(
-"Logout error:",
-error
-);
-
-}
 
 });
 
@@ -2010,7 +1807,7 @@ await supabase
 
 if(error){
 
-console.warn(error);
+console.error(error);
 
 return;
 
@@ -2052,7 +1849,7 @@ await supabase
 
 if(profilesError){
 
-console.warn(profilesError);
+console.error(profilesError);
 
 return;
 
@@ -2133,7 +1930,7 @@ return;
 }
 
 if(
-user?.email &&
+user.email &&
 email===user.email.toLowerCase()
 ){
 
@@ -2521,10 +2318,12 @@ owner_nickname
 
 if(error){
 
-console.warn(
+console.error(
 "Load boards error:",
 error
 );
+
+showError(error.message);
 
 return;
 
@@ -2548,9 +2347,11 @@ return{
 
 ...box,
 
-w:Number(box.width)||430,
+w:
+Number(box.width)||430,
 
-h:Number(box.height)||270,
+h:
+Number(box.height)||270,
 
 ownerNickname:
 ownerNickname||"",
@@ -2583,34 +2384,26 @@ async()=>{
 if(!user)return;
 
 const ownBoards=
-boards
-.filter(
+boards.filter(
 b=>
 String(b.owner_id)===
 String(user.id)
-)
-.sort(
-(a,b)=>
-new Date(a.created_at||0)-
-new Date(b.created_at||0)
 );
 
-const boxWidth=430;
-const boxHeight=270;
-const gap=40;
+const previous=
+ownBoards[ownBoards.length-1];
 
-const index=ownBoards.length;
+const boxWidth = 430;
+const boxHeight = 270;
+const gap = 40;
 
-const column=index%3;
-const row=Math.floor(index/3);
+const index = ownBoards.length;
 
-const x=
-120+
-column*(boxWidth+gap);
+const column = index % 3;
+const row = Math.floor(index / 3);
 
-const y=
-120+
-row*(boxHeight+gap);
+let x = 120 + column * (boxWidth + gap);
+let y = 120 + row * (boxHeight + gap);
 
 const {
 data,
@@ -2621,10 +2414,10 @@ await supabase
 .insert({
 owner_id:user.id,
 title:"New box",
-x,
-y,
-width:boxWidth,
-height:boxHeight,
+x:x,
+y:y,
+width:430,
+height:270,
 visibility:"public"
 })
 .select()
@@ -2642,9 +2435,11 @@ boards.push({
 
 ...data,
 
-w:boxWidth,
+w:
+Number(data.width)||430,
 
-h:boxHeight,
+h:
+Number(data.height)||270,
 
 ownerNickname:
 currentProfile?.nickname||"",
@@ -2808,11 +2603,11 @@ box_id:board.id,
 
 title:title||url,
 
-url,
+url:url,
 
 image:image||null,
 
-visibility,
+visibility:visibility,
 
 owner_nickname:ownerNickname
 
@@ -2844,9 +2639,9 @@ await supabase
 .insert({
 box_id:board.id,
 title:title||url,
-url,
+url:url,
 image:image||null,
-visibility
+visibility:visibility
 })
 .select()
 .single();
@@ -3043,7 +2838,7 @@ render();
 }
 
 /* =========================================================
-UPDATE BOARD ELEMENT
+UPDATE BOARD
 ========================================================= */
 
 function updateBoardElement(board){
@@ -3116,7 +2911,7 @@ Number(board.h)+"px";
 
 const owner=
 String(board.owner_id)===
-String(user.id);
+String(user?.id);
 
 let boardNickname=
 board.ownerNickname||
@@ -3135,8 +2930,7 @@ currentProfile.nickname;
 if(!boardNickname){
 
 boardNickname=
-getNickname(board.owner_id)||
-"";
+getNickname(board.owner_id)||"";
 
 }
 
@@ -3261,6 +3055,8 @@ owner
 
 `;
 
+/* BOARD CLICK */
+
 element.addEventListener(
 "click",
 event=>{
@@ -3274,13 +3070,13 @@ selectedBoardId=board.id;
 
 document
 .querySelectorAll(".board")
-.forEach(b=>
-b.classList.remove("selected")
-);
+.forEach(b=>b.classList.remove("selected"));
 
 element.classList.add("selected");
 
 });
+
+/* DELETE BOARD */
 
 const deleteBoardButton=
 element.querySelector(
@@ -3302,6 +3098,8 @@ await deleteBoard(board);
 
 }
 
+/* ADD URL */
+
 const addButton=
 element.querySelector(
 "[data-add-url]"
@@ -3322,6 +3120,8 @@ openURLModal(board);
 
 }
 
+/* DELETE URL */
+
 element
 .querySelectorAll("[data-delete-item]")
 .forEach(button=>{
@@ -3341,6 +3141,8 @@ button.dataset.deleteItem
 });
 
 });
+
+/* OPEN URL */
 
 element
 .querySelectorAll(".item")
@@ -3369,6 +3171,8 @@ url,
 
 });
 
+/* CONTEXT MENU */
+
 element.addEventListener(
 "contextmenu",
 event=>{
@@ -3393,6 +3197,9 @@ event.clientY+"px";
 
 });
 
+
+/* MOVE + RESIZE */
+
 if(owner){
 
 element.addEventListener(
@@ -3411,23 +3218,17 @@ if(event.target.closest(".resize")){
 
 resizing={
 
-id:String(board.id),
-
-pointerId:event.pointerId,
+id:board.id,
 
 startX:event.clientX,
-
 startY:event.clientY,
 
-width:Number(board.w)||430,
-
-height:Number(board.h)||270
+width:board.w,
+height:board.h
 
 };
 
-element.setPointerCapture(
-event.pointerId
-);
+element.setPointerCapture(event.pointerId);
 
 event.preventDefault();
 
@@ -3437,41 +3238,28 @@ return;
 
 moving={
 
-id:String(board.id),
-
-pointerId:event.pointerId,
+id:board.id,
 
 startX:event.clientX,
-
 startY:event.clientY,
 
-x:Number(board.x)||0,
-
-y:Number(board.y)||0
+x:board.x,
+y:board.y
 
 };
 
-element.setPointerCapture(
-event.pointerId
-);
-
-selectedBoardId=board.id;
-
-element.classList.add("selected");
+element.setPointerCapture(event.pointerId);
 
 event.preventDefault();
 
 });
 
+
 element.addEventListener(
 "pointermove",
 event=>{
 
-if(
-resizing &&
-resizing.id===String(board.id) &&
-resizing.pointerId===event.pointerId
-){
+if(resizing && resizing.id===board.id){
 
 board.w=
 Math.max(
@@ -3487,23 +3275,15 @@ resizing.height+
 (event.clientY-resizing.startY)/zoom
 );
 
-element.style.width=
-board.w+"px";
-
-element.style.height=
-board.h+"px";
-
-event.preventDefault();
+element.style.width=board.w+"px";
+element.style.height=board.h+"px";
 
 return;
 
 }
 
-if(
-moving &&
-moving.id===String(board.id) &&
-moving.pointerId===event.pointerId
-){
+
+if(moving && moving.id===board.id){
 
 board.x=
 moving.x+
@@ -3513,37 +3293,26 @@ board.y=
 moving.y+
 (event.clientY-moving.startY)/zoom;
 
-element.style.left=
-board.x+"px";
-
-element.style.top=
-board.y+"px";
-
-event.preventDefault();
+element.style.left=board.x+"px";
+element.style.top=board.y+"px";
 
 }
 
 });
 
+
 element.addEventListener(
 "pointerup",
 async event=>{
 
-if(
-moving &&
-moving.id===String(board.id) &&
-moving.pointerId===event.pointerId
-){
+event.stopPropagation();
 
-const finalX=
-Number(board.x);
+if(moving && moving.id===board.id){
 
-const finalY=
-Number(board.y);
+const finalX=board.x;
+const finalY=board.y;
 
 moving=null;
-
-try{
 
 await supabase
 .from("boxes")
@@ -3554,32 +3323,15 @@ y:finalY
 .eq("id",board.id)
 .eq("owner_id",user.id);
 
-}catch(error){
-
-console.error(
-"Could not save board position:",
-error
-);
-
 }
 
-}
 
-if(
-resizing &&
-resizing.id===String(board.id) &&
-resizing.pointerId===event.pointerId
-){
+if(resizing && resizing.id===board.id){
 
-const finalWidth=
-Number(board.w);
-
-const finalHeight=
-Number(board.h);
+const finalWidth=board.w;
+const finalHeight=board.h;
 
 resizing=null;
-
-try{
 
 await supabase
 .from("boxes")
@@ -3590,48 +3342,24 @@ height:finalHeight
 .eq("id",board.id)
 .eq("owner_id",user.id);
 
-}catch(error){
-
-console.error(
-"Could not save board size:",
-error
-);
-
-}
-
 }
 
 });
+
 
 element.addEventListener(
 "pointercancel",
 event=>{
 
-if(
-moving &&
-moving.id===String(board.id) &&
-moving.pointerId===event.pointerId
-){
+event.stopPropagation();
 
 moving=null;
-
-}
-
-if(
-resizing &&
-resizing.id===String(board.id) &&
-resizing.pointerId===event.pointerId
-){
-
 resizing=null;
 
-}
-
 });
 
 }
 
-});
 
 /* =========================================================
 DESKTOP PAN
@@ -3653,11 +3381,9 @@ if(event.target.closest("button"))return;
 panning={
 
 x:event.clientX,
-
 y:event.clientY,
 
 panX:panX,
-
 panY:panY
 
 };
@@ -3684,8 +3410,7 @@ panning.panY+
 event.clientY-
 panning.y;
 
-document.getElementById("world")
-.style.transform=
+document.getElementById("world").style.transform=
 `translate(${panX}px,${panY}px) scale(${zoom})`;
 
 });
@@ -3703,7 +3428,7 @@ panning=null;
 });
 
 /* =========================================================
-TOUCH
+TOUCH PAN + PINCH
 ========================================================= */
 
 function distance(a,b){
@@ -3748,11 +3473,9 @@ if(!event.target.closest(".board")){
 panning={
 
 x:event.clientX,
-
 y:event.clientY,
 
 panX:panX,
-
 panY:panY
 
 };
@@ -3820,8 +3543,7 @@ panning.panY+
 event.clientY-
 panning.y;
 
-document.getElementById("world")
-.style.transform=
+document.getElementById("world").style.transform=
 `translate(${panX}px,${panY}px) scale(${zoom})`;
 
 return;
@@ -3894,8 +3616,7 @@ worldY*newZoom;
 
 zoom=newZoom;
 
-document.getElementById("world")
-.style.transform=
+document.getElementById("world").style.transform=
 `translate(${panX}px,${panY}px) scale(${zoom})`;
 
 }
@@ -3935,7 +3656,7 @@ endTouch
 );
 
 /* =========================================================
-WHEEL ZOOM
+MOUSE WHEEL ZOOM
 ========================================================= */
 
 workspace.addEventListener(
@@ -3985,8 +3706,7 @@ panY=
 mouseY-
 worldY*zoom;
 
-document.getElementById("world")
-.style.transform=
+document.getElementById("world").style.transform=
 `translate(${panX}px,${panY}px) scale(${zoom})`;
 
 },
@@ -3996,7 +3716,7 @@ passive:false
 );
 
 /* =========================================================
-CONTEXT MENU
+CONTEXT MENU CLOSE
 ========================================================= */
 
 document.addEventListener(
@@ -4079,8 +3799,7 @@ document.getElementById("renameSave")
 async()=>{
 
 const title=
-document
-.getElementById("renameInput")
+document.getElementById("renameInput")
 .value
 .trim();
 
@@ -4092,7 +3811,7 @@ error
 await supabase
 .from("boxes")
 .update({
-title
+title:title
 })
 .eq("id",board.id)
 .eq("owner_id",user.id);
@@ -4318,11 +4037,7 @@ INITIAL AUTH UI
 
 updateAuthUI();
 
-/* =========================================================
-START
-========================================================= */
-
-initializeApp();
+render();
 
 </script>
 
