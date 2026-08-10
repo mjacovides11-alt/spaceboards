@@ -15,6 +15,12 @@
   box-sizing:border-box;
 }
 
+:root{
+  --accent:#6c8cff;
+  --accent-hover:#5678ee;
+}
+
+
 html,
 body{
   margin:0;
@@ -202,13 +208,14 @@ TOP BAR
 }
 
 #newBoxButton{
-  background:#eeeeee;
-  color:#111;
+  background:var(--accent);
+  color:#fff;
 }
 
 #newBoxButton:hover{
-  background:#d5d5d5;
+  background:var(--accent-hover);
 }
+
 
 .spacer{
   flex:1;
@@ -232,11 +239,12 @@ WORKSPACE
   flex:1;
   overflow:hidden;
   touch-action:none;
-  background-color:#0b0b0d;
+  background-color:#0d0d11;
   background-image:
-    radial-gradient(#29292d 1px,transparent 1px);
-  background-size:24px 24px;
+    radial-gradient(#2a2a30 1px,transparent 1px);
+  background-size:28px 28px;
 }
+
 
 #world{
   position:absolute;
@@ -263,8 +271,10 @@ BOARDS
 }
 
 .board.selected{
-  border:2px solid #aaa;
+  border:2px solid var(--accent);
+  box-shadow:0 0 0 3px rgba(108,140,255,.15);
 }
+
 
 .board-title{
   position:absolute;
