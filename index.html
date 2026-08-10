@@ -2451,21 +2451,19 @@ document
         );
         
         let x = 120;
-        let y = 120;
+let y = 120;
 
-      const column =
-  ownBoards.length % 3;
+if(previous){
 
-const row =
-  Math.floor(ownBoards.length / 3);
+  x =
+    Number(previous.x) +
+    Number(previous.w) +
+    40;
 
-const x =
-  120 +
-  column * (430 + 40);
+  y =
+    Number(previous.y);
 
-const y =
-  120 +
-  row * (270 + 40);
+}
 
       const {
         data,
