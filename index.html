@@ -3285,9 +3285,10 @@ function render(){
 
     element.innerHTML = `
 
-      <div class="board-title">
+      <div class="board-title" data-action="rename-title">
         ${escapeHTML(board.title || "Untitled")}
       </div>
+
 
       ${
         owner
