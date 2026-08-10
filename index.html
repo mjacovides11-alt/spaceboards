@@ -901,13 +901,22 @@ APP
       New box
     </button>
 
-       <button
+          <button
       id="addFriendsPanelButton"
       class="top-button"
       type="button"
     >
       Add Friends
     </button>
+
+    <button
+      id="mobileModeButton"
+      class="top-button"
+      type="button"
+    >
+      Mobile
+    </button>
+
 
 
     <button
@@ -1199,7 +1208,7 @@ function maybeAskMobileMode(){
 
     };
 
-  document
+    document
     .getElementById("mobileNoButton")
     .onclick = ()=>{
 
@@ -1215,6 +1224,26 @@ function maybeAskMobileMode(){
     };
 
 }
+
+document
+  .getElementById("mobileModeButton")
+  .addEventListener(
+    "click",
+    ()=>{
+
+      mobileListMode = !mobileListMode;
+
+      document.getElementById("app")
+        .classList.toggle(
+          "mobile-list",
+          mobileListMode
+        );
+
+      render();
+
+    }
+  );
+
 
 
 /* =========================================================
