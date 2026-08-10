@@ -3476,26 +3476,37 @@ element.addEventListener("dblclick", async event => {
       ========================================================
     */
 
-    const deleteButton =
-      element.querySelector(
-        '[data-action="delete-board"]'
-      );
+    const deleteBoardButton =
+    element.querySelector("[data-delete-board]");
 
-    if(deleteButton){
+if(deleteBoardButton){
 
-      deleteButton.addEventListener(
+    deleteBoardButton.addEventListener(
         "click",
-        async event=>{
+        async event => {
 
-          event.preventDefault();
-          event.stopPropagation();
+            event.preventDefault();
+            event.stopPropagation();
 
-          await deleteBoard(board);
+            const boardId =
+                deleteBoardButton.dataset.deleteBoard;
+
+            const boardToDelete =
+                boards.find(
+                    b => String(b.id) === String(boardId)
+                );
+
+            if(!boardToDelete){
+                showError("Box not found.");
+                return;
+            }
+
+            await deleteBoard(boardToDelete);
 
         }
-      );
+    );
 
-    }
+}
 
     /*
       ========================================================
