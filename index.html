@@ -284,6 +284,14 @@ text-overflow:ellipsis;
 color:#ddd;
 }
 
+.board-title{
+cursor:text;
+}
+
+.board-title:hover{
+color:#fff;
+}
+
 .board-actions{
 position:absolute;
 right:8px;
@@ -4406,6 +4414,60 @@ INITIAL AUTH UI
 updateAuthUI();
 
 render();
+
+/* =========================================================
+DOUBLE-CLICK BOX TITLE TO RENAME
+========================================================= */
+
+document.addEventListener("dblclick", async event => {
+
+    const titleElement = event.target.closest(".board-title");
+
+    if (!titleElement) return;
+
+    const boardElement = titleElement.closest(".board");
+
+    if (!boardElement) return;
+
+    const board = boards.find(
+        b => String(b.id) === String(boardElement.dataset.id)
+    );
+
+    if (!board) return;
+
+    if (String(board.owner_id) !== String(user.id)) {
+        return;
+    }
+
+    const newTitle = prompt(
+        "Enter a new name for this box:",
+        board.title
+    );
+
+    if (newTitle === null) return;
+
+    const title = newTitle.trim();
+
+    if (!title) return;
+
+    const { error } = await supabase
+        .from("boxes")
+        .update({
+            title: title
+        })
+        .eq("id", board.id)
+        .eq("owner_id", user.id);
+
+    if (error) {
+        showError("Could not rename box: " + error.message);
+        return;
+    }
+
+    board.title = title;
+
+    render();
+
+});
 
 </script>
 
