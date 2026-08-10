@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
 
 <meta
@@ -403,6 +402,7 @@ bottom:0;
 width:22px;
 height:22px;
 cursor:nwse-resize;
+touch-action:none;
 }
 
 .resize::after{
@@ -805,14 +805,9 @@ font-size:14px;
 }
 
 </style>
-
 </head>
 
 <body>
-
-<!-- =======================================================
-AUTH SCREEN
-======================================================== -->
 
 <div id="authScreen">
 
@@ -820,10 +815,7 @@ AUTH SCREEN
 
 <h1>Spaceboards</h1>
 
-<p
-id="authDescription"
-class="auth-description"
->
+<p id="authDescription" class="auth-description">
 Log in to Spaceboards.
 </p>
 
@@ -860,18 +852,11 @@ Create account
 
 </div>
 
-<div
-id="authError"
-class="auth-error"
-></div>
+<div id="authError" class="auth-error"></div>
 
 </div>
 
 </div>
-
-<!-- =======================================================
-APPLICATION
-======================================================== -->
 
 <div id="app">
 
@@ -887,31 +872,19 @@ type="text"
 placeholder="Search..."
 >
 
-<button
-id="newBoxButton"
-class="top-button"
->
+<button id="newBoxButton" class="top-button">
 New
 </button>
 
-<button
-id="newUrlButton"
-class="top-button"
->
+<button id="newUrlButton" class="top-button">
 Add URL
 </button>
 
-<button
-id="friendRequestsButton"
-class="top-button"
->
+<button id="friendRequestsButton" class="top-button">
 Requests
 </button>
 
-<button
-id="shareButton"
-class="top-button"
->
+<button id="shareButton" class="top-button">
 Share
 </button>
 
@@ -919,10 +892,7 @@ Share
 
 <div id="profileName"></div>
 
-<button
-id="logoutButton"
-class="top-button"
->
+<button id="logoutButton" class="top-button">
 Log out
 </button>
 
@@ -938,10 +908,7 @@ Log out
 
 <span>Friends</span>
 
-<button
-id="closeFriendsButton"
-type="button"
->
+<button id="closeFriendsButton" type="button">
 ×
 </button>
 
@@ -971,10 +938,7 @@ Add friend
 
 <span>Friend requests</span>
 
-<button
-id="closeRequestsButton"
-type="button"
->
+<button id="closeRequestsButton" type="button">
 ×
 </button>
 
@@ -988,31 +952,17 @@ type="button"
 
 </div>
 
-<!-- =======================================================
-CONTEXT MENU
-======================================================== -->
-
 <div id="contextMenu">
 
-<button
-id="renameOption"
-class="context-option"
->
+<button id="renameOption" class="context-option">
 Rename
 </button>
 
-<button
-id="deleteOption"
-class="context-option"
->
+<button id="deleteOption" class="context-option">
 Delete
 </button>
 
 </div>
-
-<!-- =======================================================
-MODAL
-======================================================== -->
 
 <div id="modalBackground">
 
@@ -1022,7 +972,9 @@ MODAL
 
 <script type="module">
 
-import { createClient }
+import {
+createClient
+}
 from "https://esm.sh/@supabase/supabase-js@2";
 
 /* =========================================================
@@ -1041,7 +993,7 @@ SUPABASE_URL,
 SUPABASE_KEY,
 {
 auth:{
-persistSession:false,
+persistSession:true,
 autoRefreshToken:true,
 detectSessionInUrl:true
 }
@@ -1078,6 +1030,8 @@ let pinchStartZoom=1;
 let pinchStartCenter=null;
 let pinchStartPanX=0;
 let pinchStartPanY=0;
+
+let authLoading=false;
 
 /* =========================================================
 HELPERS
@@ -1117,7 +1071,7 @@ alert(message);
 }
 
 /* =========================================================
-AUTH MODE
+AUTH UI
 ========================================================= */
 
 let signupMode=false;
@@ -1136,10 +1090,6 @@ document.getElementById("signupButton");
 const nickname=
 document.getElementById("authNickname");
 
-nickname.style.display="block";
-
-nickname.required=false;
-
 if(signupMode){
 
 description.textContent=
@@ -1150,7 +1100,7 @@ loginButton.style.display="none";
 signupButton.textContent=
 "Create account";
 
-nickname.placeholder="Nickname";
+nickname.style.display="block";
 
 }else{
 
@@ -1162,14 +1112,14 @@ loginButton.style.display="inline-block";
 signupButton.textContent=
 "Create account";
 
-nickname.placeholder="Nickname";
+nickname.style.display="block";
 
 }
 
 }
 
 /* =========================================================
-UPDATE PROFILE
+PROFILE
 ========================================================= */
 
 function updateProfileDisplay(){
@@ -1195,16 +1145,15 @@ document.getElementById("loginButton")
 "click",
 async()=>{
 
+if(authLoading)return;
+
+authLoading=true;
+
 const email=
 document.getElementById("authEmail")
 .value
 .trim()
 .toLowerCase();
-
-const nickname=
-document.getElementById("authNickname")
-.value
-.trim();
 
 const password=
 document.getElementById("authPassword")
@@ -1220,6 +1169,8 @@ if(!email||!password){
 errorBox.textContent=
 "Enter your email and password.";
 
+authLoading=false;
+
 return;
 
 }
@@ -1230,9 +1181,9 @@ error
 }=
 await supabase.auth.signInWithPassword({
 
-email:email,
+email,
 
-password:password
+password
 
 });
 
@@ -1241,70 +1192,59 @@ if(error){
 errorBox.textContent=
 error.message;
 
+authLoading=false;
+
 return;
 
 }
 
-user=data?.user||null;
-
-if(!user){
+if(!data?.session||!data?.user){
 
 errorBox.textContent=
 "Login failed.";
 
+authLoading=false;
+
 return;
 
 }
 
+user=data.user;
+
+await finishLogin();
+
+authLoading=false;
+
+});
+
+/* =========================================================
+FINISH LOGIN
+========================================================= */
+
+async function finishLogin(){
+
+if(!user)return;
+
 await loadCurrentProfile();
 
-if(
-nickname &&
-currentProfile &&
-(!currentProfile.nickname ||
-currentProfile.nickname.trim()==="")
-){
-
-const {
-data:updatedProfile,
-error:updateError
-}=
-await supabase
-.from("profiles")
-.update({
-nickname:nickname
-})
-.eq("id",user.id)
-.select()
-.maybeSingle();
-
-if(!updateError&&updatedProfile){
-
-currentProfile=updatedProfile;
-
-profilesCache.set(
-updatedProfile.id,
-updatedProfile
-);
-
-}
-
-}
-
 await loadProfiles();
+
 await loadFriends();
+
 await loadBoards();
+
 await loadFriendRequests();
+
+updateProfileDisplay();
 
 document.getElementById("authScreen")
 .style.display="none";
 
-updateProfileDisplay();
-
 render();
+
 renderFriends();
 
-});
+}
 
 /* =========================================================
 CREATE ACCOUNT
@@ -1416,9 +1356,9 @@ error
 }=
 await supabase.auth.signUp({
 
-email:email,
+email,
 
-password:password
+password
 
 });
 
@@ -1441,8 +1381,8 @@ await supabase
 .from("profiles")
 .upsert({
 id:data.user.id,
-email:email,
-nickname:nickname
+email,
+nickname
 },{
 onConflict:"id"
 })
@@ -1467,7 +1407,7 @@ return;
 currentProfile=profile;
 
 profilesCache.set(
-data.user.id,
+String(data.user.id),
 profile
 );
 
@@ -1475,8 +1415,22 @@ updateProfileDisplay();
 
 }
 
+if(data?.session){
+
+user=data.user;
+
+await finishLogin();
+
+}else{
+
 errorBox.textContent=
 "Account created. Check your email if confirmation is required.";
+
+signupMode=false;
+
+updateAuthUI();
+
+}
 
 });
 
@@ -1491,7 +1445,9 @@ event=>{
 
 if(event.key==="Enter"){
 
-document.getElementById("authNickname").focus();
+document
+.getElementById("authNickname")
+.focus();
 
 }
 
@@ -1504,7 +1460,9 @@ event=>{
 
 if(event.key==="Enter"){
 
-document.getElementById("authPassword").focus();
+document
+.getElementById("authPassword")
+.focus();
 
 }
 
@@ -1519,11 +1477,15 @@ if(event.key==="Enter"){
 
 if(signupMode){
 
-document.getElementById("signupButton").click();
+document
+.getElementById("signupButton")
+.click();
 
 }else{
 
-document.getElementById("loginButton").click();
+document
+.getElementById("loginButton")
+.click();
 
 }
 
@@ -1532,30 +1494,43 @@ document.getElementById("loginButton").click();
 });
 
 /* =========================================================
-SESSION
+AUTH STATE CHANGE
 ========================================================= */
 
+/*
+Do NOT await database calls directly inside
+onAuthStateChange. Supabase can deadlock when
+auth state callbacks wait on Supabase requests.
+*/
+
 supabase.auth.onAuthStateChange(
-async(event,session)=>{
+(event,session)=>{
 
 user=
-session?.user||null;
+session?.user||
+null;
 
 if(user){
 
-document.getElementById("authScreen")
-.style.display="none";
+setTimeout(
+async()=>{
 
-await loadCurrentProfile();
-await loadProfiles();
-await loadFriends();
-await loadBoards();
-await loadFriendRequests();
+try{
 
-updateProfileDisplay();
+await finishLogin();
 
-render();
-renderFriends();
+}catch(error){
+
+console.error(
+"Session loading error:",
+error
+);
+
+}
+
+},
+0
+);
 
 }else{
 
@@ -1564,14 +1539,17 @@ document.getElementById("authScreen")
 
 boards=[];
 friends=[];
+
 selectedBoardId=null;
 
 currentProfile=null;
+
 profilesCache.clear();
 
 updateProfileDisplay();
 
 render();
+
 renderFriends();
 
 }
@@ -1582,24 +1560,35 @@ renderFriends();
 INITIAL SESSION
 ========================================================= */
 
-const sessionResult=
+async function initializeApp(){
+
+try{
+
+const {
+data,
+error
+}=
 await supabase.auth.getSession();
 
-if(sessionResult.data.session){
+if(error){
 
-user=
-sessionResult.data.session.user;
+console.error(
+"Session error:",
+error
+);
 
 document.getElementById("authScreen")
-.style.display="none";
+.style.display="flex";
 
-await loadCurrentProfile();
-await loadProfiles();
-await loadFriends();
-await loadBoards();
-await loadFriendRequests();
+return;
 
-updateProfileDisplay();
+}
+
+if(data?.session){
+
+user=data.session.user;
+
+await finishLogin();
 
 }else{
 
@@ -1607,6 +1596,22 @@ user=null;
 
 document.getElementById("authScreen")
 .style.display="flex";
+
+render();
+
+}
+
+}catch(error){
+
+console.error(
+"Initialization error:",
+error
+);
+
+document.getElementById("authScreen")
+.style.display="flex";
+
+}
 
 }
 
@@ -1761,7 +1766,7 @@ return profile.nickname;
 
 if(
 currentProfile &&
-String(currentProfile.id)===
+String(currentProfile.id) ===
 String(ownerId)
 ){
 
@@ -2164,7 +2169,7 @@ const sender=
 (requestProfiles||[])
 .find(
 profile=>
-String(profile.id)===
+String(profile.id) ===
 String(request.sender_id)
 );
 
@@ -2347,11 +2352,9 @@ return{
 
 ...box,
 
-w:
-Number(box.width)||430,
+w:Number(box.width)||430,
 
-h:
-Number(box.height)||270,
+h:Number(box.height)||270,
 
 ownerNickname:
 ownerNickname||"",
@@ -2384,26 +2387,34 @@ async()=>{
 if(!user)return;
 
 const ownBoards=
-boards.filter(
+boards
+.filter(
 b=>
 String(b.owner_id)===
 String(user.id)
+)
+.sort(
+(a,b)=>
+new Date(a.created_at||0)-
+new Date(b.created_at||0)
 );
 
-const previous=
-ownBoards[ownBoards.length-1];
+const boxWidth=430;
+const boxHeight=270;
+const gap=40;
 
-const boxWidth = 430;
-const boxHeight = 270;
-const gap = 40;
+const index=ownBoards.length;
 
-const index = ownBoards.length;
+const column=index%3;
+const row=Math.floor(index/3);
 
-const column = index % 3;
-const row = Math.floor(index / 3);
+const x=
+120+
+column*(boxWidth+gap);
 
-let x = 120 + column * (boxWidth + gap);
-let y = 120 + row * (boxHeight + gap);
+const y=
+120+
+row*(boxHeight+gap);
 
 const {
 data,
@@ -2414,10 +2425,10 @@ await supabase
 .insert({
 owner_id:user.id,
 title:"New box",
-x:x,
-y:y,
-width:430,
-height:270,
+x,
+y,
+width:boxWidth,
+height:boxHeight,
 visibility:"public"
 })
 .select()
@@ -2435,11 +2446,9 @@ boards.push({
 
 ...data,
 
-w:
-Number(data.width)||430,
+w:boxWidth,
 
-h:
-Number(data.height)||270,
+h:boxHeight,
 
 ownerNickname:
 currentProfile?.nickname||"",
@@ -2603,11 +2612,11 @@ box_id:board.id,
 
 title:title||url,
 
-url:url,
+url,
 
 image:image||null,
 
-visibility:visibility,
+visibility,
 
 owner_nickname:ownerNickname
 
@@ -2639,9 +2648,9 @@ await supabase
 .insert({
 box_id:board.id,
 title:title||url,
-url:url,
+url,
 image:image||null,
-visibility:visibility
+visibility
 })
 .select()
 .single();
@@ -2838,7 +2847,7 @@ render();
 }
 
 /* =========================================================
-UPDATE BOARD
+UPDATE BOARD ELEMENT
 ========================================================= */
 
 function updateBoardElement(board){
@@ -2911,7 +2920,7 @@ Number(board.h)+"px";
 
 const owner=
 String(board.owner_id)===
-String(user?.id);
+String(user.id);
 
 let boardNickname=
 board.ownerNickname||
@@ -2930,7 +2939,8 @@ currentProfile.nickname;
 if(!boardNickname){
 
 boardNickname=
-getNickname(board.owner_id)||"";
+getNickname(board.owner_id)||
+"";
 
 }
 
@@ -3055,7 +3065,9 @@ owner
 
 `;
 
-/* BOARD CLICK */
+/* =========================================================
+BOARD CLICK
+========================================================= */
 
 element.addEventListener(
 "click",
@@ -3070,13 +3082,17 @@ selectedBoardId=board.id;
 
 document
 .querySelectorAll(".board")
-.forEach(b=>b.classList.remove("selected"));
+.forEach(b=>
+b.classList.remove("selected")
+);
 
 element.classList.add("selected");
 
 });
 
-/* DELETE BOARD */
+/* =========================================================
+DELETE BOARD
+========================================================= */
 
 const deleteBoardButton=
 element.querySelector(
@@ -3098,7 +3114,9 @@ await deleteBoard(board);
 
 }
 
-/* ADD URL */
+/* =========================================================
+ADD URL
+========================================================= */
 
 const addButton=
 element.querySelector(
@@ -3120,7 +3138,9 @@ openURLModal(board);
 
 }
 
-/* DELETE URL */
+/* =========================================================
+DELETE URL
+========================================================= */
 
 element
 .querySelectorAll("[data-delete-item]")
@@ -3142,7 +3162,9 @@ button.dataset.deleteItem
 
 });
 
-/* OPEN URL */
+/* =========================================================
+OPEN URL
+========================================================= */
 
 element
 .querySelectorAll(".item")
@@ -3171,7 +3193,9 @@ url,
 
 });
 
-/* CONTEXT MENU */
+/* =========================================================
+CONTEXT MENU
+========================================================= */
 
 element.addEventListener(
 "contextmenu",
@@ -3197,8 +3221,9 @@ event.clientY+"px";
 
 });
 
-
-/* MOVE + RESIZE */
+/* =========================================================
+INDIVIDUAL BOARD MOVE + RESIZE
+========================================================= */
 
 if(owner){
 
@@ -3206,7 +3231,16 @@ element.addEventListener(
 "pointerdown",
 event=>{
 
+/*
+Ignore touch here because touch movement is handled
+by the workspace touch system.
+*/
+
 if(event.pointerType==="touch")return;
+
+/*
+Anything inside an item should never move the board.
+*/
 
 if(event.target.closest(".item"))return;
 if(event.target.closest(".add-url"))return;
@@ -3214,21 +3248,30 @@ if(event.target.closest(".trash-button"))return;
 
 event.stopPropagation();
 
+const rect=
+element.getBoundingClientRect();
+
 if(event.target.closest(".resize")){
 
 resizing={
 
-id:board.id,
+id:String(board.id),
+
+pointerId:event.pointerId,
 
 startX:event.clientX,
+
 startY:event.clientY,
 
-width:board.w,
-height:board.h
+width:Number(board.w)||430,
+
+height:Number(board.h)||270
 
 };
 
-element.setPointerCapture(event.pointerId);
+element.setPointerCapture(
+event.pointerId
+);
 
 event.preventDefault();
 
@@ -3238,28 +3281,41 @@ return;
 
 moving={
 
-id:board.id,
+id:String(board.id),
+
+pointerId:event.pointerId,
 
 startX:event.clientX,
+
 startY:event.clientY,
 
-x:board.x,
-y:board.y
+x:Number(board.x)||0,
+
+y:Number(board.y)||0
 
 };
 
-element.setPointerCapture(event.pointerId);
+element.setPointerCapture(
+event.pointerId
+);
+
+selectedBoardId=board.id;
+
+element.classList.add("selected");
 
 event.preventDefault();
 
 });
 
-
 element.addEventListener(
 "pointermove",
 event=>{
 
-if(resizing && resizing.id===board.id){
+if(
+resizing &&
+resizing.id===String(board.id) &&
+resizing.pointerId===event.pointerId
+){
 
 board.w=
 Math.max(
@@ -3275,15 +3331,23 @@ resizing.height+
 (event.clientY-resizing.startY)/zoom
 );
 
-element.style.width=board.w+"px";
-element.style.height=board.h+"px";
+element.style.width=
+board.w+"px";
+
+element.style.height=
+board.h+"px";
+
+event.preventDefault();
 
 return;
 
 }
 
-
-if(moving && moving.id===board.id){
+if(
+moving &&
+moving.id===String(board.id) &&
+moving.pointerId===event.pointerId
+){
 
 board.x=
 moving.x+
@@ -3293,26 +3357,37 @@ board.y=
 moving.y+
 (event.clientY-moving.startY)/zoom;
 
-element.style.left=board.x+"px";
-element.style.top=board.y+"px";
+element.style.left=
+board.x+"px";
+
+element.style.top=
+board.y+"px";
+
+event.preventDefault();
 
 }
 
 });
 
-
 element.addEventListener(
 "pointerup",
 async event=>{
 
-event.stopPropagation();
+if(
+moving &&
+moving.id===String(board.id) &&
+moving.pointerId===event.pointerId
+){
 
-if(moving && moving.id===board.id){
+const finalX=
+Number(board.x);
 
-const finalX=board.x;
-const finalY=board.y;
+const finalY=
+Number(board.y);
 
 moving=null;
+
+try{
 
 await supabase
 .from("boxes")
@@ -3323,15 +3398,32 @@ y:finalY
 .eq("id",board.id)
 .eq("owner_id",user.id);
 
+}catch(error){
+
+console.error(
+"Could not save board position:",
+error
+);
+
 }
 
+}
 
-if(resizing && resizing.id===board.id){
+if(
+resizing &&
+resizing.id===String(board.id) &&
+resizing.pointerId===event.pointerId
+){
 
-const finalWidth=board.w;
-const finalHeight=board.h;
+const finalWidth=
+Number(board.w);
+
+const finalHeight=
+Number(board.h);
 
 resizing=null;
+
+try{
 
 await supabase
 .from("boxes")
@@ -3342,24 +3434,48 @@ height:finalHeight
 .eq("id",board.id)
 .eq("owner_id",user.id);
 
+}catch(error){
+
+console.error(
+"Could not save board size:",
+error
+);
+
+}
+
 }
 
 });
-
 
 element.addEventListener(
 "pointercancel",
 event=>{
 
-event.stopPropagation();
+if(
+moving &&
+moving.id===String(board.id) &&
+moving.pointerId===event.pointerId
+){
 
 moving=null;
+
+}
+
+if(
+resizing &&
+resizing.id===String(board.id) &&
+resizing.pointerId===event.pointerId
+){
+
 resizing=null;
+
+}
 
 });
 
 }
 
+});
 
 /* =========================================================
 DESKTOP PAN
@@ -3381,9 +3497,11 @@ if(event.target.closest("button"))return;
 panning={
 
 x:event.clientX,
+
 y:event.clientY,
 
 panX:panX,
+
 panY:panY
 
 };
@@ -3410,7 +3528,8 @@ panning.panY+
 event.clientY-
 panning.y;
 
-document.getElementById("world").style.transform=
+document.getElementById("world")
+.style.transform=
 `translate(${panX}px,${panY}px) scale(${zoom})`;
 
 });
@@ -3473,9 +3592,11 @@ if(!event.target.closest(".board")){
 panning={
 
 x:event.clientX,
+
 y:event.clientY,
 
 panX:panX,
+
 panY:panY
 
 };
@@ -3543,7 +3664,8 @@ panning.panY+
 event.clientY-
 panning.y;
 
-document.getElementById("world").style.transform=
+document.getElementById("world")
+.style.transform=
 `translate(${panX}px,${panY}px) scale(${zoom})`;
 
 return;
@@ -3616,7 +3738,8 @@ worldY*newZoom;
 
 zoom=newZoom;
 
-document.getElementById("world").style.transform=
+document.getElementById("world")
+.style.transform=
 `translate(${panX}px,${panY}px) scale(${zoom})`;
 
 }
@@ -3706,7 +3829,8 @@ panY=
 mouseY-
 worldY*zoom;
 
-document.getElementById("world").style.transform=
+document.getElementById("world")
+.style.transform=
 `translate(${panX}px,${panY}px) scale(${zoom})`;
 
 },
@@ -3799,7 +3923,8 @@ document.getElementById("renameSave")
 async()=>{
 
 const title=
-document.getElementById("renameInput")
+document
+.getElementById("renameInput")
 .value
 .trim();
 
@@ -3811,7 +3936,7 @@ error
 await supabase
 .from("boxes")
 .update({
-title:title
+title
 })
 .eq("id",board.id)
 .eq("owner_id",user.id);
@@ -4037,7 +4162,11 @@ INITIAL AUTH UI
 
 updateAuthUI();
 
-render();
+/* =========================================================
+START
+========================================================= */
+
+initializeApp();
 
 </script>
 
