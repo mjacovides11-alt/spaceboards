@@ -2393,20 +2393,17 @@ String(user.id)
 const previous=
 ownBoards[ownBoards.length-1];
 
-let x=120;
-let y=120;
+const boxWidth = 430;
+const boxHeight = 270;
+const gap = 40;
 
-if(previous){
+const index = ownBoards.length;
 
-x=
-Number(previous.x)+
-Number(previous.w)+
-40;
+const column = index % 3;
+const row = Math.floor(index / 3);
 
-y=
-Number(previous.y);
-
-}
+let x = 120 + column * (boxWidth + gap);
+let y = 120 + row * (boxHeight + gap);
 
 const {
 data,
