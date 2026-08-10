@@ -909,13 +909,14 @@ APP
       Add Friends
     </button>
 
-    <button
+       <button
       id="mobileModeButton"
       class="top-button"
       type="button"
     >
-      Mobile
+      Computer
     </button>
+
 
 
 
@@ -1239,10 +1240,17 @@ document
           mobileListMode
         );
 
+      document.getElementById("mobileModeButton")
+        .textContent =
+          mobileListMode
+            ? "Computer"
+            : "Mobile";
+
       render();
 
     }
   );
+
 
 
 
