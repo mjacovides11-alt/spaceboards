@@ -1046,12 +1046,13 @@ const supabase =
     SUPABASE_KEY,
     {
       auth:{
-        persistSession:false,
+        persistSession:true,
         autoRefreshToken:true,
         detectSessionInUrl:true
       }
     }
   );
+
 
 /* =========================================================
 STATE
