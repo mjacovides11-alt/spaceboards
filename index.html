@@ -3850,20 +3850,18 @@ if(deleteBoardButton){
 
     if(owner){
 
-      workspace.addEventListener(
-  "pointerdown",
-  event=>{
+      element.addEventListener(
+        "pointerdown",
+        event=>{
 
-    if(mobileListMode)return;
-
-    if(
-      event.pointerType !== "touch"
-    ){
-
+          if(
+            event.pointerType === "touch"
+          ){
 
             return;
 
           }
+
 
           /*
             Do not move when clicking controls.
@@ -4512,8 +4510,7 @@ workspace.addEventListener(
     if(
       event.pointerType !== "touch"
     ){
-){
-
+      
       return;
 
     }
