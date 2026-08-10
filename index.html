@@ -1051,6 +1051,24 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
   "sb_publishable_8CryzR2sR-y5nHprgLWJlA_Wfy_mTrj";
 
+function getAuthStorage(){
+
+  return localStorage.getItem("spaceboards_remember") === "false"
+    ? sessionStorage
+    : localStorage;
+
+}
+
+const customAuthStorage = {
+
+  getItem:(key)=> getAuthStorage().getItem(key),
+
+  setItem:(key,value)=> getAuthStorage().setItem(key,value),
+
+  removeItem:(key)=> getAuthStorage().removeItem(key)
+
+};
+
 const supabase =
   createClient(
     SUPABASE_URL,
@@ -1059,10 +1077,12 @@ const supabase =
       auth:{
         persistSession:true,
         autoRefreshToken:true,
-        detectSessionInUrl:true
+        detectSessionInUrl:true,
+        storage:customAuthStorage
       }
     }
   );
+
 
 
 /* =========================================================
