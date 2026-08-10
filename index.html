@@ -2665,27 +2665,36 @@ function openURLModal(board){
       Fetching preview...
     </p>
 
-    <p>
-      Who should be able to see this URL?
+      <p>
+      Choose who can see this:
     </p>
 
-    <div class="choice">
-
-      <button
-        id="publicURLButton"
-        type="button"
-      >
-        Public
-      </button>
-
-      <button
-        id="privateURLButton"
-        type="button"
-      >
-        Private
-      </button>
-
+    <div id="friendsShareList" style="max-height:160px;overflow:auto;margin-bottom:12px;">
+      ${
+        friends.length
+          ? friends.map(friend=>`
+              <label style="display:flex;align-items:center;gap:8px;padding:6px 0;color:#ddd;font-size:14px;">
+                <input
+                  type="checkbox"
+                  class="shareFriendCheckbox"
+                  value="${escapeHTML(friend.id)}"
+                  style="width:16px;height:16px;"
+                >
+                ${escapeHTML(friend.nickname || friend.email || "Friend")}
+              </label>
+            `).join("")
+          : "<p style='font-size:13px;color:#777;'>You have no friends added yet.</p>"
+      }
     </div>
+
+    <label style="display:flex;align-items:center;gap:8px;color:#aaa;font-size:14px;margin-bottom:14px;">
+      <input
+        id="keepPrivateCheckbox"
+        type="checkbox"
+        style="width:16px;height:16px;"
+      >
+      Keep private (only me)
+    </label>
 
     <div class="modal-actions">
 
@@ -2694,6 +2703,13 @@ function openURLModal(board){
         type="button"
       >
         Cancel
+      </button>
+
+      <button
+        id="saveURLButton"
+        type="button"
+      >
+        Save
       </button>
 
     </div>
@@ -2706,14 +2722,28 @@ function openURLModal(board){
       closeModal;
 
   document
-    .getElementById("publicURLButton")
+    .getElementById("saveURLButton")
     .onclick =
-      ()=>saveURL(board,"public");
+      ()=>{
 
-  document
-    .getElementById("privateURLButton")
-    .onclick =
-      ()=>saveURL(board,"private");
+        const keepPrivate =
+          document
+            .getElementById("keepPrivateCheckbox")
+            .checked;
+
+        const sharedWith =
+          [...document.querySelectorAll(".shareFriendCheckbox:checked")]
+            .map(box=>box.value);
+
+        const visibility =
+          keepPrivate
+            ? "private"
+            : "shared";
+
+        saveURL(board,visibility,sharedWith);
+
+      };
+
 
   document
     .getElementById("urlAddress")
@@ -2775,7 +2805,8 @@ SAVE URL
 
 async function saveURL(
   board,
-  visibility
+  visibility,
+  sharedWith
 ){
 
   let url =
@@ -2835,9 +2866,13 @@ async function saveURL(
     visibility:visibility,
 
     owner_nickname:
-      ownerNickname
+      ownerNickname,
+
+    shared_with:
+      sharedWith || []
 
   };
+
 
   let {
     data,
