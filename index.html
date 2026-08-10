@@ -2450,25 +2450,19 @@ document
             String(user.id)
         );
 
-      const previous =
-        ownBoards.length
-          ? ownBoards[ownBoards.length - 1]
-          : null;
+      const column =
+  ownBoards.length % 3;
 
-      let x = 120;
-      let y = 120;
+const row =
+  Math.floor(ownBoards.length / 3);
 
-      if(previous){
+const x =
+  120 +
+  column * (430 + 40);
 
-        x =
-          Number(previous.x) +
-          Number(previous.w) +
-          40;
-
-        y =
-          Number(previous.y);
-
-      }
+const y =
+  120 +
+  row * (270 + 40);
 
       const {
         data,
