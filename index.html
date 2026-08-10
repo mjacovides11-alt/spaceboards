@@ -2450,7 +2450,12 @@ document
             String(user.id)
         );
         
-        let x = 120;
+const previous =
+  ownBoards.length
+    ? ownBoards[ownBoards.length - 1]
+    : null;
+
+let x = 120;
 let y = 120;
 
 if(previous){
