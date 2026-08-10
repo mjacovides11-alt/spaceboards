@@ -2396,15 +2396,17 @@ async function loadBoards(){
         height,
         created_at,
         visibility,
-        box_items(
+box_items(
           id,
           box_id,
           title,
           url,
           image,
           visibility,
-          owner_nickname
+          owner_nickname,
+          shared_with
         )
+
       `)
       .order(
         "created_at",
@@ -2455,13 +2457,20 @@ async function loadBoards(){
         ownerNickname:
           ownerNickname || "",
 
-        items:
+                items:
           items.filter(
             item =>
               item.visibility === "public" ||
               String(box.owner_id) ===
-              String(user.id)
+              String(user.id) ||
+              (
+                Array.isArray(item.shared_with) &&
+                item.shared_with
+                  .map(String)
+                  .includes(String(user.id))
+              )
           )
+
 
       };
 
@@ -2894,7 +2903,7 @@ async function saveURL(
     )
   ){
 
-    const fallback =
+        const fallback =
       await supabase
         .from("box_items")
         .insert({
@@ -2902,10 +2911,12 @@ async function saveURL(
           title:title || url,
           url:url,
           image:image || null,
-          visibility:visibility
+          visibility:visibility,
+          shared_with:sharedWith || []
         })
         .select()
         .single();
+
 
     data =
       fallback.data;
@@ -3449,13 +3460,16 @@ function render(){
 
                   </div>
 
-                  <span class="item-visibility">
+                                    <span class="item-visibility">
                     ${
                       item.visibility === "public"
                         ? "Public"
-                        : "Private"
+                        : item.visibility === "shared"
+                          ? "Shared"
+                          : "Private"
                     }
                   </span>
+
 
                   ${
                     owner
