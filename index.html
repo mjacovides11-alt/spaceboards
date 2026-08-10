@@ -3275,23 +3275,21 @@ function render(){
       }
     );
 
-    /* DOUBLE CLICK TO RENAME */
+  /* DOUBLE CLICK TO RENAME */
 
-element.addEventListener("dblclick", async event => {
+element.addEventListener("dblclick", event => {
 
-    if(!owner) return;
+    if (!owner) return;
 
-    // Don't rename when double-clicking buttons, URLs, or resize handle
-    if(event.target.closest(".item")) return;
-    if(event.target.closest(".add-url")) return;
-    if(event.target.closest(".trash-button")) return;
-    if(event.target.closest(".resize")) return;
+    if (event.target.closest(".item")) return;
+    if (event.target.closest(".add-url")) return;
+    if (event.target.closest(".trash-button")) return;
+    if (event.target.closest(".resize")) return;
 
     event.preventDefault();
     event.stopPropagation();
 
     openModal(`
-
         <h2>Rename box</h2>
 
         <input
@@ -3312,50 +3310,43 @@ element.addEventListener("dblclick", async event => {
             </button>
 
         </div>
-
     `);
 
     const input =
         document.getElementById("renameInput");
 
-    const cancelButton =
-        document.getElementById("renameCancel");
-
     const saveButton =
         document.getElementById("renameSave");
 
-    cancelButton.onclick = () => {
-        closeModal();
-    };
+    document.getElementById("renameCancel")
+        .onclick = closeModal;
 
-    async function saveRename(){
+    saveButton.onclick = async () => {
 
         const title =
             input.value.trim();
 
-        if(!title){
+        if (!title) {
             showError("Enter a name for the box.");
             return;
         }
 
         saveButton.disabled = true;
 
-        const {
-            error
-        } = await supabase
-            .from("boxes")
-            .update({
-                title: title
-            })
-            .eq("id", board.id)
-            .eq("owner_id", user.id);
+        const { data, error } =
+            await supabase
+                .from("boxes")
+                .update({
+                    title: title
+                })
+                .eq("id", board.id)
+                .eq("owner_id", user.id)
+                .select()
+                .maybeSingle();
 
-        if(error){
+        if (error) {
 
-            console.error(
-                "Rename box error:",
-                error
-            );
+            console.error("Rename error:", error);
 
             saveButton.disabled = false;
 
@@ -3367,29 +3358,36 @@ element.addEventListener("dblclick", async event => {
             return;
         }
 
-        board.title = title;
+        if (!data) {
+
+            saveButton.disabled = false;
+
+            showError(
+                "The box was not updated. Check your Supabase UPDATE policy."
+            );
+
+            return;
+        }
+
+        board.title = data.title;
 
         closeModal();
 
         render();
-    }
 
-    saveButton.onclick = saveRename;
+    };
 
-    input.addEventListener(
-        "keydown",
-        event => {
+    input.addEventListener("keydown", event => {
 
-            if(event.key === "Enter"){
-                saveRename();
-            }
-
-            if(event.key === "Escape"){
-                closeModal();
-            }
-
+        if (event.key === "Enter") {
+            saveButton.click();
         }
-    );
+
+        if (event.key === "Escape") {
+            closeModal();
+        }
+
+    });
 
     setTimeout(() => {
         input.focus();
