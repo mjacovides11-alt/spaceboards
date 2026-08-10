@@ -4916,9 +4916,73 @@ workspace.addEventListener(
 INITIAL UI
 ========================================================= */
 
+function checkForSharedURL(){
+
+  const params =
+    new URLSearchParams(window.location.search);
+
+  const sharedURL =
+    params.get("addurl");
+
+  if(!sharedURL)return;
+
+  if(!user)return;
+
+  const ownBoxes =
+    boards.filter(
+      board =>
+        String(board.owner_id) ===
+        String(user.id)
+    );
+
+  if(!ownBoxes.length){
+
+    showError(
+      "Create a box first, then share the link again."
+    );
+
+    return;
+
+  }
+
+  const targetBoard =
+    ownBoxes[ownBoxes.length - 1];
+
+  openURLModal(targetBoard);
+
+  setTimeout(
+    ()=>{
+
+      const urlInput =
+        document.getElementById("urlAddress");
+
+      if(urlInput){
+
+        urlInput.value =
+          decodeURIComponent(sharedURL);
+
+        urlInput.dispatchEvent(
+          new Event("input")
+        );
+
+      }
+
+    },
+    100
+  );
+
+  window.history.replaceState(
+    {},
+    "",
+    window.location.pathname
+  );
+
+}
+
 updateAuthUI();
 
 render();
+
 
 </script>
 
