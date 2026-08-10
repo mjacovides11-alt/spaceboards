@@ -837,14 +837,25 @@ AUTH SCREEN
       autocomplete="nickname"
     >
 
-    <input
+     <input
       id="authPassword"
       type="password"
       placeholder="Password"
       autocomplete="current-password"
     >
 
+    <label style="display:flex;align-items:center;gap:8px;color:#aaa;font-size:14px;margin-bottom:14px;">
+      <input
+        id="rememberMeCheckbox"
+        type="checkbox"
+        checked
+        style="width:16px;height:16px;"
+      >
+      Remember me
+    </label>
+
     <div class="auth-buttons">
+
 
       <button id="loginButton">
         Log in
