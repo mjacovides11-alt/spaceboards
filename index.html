@@ -2449,26 +2449,26 @@ document
             String(board.owner_id) ===
             String(user.id)
         );
-        
-const previous =
-  ownBoards.length
-    ? ownBoards[ownBoards.length - 1]
-    : null;
 
-let x = 120;
-let y = 120;
+      const previous =
+        ownBoards.length
+          ? ownBoards[ownBoards.length - 1]
+          : null;
 
-if(previous){
+      let x = 120;
+      let y = 120;
 
-  x =
-    Number(previous.x) +
-    Number(previous.w) +
-    40;
+      if(previous){
 
-  y =
-    Number(previous.y);
+        x =
+          Number(previous.x) +
+          Number(previous.w) +
+          40;
 
-}
+        y =
+          Number(previous.y);
+
+      }
 
       const {
         data,
