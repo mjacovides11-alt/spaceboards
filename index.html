@@ -664,6 +664,20 @@ border-bottom:1px solid #eee;
 
 }
 
+#closeFriendsButton{
+float:right;
+width:26px;
+height:26px;
+border-radius:6px;
+background:#eee;
+font-size:18px;
+line-height:26px;
+}
+
+#closeFriendsButton:hover{
+background:#ddd;
+}
+
 #addFriendArea{
 
 padding:10px;
@@ -1220,6 +1234,7 @@ id="friendsPanel"
 
 <div class="friends-header">
 Friends
+<button id="closeFriendsButton">×</button>
 </div>
 
 <div id="addFriendArea">
@@ -2175,6 +2190,14 @@ await supabase.auth.signOut();
 /* =========================================================
 FRIENDS
 ========================================================= */
+
+document.getElementById("closeFriendsButton")
+.addEventListener(
+"click",
+()=>{
+    document.getElementById("friendsPanel")
+    .style.display="none";
+});
 
 async function loadFriends(){
 
@@ -4830,6 +4853,7 @@ event.target.id===
 ){
 
 closeModal();
+
 
 }
 
