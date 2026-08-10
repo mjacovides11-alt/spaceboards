@@ -773,6 +773,35 @@ MOBILE
     font-size:14px;
   }
 }
+
+#app.mobile-list #world{
+  position:relative;
+  transform:none!important;
+  display:flex;
+  flex-direction:column;
+  gap:24px;
+  padding:60px 14px 40px;
+  width:100%;
+}
+
+#app.mobile-list #workspace{
+  overflow-y:auto;
+}
+
+#app.mobile-list .board{
+  position:relative!important;
+  left:auto!important;
+  top:auto!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:220px;
+}
+
+#app.mobile-list .resize{
+  display:none;
+}
+
+
 </style>
 </head>
 
@@ -1044,6 +1073,9 @@ let panX = 80;
 let panY = 80;
 let zoom = 1;
 
+let mobileListMode = false;
+let mobileModeAsked = false;
+
 let pointers = new Map();
 
 let pinchStartDistance = null;
@@ -1086,6 +1118,67 @@ function showError(message){
   alert(String(message));
 
 }
+
+function maybeAskMobileMode(){
+
+  if(mobileModeAsked)return;
+
+  mobileModeAsked = true;
+
+  openModal(`
+
+    <h2>Mobile device?</h2>
+
+    <p>
+      Are you using Spaceboards on a mobile phone?
+    </p>
+
+    <div class="choice">
+
+      <button id="mobileYesButton" type="button">
+        Yes
+      </button>
+
+      <button id="mobileNoButton" type="button">
+        No
+      </button>
+
+    </div>
+
+  `);
+
+  document
+    .getElementById("mobileYesButton")
+    .onclick = ()=>{
+
+      mobileListMode = true;
+
+      document.getElementById("app")
+        .classList.add("mobile-list");
+
+      closeModal();
+
+      render();
+
+    };
+
+  document
+    .getElementById("mobileNoButton")
+    .onclick = ()=>{
+
+      mobileListMode = false;
+
+      document.getElementById("app")
+        .classList.remove("mobile-list");
+
+      closeModal();
+
+      render();
+
+    };
+
+}
+
 
 /* =========================================================
 AUTH
@@ -1234,8 +1327,10 @@ document
 
       updateProfileDisplay();
 
-      render();
+            render();
       renderFriends();
+
+      maybeAskMobileMode();
 
     }
   );
@@ -1244,6 +1339,7 @@ document
 SIGN UP
 ========================================================= */
 
+      
 document
   .getElementById("signupButton")
   .addEventListener(
@@ -1495,12 +1591,15 @@ supabase.auth.onAuthStateChange(
       await loadBoards();
       await loadFriendRequests();
 
-      updateProfileDisplay();
+            updateProfileDisplay();
 
       render();
       renderFriends();
 
+      maybeAskMobileMode();
+
     }else{
+
 
       document.getElementById("authScreen")
         .style.display = "flex";
@@ -1546,9 +1645,15 @@ if(sessionResult.data.session){
 
   updateProfileDisplay();
 
+  render();
+  renderFriends();
+
+  maybeAskMobileMode();
+
 }else{
 
   user = null;
+
 
   document.getElementById("authScreen")
     .style.display = "flex";
@@ -3745,18 +3850,16 @@ if(deleteBoardButton){
 
     if(owner){
 
-      element.addEventListener(
-        "pointerdown",
-        event=>{
+      workspace.addEventListener(
+  "pointerdown",
+  event=>{
 
-          /*
-            Mouse only here.
-            Touch uses workspace gestures.
-          */
+    if(mobileListMode)return;
 
-          if(
-            event.pointerType === "touch"
-          ){
+    if(
+      event.pointerType !== "touch"
+    ){
+
 
             return;
 
@@ -4291,9 +4394,12 @@ workspace.addEventListener(
   "pointerdown",
   event=>{
 
+    if(mobileListMode)return;
+
     if(
-      event.pointerType === "touch"
+      event.pointerType !== "touch"
     ){
+
 
       return;
 
@@ -4401,9 +4507,12 @@ workspace.addEventListener(
   "pointerdown",
   event=>{
 
+    if(mobileListMode)return;
+
     if(
       event.pointerType !== "touch"
     ){
+){
 
       return;
 
