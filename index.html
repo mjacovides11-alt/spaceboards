@@ -2701,24 +2701,19 @@ if(titleInput.value || imageInput.value)return;
 
 statusText.style.display = "block";
 
-const preview =
+      const preview =
   await fetchURLPreview(url);
 
 statusText.style.display = "none";
 
-alert("Preview result: " + JSON.stringify(preview));
-
       if(preview){
-
-        if(!titleInput.value && preview.title){
-          titleInput.value = preview.title;
-        }
 
         if(!imageInput.value && preview.image){
           imageInput.value = preview.image;
         }
 
       }
+
 
         },800);
 
