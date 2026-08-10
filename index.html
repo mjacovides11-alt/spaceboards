@@ -2,3726 +2,2456 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-
-<meta
-  name="viewport"
-  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
->
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Spaceboards</title>
-
 <style>
-*{
-  box-sizing:border-box;
-}
-
+*{box-sizing:border-box}
 html,body{
-  margin:0;
-  width:100%;
-  height:100%;
-  font-family:Arial,Helvetica,sans-serif;
-  overflow:hidden;
-  background:#0b0b0d;
-  color:#e8e8e8;
+margin:0;
+width:100%;
+height:100%;
+font-family:Arial,Helvetica,sans-serif;
+overflow:hidden;
+background:#0b0b0d;
+color:#e8e8e8
 }
-
-button,input{
-  font-family:inherit;
-}
-
-button{
-  cursor:pointer;
-  border:0;
-}
-
-.hidden{
-  display:none!important;
-}
-
-/* AUTH */
-
+button,input{font-family:inherit}
+button{cursor:pointer;border:0}
+.hidden{display:none!important}
 #authScreen{
-  position:fixed;
-  inset:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:#0b0b0d;
-  z-index:10000;
+position:fixed;
+inset:0;
+display:flex;
+align-items:center;
+justify-content:center;
+background:#0b0b0d;
+z-index:10000
 }
-
 .auth-card{
-  width:min(420px,calc(100% - 30px));
-  background:#161618;
-  border:1px solid #29292d;
-  border-radius:18px;
-  padding:32px;
-  box-shadow:0 15px 50px rgba(0,0,0,.65);
+width:min(420px,calc(100% - 30px));
+background:#161618;
+border:1px solid #29292d;
+border-radius:18px;
+padding:32px;
+box-shadow:0 15px 50px rgba(0,0,0,.65)
 }
-
 .auth-card h1{
-  margin:0 0 8px;
-  font-size:30px;
-  color:#f5f5f5;
+margin:0 0 8px;
+font-size:30px;
+color:#f5f5f5
 }
-
 .auth-description{
-  margin:0 0 24px;
-  color:#999;
-  font-size:15px;
+margin:0 0 24px;
+color:#999;
+font-size:15px
 }
-
 .auth-card input{
-  display:block;
-  width:100%;
-  height:46px;
-  margin-bottom:12px;
-  padding:0 14px;
-  border:1px solid #343438;
-  border-radius:9px;
-  font-size:15px;
-  outline:none;
-  background:#0f0f11;
-  color:#eee;
+display:block;
+width:100%;
+height:46px;
+margin-bottom:12px;
+padding:0 14px;
+border:1px solid #343438;
+border-radius:9px;
+font-size:15px;
+outline:none;
+background:#0f0f11;
+color:#eee
 }
-
-.auth-card input::placeholder{
-  color:#666;
-}
-
-.auth-card input:focus{
-  border-color:#777;
-}
-
+.auth-card input::placeholder{color:#666}
+.auth-card input:focus{border-color:#777}
 .auth-buttons{
-  display:flex;
-  gap:10px;
-  margin-top:8px;
+display:flex;
+gap:10px;
+margin-top:8px
 }
-
 .auth-buttons button{
-  flex:1;
-  height:46px;
-  border-radius:9px;
-  font-weight:600;
+flex:1;
+height:46px;
+border-radius:9px;
+font-weight:600
 }
-
-#loginButton{
-  background:#eeeeee;
-  color:#111;
-}
-
-#loginButton:hover{
-  background:#d5d5d5;
-}
-
-#signupButton{
-  background:#29292d;
-  color:#eee;
-}
-
-#signupButton:hover{
-  background:#38383d;
-}
-
+#loginButton{background:#eee;color:#111}
+#loginButton:hover{background:#d5d5d5}
+#signupButton{background:#29292d;color:#eee}
+#signupButton:hover{background:#38383d}
 .auth-error{
-  min-height:20px;
-  margin-top:14px;
-  font-size:13px;
-  color:#ff6666;
+min-height:20px;
+margin-top:14px;
+font-size:13px;
+color:#ff6666
 }
-
-/* TOP BAR */
-
 #app{
-  position:fixed;
-  inset:0;
-  display:flex;
-  flex-direction:column;
+position:fixed;
+inset:0;
+display:flex;
+flex-direction:column
 }
-
 #topbar{
-  height:64px;
-  background:#111113;
-  border-bottom:1px solid #29292d;
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:0 14px;
-  z-index:500;
-  flex-shrink:0;
+height:64px;
+background:#111113;
+border-bottom:1px solid #29292d;
+display:flex;
+align-items:center;
+gap:10px;
+padding:0 14px;
+z-index:500;
+flex-shrink:0
 }
-
 .logo{
-  font-size:21px;
-  font-weight:800;
-  margin-right:8px;
-  white-space:nowrap;
-  color:#f2f2f2;
+font-size:21px;
+font-weight:800;
+margin-right:8px;
+white-space:nowrap;
+color:#f2f2f2
 }
-
 #searchInput{
-  height:40px;
-  width:240px;
-  max-width:30vw;
-  border:1px solid #36363b;
-  border-radius:9px;
-  padding:0 13px;
-  outline:none;
-  background:#1a1a1d;
-  color:#eee;
+height:40px;
+width:240px;
+max-width:30vw;
+border:1px solid #36363b;
+border-radius:9px;
+padding:0 13px;
+outline:none;
+background:#1a1a1d;
+color:#eee
 }
-
-#searchInput::placeholder{
-  color:#666;
-}
-
-#searchInput:focus{
-  border-color:#777;
-}
-
+#searchInput::placeholder{color:#666}
+#searchInput:focus{border-color:#777}
 .top-button{
-  height:40px;
-  padding:0 14px;
-  border-radius:9px;
-  background:#29292d;
-  color:#ddd;
-  font-weight:600;
-  white-space:nowrap;
+height:40px;
+padding:0 14px;
+border-radius:9px;
+background:#29292d;
+color:#ddd;
+font-weight:600;
+white-space:nowrap
 }
-
-.top-button:hover{
-  background:#39393e;
-}
-
-#newBoxButton{
-  background:#eeeeee;
-  color:#111;
-}
-
-#newBoxButton:hover{
-  background:#d5d5d5;
-}
-
-.spacer{
-  flex:1;
-}
-
+.top-button:hover{background:#39393e}
+#newBoxButton{background:#eee;color:#111}
+#newBoxButton:hover{background:#d5d5d5}
+.spacer{flex:1}
 #profileName{
-  font-size:14px;
-  color:#aaa;
-  max-width:180px;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
+font-size:14px;
+color:#aaa;
+max-width:180px;
+overflow:hidden;
+text-overflow:ellipsis;
+white-space:nowrap
 }
-
-/* WORKSPACE */
-
 #workspace{
-  position:relative;
-  flex:1;
-  overflow:hidden;
-  touch-action:none;
-  background-color:#0b0b0d;
-  background-image:
-    radial-gradient(#29292d 1px,transparent 1px);
-  background-size:24px 24px;
+position:relative;
+flex:1;
+overflow:hidden;
+touch-action:none;
+background-color:#0b0b0d;
+background-image:radial-gradient(#29292d 1px,transparent 1px);
+background-size:24px 24px
 }
-
 #world{
-  position:absolute;
-  left:0;
-  top:0;
-  width:1px;
-  height:1px;
-  transform-origin:0 0;
+position:absolute;
+left:0;
+top:0;
+width:1px;
+height:1px;
+transform-origin:0 0
 }
-
-/* BOARDS */
-
 .board{
-  position:absolute;
-  background:#171719;
-  border:1px solid #343438;
-  border-radius:14px;
-  box-shadow:0 8px 30px rgba(0,0,0,.55);
-  overflow:visible;
-  user-select:none;
-  touch-action:none;
+position:absolute;
+background:#171719;
+border:1px solid #343438;
+border-radius:14px;
+box-shadow:0 8px 30px rgba(0,0,0,.55);
+overflow:visible;
+user-select:none;
+touch-action:none
 }
-
-.board.selected{
-  border:2px solid #aaa;
-}
-
+.board.selected{border:2px solid #aaa}
 .board-title{
-  position:absolute;
-  left:0;
-  top:-38px;
-  font-size:16px;
-  font-weight:700;
-  white-space:nowrap;
-  max-width:350px;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  color:#ddd;
-  cursor:pointer;
+position:absolute;
+left:0;
+top:-38px;
+font-size:16px;
+font-weight:700;
+white-space:nowrap;
+max-width:350px;
+overflow:hidden;
+text-overflow:ellipsis;
+color:#ddd;
+cursor:default
 }
-
 .board-actions{
-  position:absolute;
-  right:8px;
-  top:8px;
-  z-index:20;
+position:absolute;
+right:8px;
+top:8px;
+z-index:20
 }
-
 .trash-button,
 .item-trash{
-  width:30px;
-  height:30px;
-  border-radius:7px;
-  background:#29292d;
-  color:#ddd;
-  font-size:14px;
+width:30px;
+height:30px;
+border-radius:7px;
+background:#29292d;
+color:#ddd;
+font-size:14px
 }
-
 .trash-button:hover,
 .item-trash:hover{
-  background:#492929;
-  color:#ff7777;
+background:#492929;
+color:#ff7777
 }
-
 .board-inner{
-  position:absolute;
-  inset:14px;
-  overflow:auto;
-  padding-top:2px;
+position:absolute;
+inset:14px;
+overflow:auto;
+padding-top:2px
 }
-
 .add-url{
-  width:100%;
-  height:38px;
-  border-radius:8px;
-  background:#e8e8e8;
-  color:#111;
-  font-weight:600;
-  margin-bottom:10px;
+width:100%;
+height:38px;
+border-radius:8px;
+background:#e8e8e8;
+color:#111;
+font-weight:600;
+margin-bottom:10px
 }
-
-.add-url:hover{
-  background:#ccc;
-}
-
-/* ITEMS */
-
+.add-url:hover{background:#ccc}
 .item{
-  position:relative;
-  display:flex;
-  align-items:center;
-  gap:10px;
-  min-height:58px;
-  padding:8px 42px 8px 9px;
-  margin-bottom:8px;
-  border:1px solid #343438;
-  border-radius:9px;
-  background:#202023;
-  color:#eee;
-  cursor:pointer;
+position:relative;
+display:flex;
+align-items:center;
+gap:10px;
+min-height:58px;
+padding:8px 42px 8px 9px;
+margin-bottom:8px;
+border:1px solid #343438;
+border-radius:9px;
+background:#202023;
+color:#eee;
+cursor:pointer
 }
-
-.item:hover{
-  background:#2a2a2e;
-}
-
+.item:hover{background:#2a2a2e}
 .item img{
-  width:42px;
-  height:42px;
-  object-fit:cover;
-  border-radius:7px;
-  flex-shrink:0;
+width:42px;
+height:42px;
+object-fit:cover;
+border-radius:7px;
+flex-shrink:0
 }
-
 .item-content{
-  min-width:0;
-  flex:1;
+min-width:0;
+flex:1
 }
-
 .item-nickname{
-  font-size:11px;
-  color:#888;
-  margin-bottom:2px;
+font-size:11px;
+color:#888;
+margin-bottom:2px
 }
-
 .item-title{
-  font-size:14px;
-  font-weight:600;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-  color:#eee;
+font-size:14px;
+font-weight:600;
+overflow:hidden;
+text-overflow:ellipsis;
+white-space:nowrap;
+color:#eee
 }
-
 .item-visibility{
-  position:absolute;
-  right:8px;
-  top:7px;
-  font-size:9px;
-  color:#888;
+position:absolute;
+right:8px;
+top:7px;
+font-size:9px;
+color:#888
 }
-
 .item-trash{
-  position:absolute;
-  right:7px;
-  bottom:7px;
-  width:25px;
-  height:25px;
-  font-size:11px;
+position:absolute;
+right:7px;
+bottom:7px;
+width:25px;
+height:25px;
+font-size:11px
 }
-
-/* RESIZE */
-
 .resize{
-  position:absolute;
-  right:0;
-  bottom:0;
-  width:22px;
-  height:22px;
-  cursor:nwse-resize;
+position:absolute;
+right:0;
+bottom:0;
+width:22px;
+height:22px;
+cursor:nwse-resize;
+z-index:30
 }
-
 .resize::after{
-  content:"";
-  position:absolute;
-  right:5px;
-  bottom:5px;
-  width:10px;
-  height:10px;
-  border-right:2px solid #777;
-  border-bottom:2px solid #777;
+content:"";
+position:absolute;
+right:5px;
+bottom:5px;
+width:10px;
+height:10px;
+border-right:2px solid #777;
+border-bottom:2px solid #777
 }
-
-/* FRIENDS */
-
 #friendsPanel{
-  position:absolute;
-  right:14px;
-  top:78px;
-  width:260px;
-  max-height:calc(100% - 92px);
-  background:#171719;
-  border:1px solid #343438;
-  border-radius:12px;
-  box-shadow:0 10px 35px rgba(0,0,0,.6);
-  z-index:400;
-  overflow:hidden;
+position:absolute;
+right:14px;
+top:78px;
+width:260px;
+max-height:calc(100% - 92px);
+background:#171719;
+border:1px solid #343438;
+border-radius:12px;
+box-shadow:0 10px 35px rgba(0,0,0,.6);
+z-index:400;
+overflow:hidden
 }
-
-.friends-header{
-  padding:14px;
-  font-weight:700;
-  border-bottom:1px solid #303035;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  color:#eee;
+.friends-header,
+.requests-header{
+padding:14px;
+font-weight:700;
+border-bottom:1px solid #303035;
+display:flex;
+align-items:center;
+justify-content:space-between;
+color:#eee
 }
-
 #closeFriendsButton,
 #closeRequestsButton{
-  width:30px;
-  height:30px;
-  border-radius:7px;
-  background:#29292d;
-  color:#ddd;
-  font-size:20px;
-  line-height:30px;
-  text-align:center;
-  padding:0;
+width:30px;
+height:30px;
+border-radius:7px;
+background:#29292d;
+color:#ddd;
+font-size:20px;
+line-height:30px;
+text-align:center;
+padding:0
 }
-
 #closeFriendsButton:hover,
-#closeRequestsButton:hover{
-  background:#3a3a3f;
-}
-
+#closeRequestsButton:hover{background:#3a3a3f}
 #addFriendArea{
-  padding:10px;
-  border-bottom:1px solid #303035;
+padding:10px;
+border-bottom:1px solid #303035
 }
-
 #addFriendInput{
-  width:100%;
-  height:38px;
-  border:1px solid #35353a;
-  border-radius:8px;
-  padding:0 10px;
-  margin-bottom:7px;
-  background:#0f0f11;
-  color:#eee;
-  outline:none;
+width:100%;
+height:38px;
+border:1px solid #35353a;
+border-radius:8px;
+padding:0 10px;
+margin-bottom:7px;
+background:#0f0f11;
+color:#eee;
+outline:none
 }
-
+#addFriendInput::placeholder{color:#666}
 #addFriendButton{
-  width:100%;
-  height:36px;
-  border-radius:8px;
-  background:#e8e8e8;
-  color:#111;
-  font-weight:600;
+width:100%;
+height:36px;
+border-radius:8px;
+background:#e8e8e8;
+color:#111;
+font-weight:600
 }
-
 #friendsList{
-  padding:8px;
-  max-height:180px;
-  overflow:auto;
+padding:8px;
+max-height:180px;
+overflow:auto
 }
-
 .friend{
-  padding:9px;
-  border-radius:7px;
-  font-size:14px;
-  color:#ddd;
+padding:9px;
+border-radius:7px;
+font-size:14px;
+color:#ddd
 }
-
-.friend:hover{
-  background:#29292d;
-}
-
-/* REQUESTS */
-
+.friend:hover{background:#29292d}
 #requestsPanel{
-  display:none;
-  position:absolute;
-  right:14px;
-  top:78px;
-  width:300px;
-  max-height:calc(100% - 92px);
-  overflow:auto;
-  background:#171719;
-  border:1px solid #343438;
-  border-radius:12px;
-  box-shadow:0 10px 35px rgba(0,0,0,.6);
-  z-index:450;
+display:none;
+position:absolute;
+right:14px;
+top:78px;
+width:300px;
+max-height:calc(100% - 92px);
+overflow:auto;
+background:#171719;
+border:1px solid #343438;
+border-radius:12px;
+box-shadow:0 10px 35px rgba(0,0,0,.6);
+z-index:450
 }
-
-.requests-header{
-  padding:14px;
-  font-weight:700;
-  border-bottom:1px solid #303035;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  color:#eee;
-}
-
-#requestsList{
-  padding:10px;
-}
-
+#requestsList{padding:10px}
 .request{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  padding:10px 0;
-  border-bottom:1px solid #303035;
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:10px;
+padding:10px 0;
+border-bottom:1px solid #303035
 }
-
 .request-nickname{
-  font-weight:600;
-  font-size:14px;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  color:#ddd;
+font-weight:600;
+font-size:14px;
+overflow:hidden;
+text-overflow:ellipsis;
+color:#ddd
 }
-
 .request-actions{
-  display:flex;
-  gap:5px;
+display:flex;
+gap:5px
 }
-
 .request-actions button{
-  padding:6px 8px;
-  border-radius:6px;
-  font-size:12px;
+padding:6px 8px;
+border-radius:6px;
+font-size:12px
 }
-
 .request-actions button[data-action="accept"]{
-  background:#e8e8e8;
-  color:#111;
+background:#e8e8e8;
+color:#111
 }
-
 .request-actions button[data-action="decline"]{
-  background:#29292d;
-  color:#ddd;
+background:#29292d;
+color:#ddd
 }
-
-/* MODAL */
-
 #modalBackground{
-  position:fixed;
-  inset:0;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  background:rgba(0,0,0,.78);
-  z-index:9000;
+position:fixed;
+inset:0;
+display:none;
+align-items:center;
+justify-content:center;
+background:rgba(0,0,0,.78);
+z-index:9000
 }
-
 #modal{
-  width:min(430px,calc(100% - 30px));
-  background:#171719;
-  border:1px solid #343438;
-  border-radius:15px;
-  padding:24px;
-  box-shadow:0 20px 60px rgba(0,0,0,.7);
+width:min(430px,calc(100% - 30px));
+background:#171719;
+border:1px solid #343438;
+border-radius:15px;
+padding:24px;
+box-shadow:0 20px 60px rgba(0,0,0,.7)
 }
-
 #modal h2{
-  margin:0 0 18px;
-  color:#eee;
+margin:0 0 18px;
+color:#eee
 }
-
 #modal input{
-  width:100%;
-  height:44px;
-  margin-bottom:10px;
-  padding:0 12px;
-  border:1px solid #35353a;
-  border-radius:8px;
-  outline:none;
-  background:#0f0f11;
-  color:#eee;
+width:100%;
+height:44px;
+margin-bottom:10px;
+padding:0 12px;
+border:1px solid #35353a;
+border-radius:8px;
+outline:none;
+background:#0f0f11;
+color:#eee
 }
-
 #modal p{
-  font-size:14px;
-  color:#999;
+font-size:14px;
+color:#999
 }
-
 .choice{
-  display:flex;
-  gap:8px;
-  margin-bottom:15px;
+display:flex;
+gap:8px;
+margin-bottom:15px
 }
-
 .choice button{
-  flex:1;
-  height:40px;
-  border-radius:8px;
-  background:#e8e8e8;
-  color:#111;
-  font-weight:600;
+flex:1;
+height:40px;
+border-radius:8px;
+background:#e8e8e8;
+color:#111;
+font-weight:600
 }
-
 .modal-actions{
-  display:flex;
-  justify-content:flex-end;
-  gap:8px;
-  margin-top:16px;
+display:flex;
+justify-content:flex-end;
+gap:8px;
+margin-top:16px
 }
-
 .modal-actions button{
-  height:38px;
-  padding:0 14px;
-  border-radius:8px;
-  background:#29292d;
-  color:#ddd;
-  font-weight:600;
+height:38px;
+padding:0 14px;
+border-radius:8px;
+background:#29292d;
+color:#ddd;
+font-weight:600
 }
-
 .modal-actions button:last-child{
-  background:#e8e8e8;
-  color:#111;
+background:#e8e8e8;
+color:#111
 }
-
-/* CONTEXT MENU */
-
 #contextMenu{
-  display:none;
-  position:fixed;
-  width:150px;
-  background:#171719;
-  border:1px solid #343438;
-  border-radius:9px;
-  box-shadow:0 10px 30px rgba(0,0,0,.6);
-  overflow:hidden;
-  z-index:9500;
+display:none;
+position:fixed;
+width:150px;
+background:#171719;
+border:1px solid #343438;
+border-radius:9px;
+box-shadow:0 10px 30px rgba(0,0,0,.6);
+overflow:hidden;
+z-index:9500
 }
-
 .context-option{
-  width:100%;
-  height:42px;
-  text-align:left;
-  padding:0 13px;
-  background:#171719;
-  color:#ddd;
+width:100%;
+height:42px;
+text-align:left;
+padding:0 13px;
+background:#171719;
+color:#ddd
 }
-
-.context-option:hover{
-  background:#29292d;
-}
-
-/* SCROLLBARS */
-
+.context-option:hover{background:#29292d}
 *{
-  scrollbar-width:thin;
-  scrollbar-color:#444 #171719;
+scrollbar-width:thin;
+scrollbar-color:#444 #171719
 }
-
 ::-webkit-scrollbar{
-  width:8px;
-  height:8px;
+width:8px;
+height:8px
 }
-
-::-webkit-scrollbar-track{
-  background:#171719;
-}
-
-::-webkit-scrollbar-thumb{
-  background:#444;
-  border-radius:10px;
-}
-
-/* MOBILE */
-
+::-webkit-scrollbar-track{background:#171719}
+::-webkit-scrollbar-thumb{background:#444;border-radius:10px}
 @media(max-width:700px){
-
-  #topbar{
-    height:auto;
-    min-height:60px;
-    padding:10px;
-    flex-wrap:wrap;
-  }
-
-  .logo{
-    width:100%;
-  }
-
-  #searchInput{
-    max-width:none;
-    width:100%;
-    order:5;
-  }
-
-  #profileName{
-    display:none;
-  }
-
-  .top-button{
-    padding:0 10px;
-  }
-
-  #friendsPanel,
-  #requestsPanel{
-    top:120px;
-    right:10px;
-    width:calc(100% - 20px);
-  }
-
-  .board-title{
-    font-size:14px;
-  }
+#topbar{
+height:auto;
+min-height:60px;
+padding:10px;
+flex-wrap:wrap
+}
+.logo{width:100%}
+#searchInput{
+max-width:none;
+width:100%;
+order:5
+}
+#profileName{display:none}
+.top-button{padding:0 10px}
+#friendsPanel,
+#requestsPanel{
+top:120px;
+right:10px;
+width:calc(100% - 20px)
+}
+.board-title{font-size:14px}
 }
 </style>
 </head>
-
 <body>
-
-<!-- AUTH -->
-
 <div id="authScreen">
-
-  <div class="auth-card">
-
-    <h1>Spaceboards</h1>
-
-    <p id="authDescription" class="auth-description">
-      Log in to Spaceboards.
-    </p>
-
-    <input id="authEmail" type="email" placeholder="Email">
-    <input id="authNickname" type="text" placeholder="Nickname">
-    <input id="authPassword" type="password" placeholder="Password">
-
-    <div class="auth-buttons">
-      <button id="loginButton">Log in</button>
-      <button id="signupButton">Create account</button>
-    </div>
-
-    <div id="authError" class="auth-error"></div>
-
-  </div>
-
+<div class="auth-card">
+<h1>Spaceboards</h1>
+<p id="authDescription" class="auth-description">
+Log in to Spaceboards.
+</p>
+<input id="authEmail" type="email" placeholder="Email">
+<input id="authNickname" type="text" placeholder="Nickname">
+<input id="authPassword" type="password" placeholder="Password">
+<div class="auth-buttons">
+<button id="loginButton">Log in</button>
+<button id="signupButton">Create account</button>
 </div>
-
-<!-- APP -->
-
+<div id="authError" class="auth-error"></div>
+</div>
+</div>
 <div id="app">
-
-  <div id="topbar">
-
-    <div class="logo">Spaceboards</div>
-
-    <input
-      id="searchInput"
-      type="text"
-      placeholder="Search..."
-    >
-
-    <button id="newBoxButton" class="top-button">
-      New
-    </button>
-
-    <button id="newUrlButton" class="top-button">
-      Add URL
-    </button>
-
-    <button id="friendRequestsButton" class="top-button">
-      Requests
-    </button>
-
-    <button id="shareButton" class="top-button">
-      Share
-    </button>
-
-    <div class="spacer"></div>
-
-    <div id="profileName"></div>
-
-    <button id="logoutButton" class="top-button">
-      Log out
-    </button>
-
-  </div>
-
-  <div id="workspace">
-
-    <div id="world"></div>
-
-    <div id="friendsPanel">
-
-      <div class="friends-header">
-        <span>Friends</span>
-
-        <button id="closeFriendsButton" type="button">
-          ×
-        </button>
-      </div>
-
-      <div id="addFriendArea">
-
-        <input
-          id="addFriendInput"
-          type="email"
-          placeholder="Friend's email"
-        >
-
-        <button id="addFriendButton">
-          Add friend
-        </button>
-
-      </div>
-
-      <div id="friendsList"></div>
-
-    </div>
-
-    <div id="requestsPanel">
-
-      <div class="requests-header">
-
-        <span>Friend requests</span>
-
-        <button id="closeRequestsButton" type="button">
-          ×
-        </button>
-
-      </div>
-
-      <div id="requestsList"></div>
-
-    </div>
-
-  </div>
-
+<div id="topbar">
+<div class="logo">Spaceboards</div>
+<input id="searchInput" type="text" placeholder="Search...">
+<button id="newBoxButton" class="top-button">New</button>
+<button id="newUrlButton" class="top-button">Add URL</button>
+<button id="friendRequestsButton" class="top-button">Requests</button>
+<button id="shareButton" class="top-button">Share</button>
+<div class="spacer"></div>
+<div id="profileName"></div>
+<button id="logoutButton" class="top-button">Log out</button>
 </div>
-
-<!-- CONTEXT MENU -->
-
+<div id="workspace">
+<div id="world"></div>
+<div id="friendsPanel">
+<div class="friends-header">
+<span>Friends</span>
+<button id="closeFriendsButton" type="button">×</button>
+</div>
+<div id="addFriendArea">
+<input id="addFriendInput" type="email" placeholder="Friend's email">
+<button id="addFriendButton">Add friend</button>
+</div>
+<div id="friendsList"></div>
+</div>
+<div id="requestsPanel">
+<div class="requests-header">
+<span>Friend requests</span>
+<button id="closeRequestsButton" type="button">×</button>
+</div>
+<div id="requestsList"></div>
+</div>
+</div>
+</div>
 <div id="contextMenu">
-
-  <button id="renameOption" class="context-option">
-    Rename
-  </button>
-
-  <button id="deleteOption" class="context-option">
-    Delete
-  </button>
-
+<button id="renameOption" class="context-option">
+Rename
+</button>
+<button id="deleteOption" class="context-option">
+Delete
+</button>
 </div>
-
-<!-- MODAL -->
-
 <div id="modalBackground">
-
-  <div id="modal"></div>
-
+<div id="modal"></div>
 </div>
-
 <script type="module">
-
 import { createClient }
 from "https://esm.sh/@supabase/supabase-js@2";
-
-/* =========================================================
-SUPABASE
-========================================================= */
-
 const SUPABASE_URL =
 "https://uqpivlamfwbjoqvordcm.supabase.co";
-
 const SUPABASE_KEY =
 "sb_publishable_8CryzR2sR-y5nHprgLWJlA_Wfy_mTrj";
-
 const supabase =
 createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY,
-  {
-    auth:{
-      persistSession:true,
-      autoRefreshToken:true,
-      detectSessionInUrl:true
-    }
-  }
+SUPABASE_URL,
+SUPABASE_KEY,
+{
+auth:{
+persistSession:true,
+autoRefreshToken:true,
+detectSessionInUrl:true
+}
+}
 );
-
 /* =========================================================
 STATE
 ========================================================= */
-
-let user = null;
-let currentProfile = null;
-
-let profilesCache = new Map();
-
-let boards = [];
-let friends = [];
-
-let selectedBoardId = null;
-let contextBoardId = null;
-
-let moving = null;
-let resizing = null;
-let panning = null;
-
-let panX = 80;
-let panY = 80;
-let zoom = 1;
-
-let pointers = new Map();
-
-let pinchStartDistance = null;
-let pinchStartZoom = 1;
-let pinchStartCenter = null;
-let pinchStartPanX = 0;
-let pinchStartPanY = 0;
-
+let user=null;
+let currentProfile=null;
+let profilesCache=new Map();
+let boards=[];
+let friends=[];
+let selectedBoardId=null;
+let contextBoardId=null;
+let moving=null;
+let resizing=null;
+let panning=null;
+let panX=80;
+let panY=80;
+let zoom=1;
+let pointers=new Map();
+let pinchStartDistance=null;
+let pinchStartZoom=1;
+let pinchStartCenter=null;
+let pinchStartPanX=0;
+let pinchStartPanY=0;
 /* =========================================================
 HELPERS
 ========================================================= */
-
 function escapeHTML(value){
-
-  return String(value ?? "")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
-
+return String(value ?? "")
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
 }
-
 function openModal(html){
-
-  document.getElementById("modal").innerHTML = html;
-
-  document.getElementById("modalBackground").style.display = "flex";
-
+document.getElementById("modal").innerHTML=html;
+document.getElementById("modalBackground").style.display="flex";
 }
-
 function closeModal(){
-
-  document.getElementById("modalBackground").style.display = "none";
-
+document.getElementById("modalBackground").style.display="none";
 }
-
 function showError(message){
-
-  alert(message);
-
+alert(message);
 }
-
-/* =========================================================
-AUTH
-========================================================= */
-
-let signupMode = false;
-
-function updateAuthUI(){
-
-  const description =
-  document.getElementById("authDescription");
-
-  const loginButton =
-  document.getElementById("loginButton");
-
-  const signupButton =
-  document.getElementById("signupButton");
-
-  const nickname =
-  document.getElementById("authNickname");
-
-  nickname.style.display = "block";
-
-  if(signupMode){
-
-    description.textContent =
-    "Create a new Spaceboards account.";
-
-    loginButton.style.display = "none";
-
-    signupButton.textContent =
-    "Create account";
-
-    nickname.placeholder =
-    "Nickname";
-
-  }else{
-
-    description.textContent =
-    "Log in to Spaceboards.";
-
-    loginButton.style.display =
-    "inline-block";
-
-    signupButton.textContent =
-    "Create account";
-
-    nickname.placeholder =
-    "Nickname";
-
-  }
-
-}
-
-function updateProfileDisplay(){
-
-  const element =
-  document.getElementById("profileName");
-
-  if(!element)return;
-
-  element.textContent =
-  currentProfile?.nickname ||
-  user?.email ||
-  "";
-
-}
-
-/* =========================================================
-LOGIN
-========================================================= */
-
-document.getElementById("loginButton")
-.addEventListener("click", async()=>{
-
-  const email =
-  document.getElementById("authEmail")
-  .value.trim().toLowerCase();
-
-  const password =
-  document.getElementById("authPassword")
-  .value;
-
-  const errorBox =
-  document.getElementById("authError");
-
-  errorBox.textContent = "";
-
-  if(!email || !password){
-
-    errorBox.textContent =
-    "Enter your email and password.";
-
-    return;
-
-  }
-
-  const {data,error} =
-  await supabase.auth.signInWithPassword({
-    email,
-    password
-  });
-
-  if(error){
-
-    errorBox.textContent =
-    error.message;
-
-    return;
-
-  }
-
-  user = data?.user || null;
-
-  if(!user){
-
-    errorBox.textContent =
-    "Login failed.";
-
-    return;
-
-  }
-
-  await loadCurrentProfile();
-  await loadProfiles();
-  await loadFriends();
-  await loadBoards();
-  await loadFriendRequests();
-
-  document.getElementById("authScreen")
-  .style.display = "none";
-
-  updateProfileDisplay();
-
-  render();
-  renderFriends();
-
-});
-
-/* =========================================================
-SIGN UP
-========================================================= */
-
-document.getElementById("signupButton")
-.addEventListener("click", async()=>{
-
-  if(!signupMode){
-
-    signupMode = true;
-
-    updateAuthUI();
-
-    return;
-
-  }
-
-  const email =
-  document.getElementById("authEmail")
-  .value.trim().toLowerCase();
-
-  const nickname =
-  document.getElementById("authNickname")
-  .value.trim();
-
-  const password =
-  document.getElementById("authPassword")
-  .value;
-
-  const errorBox =
-  document.getElementById("authError");
-
-  errorBox.textContent = "";
-
-  if(!email || !nickname || !password){
-
-    errorBox.textContent =
-    "Enter your email, nickname and password.";
-
-    return;
-
-  }
-
-  if(nickname.length < 2){
-
-    errorBox.textContent =
-    "Nickname must be at least 2 characters.";
-
-    return;
-
-  }
-
-  if(nickname.length > 30){
-
-    errorBox.textContent =
-    "Nickname must be 30 characters or less.";
-
-    return;
-
-  }
-
-  if(password.length < 6){
-
-    errorBox.textContent =
-    "Password must be at least 6 characters.";
-
-    return;
-
-  }
-
-  const {
-    data:existingNickname
-  } =
-  await supabase
-  .from("profiles")
-  .select("id")
-  .ilike("nickname",nickname)
-  .limit(1)
-  .maybeSingle();
-
-  if(existingNickname){
-
-    errorBox.textContent =
-    "That nickname is already taken.";
-
-    return;
-
-  }
-
-  const {data,error} =
-  await supabase.auth.signUp({
-    email,
-    password
-  });
-
-  if(error){
-
-    errorBox.textContent =
-    error.message;
-
-    return;
-
-  }
-
-  if(data?.user){
-
-    const {data:profile,error:profileError} =
-    await supabase
-    .from("profiles")
-    .upsert({
-      id:data.user.id,
-      email,
-      nickname
-    },{
-      onConflict:"id"
-    })
-    .select()
-    .maybeSingle();
-
-    if(profileError){
-
-      console.error(profileError);
-
-    }
-
-    if(profile){
-
-      currentProfile = profile;
-
-      profilesCache.set(
-        String(profile.id),
-        profile
-      );
-
-    }
-
-  }
-
-  errorBox.textContent =
-  "Account created. Check your email if confirmation is required.";
-
-});
-
-/* =========================================================
-AUTH KEYBOARD
-========================================================= */
-
-document.getElementById("authEmail")
-.addEventListener("keydown",event=>{
-
-  if(event.key === "Enter"){
-
-    document.getElementById("authNickname").focus();
-
-  }
-
-});
-
-document.getElementById("authNickname")
-.addEventListener("keydown",event=>{
-
-  if(event.key === "Enter"){
-
-    document.getElementById("authPassword").focus();
-
-  }
-
-});
-
-document.getElementById("authPassword")
-.addEventListener("keydown",event=>{
-
-  if(event.key === "Enter"){
-
-    if(signupMode){
-
-      document.getElementById("signupButton").click();
-
-    }else{
-
-      document.getElementById("loginButton").click();
-
-    }
-
-  }
-
-});
-
 /* =========================================================
 PROFILE
 ========================================================= */
-
+function updateProfileDisplay(){
+const element=document.getElementById("profileName");
+if(!element)return;
+element.textContent=
+currentProfile?.nickname ||
+user?.email ||
+"";
+}
 async function loadCurrentProfile(){
-
-  if(!user)return;
-
-  const {data,error} =
-  await supabase
-  .from("profiles")
-  .select("id,email,nickname")
-  .eq("id",user.id)
-  .maybeSingle();
-
-  if(error){
-
-    console.error(
-      "Profile error:",
-      error
-    );
-
-    return;
-
-  }
-
-  if(data){
-
-    currentProfile = data;
-
-    profilesCache.set(
-      String(data.id),
-      data
-    );
-
-    updateProfileDisplay();
-
-  }
-
+if(!user)return;
+const {data,error}=await supabase
+.from("profiles")
+.select("id,email,nickname")
+.eq("id",user.id)
+.maybeSingle();
+if(error){
+console.error(error);
+return;
 }
-
+if(data){
+currentProfile=data;
+profilesCache.set(
+String(data.id),
+data
+);
+updateProfileDisplay();
+return;
+}
+const fallbackNickname=
+user.email?.split("@")[0] ||
+"User";
+const result=await supabase
+.from("profiles")
+.upsert({
+id:user.id,
+email:user.email?.toLowerCase() || "",
+nickname:fallbackNickname
+},{
+onConflict:"id"
+})
+.select()
+.single();
+if(!result.error && result.data){
+currentProfile=result.data;
+profilesCache.set(
+String(result.data.id),
+result.data
+);
+updateProfileDisplay();
+}
+}
 async function loadProfiles(){
-
-  if(!user)return;
-
-  profilesCache.clear();
-
-  if(currentProfile){
-
-    profilesCache.set(
-      String(currentProfile.id),
-      currentProfile
-    );
-
-  }
-
-  const {data,error} =
-  await supabase
-  .from("profiles")
-  .select("id,email,nickname");
-
-  if(error){
-
-    console.error(error);
-
-    return;
-
-  }
-
-  (data || []).forEach(profile=>{
-
-    profilesCache.set(
-      String(profile.id),
-      profile
-    );
-
-  });
-
+if(!user)return;
+profilesCache.clear();
+if(currentProfile){
+profilesCache.set(
+String(currentProfile.id),
+currentProfile
+);
 }
-
+const {data,error}=await supabase
+.from("profiles")
+.select("id,email,nickname");
+if(error){
+console.error(error);
+return;
+}
+(data || []).forEach(profile=>{
+profilesCache.set(
+String(profile.id),
+profile
+);
+});
+}
 function getNickname(ownerId){
-
-  if(!ownerId)return "";
-
-  const profile =
-  profilesCache.get(
-    String(ownerId)
-  );
-
-  return profile?.nickname || "";
-
+if(!ownerId)return "";
+const profile=
+profilesCache.get(String(ownerId));
+if(profile?.nickname){
+return profile.nickname;
 }
-
+if(
+currentProfile &&
+String(currentProfile.id) ===
+String(ownerId)
+){
+return currentProfile.nickname || "";
+}
+return "";
+}
+/* =========================================================
+AUTH
+========================================================= */
+let signupMode=false;
+function updateAuthUI(){
+const description=
+document.getElementById("authDescription");
+const loginButton=
+document.getElementById("loginButton");
+const signupButton=
+document.getElementById("signupButton");
+const nickname=
+document.getElementById("authNickname");
+if(signupMode){
+description.textContent=
+"Create a new Spaceboards account.";
+loginButton.style.display="none";
+signupButton.textContent="Create account";
+nickname.style.display="block";
+}else{
+description.textContent=
+"Log in to Spaceboards.";
+loginButton.style.display="inline-block";
+signupButton.textContent="Create account";
+nickname.style.display="block";
+}
+}
+document.getElementById("loginButton")
+.addEventListener("click",async()=>{
+const email=
+document.getElementById("authEmail")
+.value.trim().toLowerCase();
+const password=
+document.getElementById("authPassword")
+.value;
+const nickname=
+document.getElementById("authNickname")
+.value.trim();
+const errorBox=
+document.getElementById("authError");
+errorBox.textContent="";
+if(!email || !password){
+errorBox.textContent=
+"Enter your email and password.";
+return;
+}
+const {data,error}=
+await supabase.auth.signInWithPassword({
+email,
+password
+});
+if(error){
+errorBox.textContent=error.message;
+return;
+}
+user=data?.user || null;
+if(!user){
+errorBox.textContent="Login failed.";
+return;
+}
+await loadCurrentProfile();
+if(
+nickname &&
+currentProfile &&
+!currentProfile.nickname
+){
+const result=await supabase
+.from("profiles")
+.update({nickname})
+.eq("id",user.id)
+.select()
+.maybeSingle();
+if(!result.error && result.data){
+currentProfile=result.data;
+profilesCache.set(
+String(result.data.id),
+result.data
+);
+}
+}
+await loadProfiles();
+await loadFriends();
+await loadBoards();
+await loadFriendRequests();
+document.getElementById("authScreen")
+.style.display="none";
+updateProfileDisplay();
+render();
+renderFriends();
+});
+document.getElementById("signupButton")
+.addEventListener("click",async()=>{
+if(!signupMode){
+signupMode=true;
+updateAuthUI();
+return;
+}
+const email=
+document.getElementById("authEmail")
+.value.trim().toLowerCase();
+const nickname=
+document.getElementById("authNickname")
+.value.trim();
+const password=
+document.getElementById("authPassword")
+.value;
+const errorBox=
+document.getElementById("authError");
+errorBox.textContent="";
+if(!email || !nickname || !password){
+errorBox.textContent=
+"Enter your email, nickname and password.";
+return;
+}
+if(nickname.length<2){
+errorBox.textContent=
+"Nickname must be at least 2 characters.";
+return;
+}
+if(nickname.length>30){
+errorBox.textContent=
+"Nickname must be 30 characters or less.";
+return;
+}
+if(password.length<6){
+errorBox.textContent=
+"Password must be at least 6 characters.";
+return;
+}
+const {data:existing}=await supabase
+.from("profiles")
+.select("id")
+.ilike("nickname",nickname)
+.limit(1)
+.maybeSingle();
+if(existing){
+errorBox.textContent=
+"That nickname is already taken.";
+return;
+}
+const {data,error}=
+await supabase.auth.signUp({
+email,
+password
+});
+if(error){
+errorBox.textContent=error.message;
+return;
+}
+if(data?.user){
+const result=await supabase
+.from("profiles")
+.upsert({
+id:data.user.id,
+email,
+nickname
+},{
+onConflict:"id"
+})
+.select()
+.single();
+if(result.error){
+errorBox.textContent=
+"Account created, but profile creation failed: "+
+result.error.message;
+return;
+}
+currentProfile=result.data;
+profilesCache.set(
+String(result.data.id),
+result.data
+);
+updateProfileDisplay();
+}
+errorBox.textContent=
+"Account created. Check your email if confirmation is required.";
+});
+document.getElementById("authPassword")
+.addEventListener("keydown",event=>{
+if(event.key!=="Enter")return;
+if(signupMode){
+document.getElementById("signupButton").click();
+}else{
+document.getElementById("loginButton").click();
+}
+});
 /* =========================================================
 SESSION
 ========================================================= */
-
 supabase.auth.onAuthStateChange(
 async(event,session)=>{
-
-  user =
-  session?.user || null;
-
-  if(user){
-
-    document.getElementById("authScreen")
-    .style.display = "none";
-
-    await loadCurrentProfile();
-    await loadProfiles();
-    await loadFriends();
-    await loadBoards();
-    await loadFriendRequests();
-
-    updateProfileDisplay();
-
-    render();
-    renderFriends();
-
-  }else{
-
-    document.getElementById("authScreen")
-    .style.display = "flex";
-
-    boards = [];
-    friends = [];
-
-    selectedBoardId = null;
-    currentProfile = null;
-
-    profilesCache.clear();
-
-    render();
-    renderFriends();
-
-  }
-
+user=session?.user || null;
+if(user){
+document.getElementById("authScreen")
+.style.display="none";
+await loadCurrentProfile();
+await loadProfiles();
+await loadFriends();
+await loadBoards();
+await loadFriendRequests();
+updateProfileDisplay();
+render();
+renderFriends();
+}else{
+document.getElementById("authScreen")
+.style.display="flex";
+boards=[];
+friends=[];
+selectedBoardId=null;
+currentProfile=null;
+profilesCache.clear();
+render();
+renderFriends();
+}
 });
-
+const initialSession=
+await supabase.auth.getSession();
+if(initialSession.data.session){
+user=initialSession.data.session.user;
+document.getElementById("authScreen")
+.style.display="none";
+await loadCurrentProfile();
+await loadProfiles();
+await loadFriends();
+await loadBoards();
+await loadFriendRequests();
+updateProfileDisplay();
+}else{
+document.getElementById("authScreen")
+.style.display="flex";
+}
 /* =========================================================
 LOGOUT
 ========================================================= */
-
 document.getElementById("logoutButton")
 .addEventListener("click",async()=>{
-
-  await supabase.auth.signOut();
-
+await supabase.auth.signOut();
 });
-
 /* =========================================================
-FRIENDS
+BOARDS
 ========================================================= */
-
-async function loadFriends(){
-
-  if(!user)return;
-
-  const {data,error} =
-  await supabase
-  .from("friend_requests")
-  .select("*")
-  .or(
-    `sender_id.eq.${user.id},receiver_id.eq.${user.id}`
-  );
-
-  if(error){
-
-    console.error(error);
-
-    return;
-
-  }
-
-  const accepted =
-  (data || []).filter(
-    r => r.status === "accepted"
-  );
-
-  const ids =
-  accepted.map(
-    r =>
-    r.sender_id === user.id
-    ? r.receiver_id
-    : r.sender_id
-  );
-
-  if(!ids.length){
-
-    friends = [];
-
-    renderFriends();
-
-    return;
-
-  }
-
-  const {
-    data:friendProfiles,
-    error:profilesError
-  } =
-  await supabase
-  .from("profiles")
-  .select("id,email,nickname")
-  .in("id",ids);
-
-  if(profilesError){
-
-    console.error(profilesError);
-
-    return;
-
-  }
-
-  friends =
-  friendProfiles || [];
-
-  friends.forEach(friend=>{
-
-    profilesCache.set(
-      String(friend.id),
-      friend
-    );
-
-  });
-
-  renderFriends();
-
-}
-
-function renderFriends(){
-
-  const list =
-  document.getElementById("friendsList");
-
-  if(!list)return;
-
-  list.innerHTML = "";
-
-  friends.forEach(friend=>{
-
-    const element =
-    document.createElement("div");
-
-    element.className = "friend";
-
-    element.textContent =
-    friend.nickname ||
-    friend.email ||
-    "User";
-
-    list.appendChild(element);
-
-  });
-
-}
-
-/* =========================================================
-ADD FRIEND
-========================================================= */
-
-document.getElementById("addFriendButton")
-.addEventListener("click",async()=>{
-
-  const input =
-  document.getElementById("addFriendInput");
-
-  const email =
-  input.value.trim().toLowerCase();
-
-  if(!email){
-
-    showError(
-      "Enter your friend's email."
-    );
-
-    return;
-
-  }
-
-  if(
-    user.email &&
-    email === user.email.toLowerCase()
-  ){
-
-    showError(
-      "You cannot add yourself."
-    );
-
-    return;
-
-  }
-
-  const {data:profile,error} =
-  await supabase
-  .from("profiles")
-  .select("id,email,nickname")
-  .eq("email",email)
-  .maybeSingle();
-
-  if(error){
-
-    showError(error.message);
-
-    return;
-
-  }
-
-  if(!profile){
-
-    showError(
-      "No user with that email was found."
-    );
-
-    return;
-
-  }
-
-  const {
-    data:existing,
-    error:existingError
-  } =
-  await supabase
-  .from("friend_requests")
-  .select("id,status")
-  .or(
-    `and(sender_id.eq.${user.id},receiver_id.eq.${profile.id}),and(sender_id.eq.${profile.id},receiver_id.eq.${user.id})`
-  );
-
-  if(existingError){
-
-    showError(existingError.message);
-
-    return;
-
-  }
-
-  if(
-    existing?.some(
-      r => r.status === "accepted"
-    )
-  ){
-
-    showError(
-      "You are already friends with this user."
-    );
-
-    return;
-
-  }
-
-  if(
-    existing?.some(
-      r => r.status === "pending"
-    )
-  ){
-
-    showError(
-      "A friend request already exists."
-    );
-
-    return;
-
-  }
-
-  const {error:insertError} =
-  await supabase
-  .from("friend_requests")
-  .insert({
-    sender_id:user.id,
-    receiver_id:profile.id,
-    status:"pending"
-  });
-
-  if(insertError){
-
-    showError(insertError.message);
-
-    return;
-
-  }
-
-  input.value = "";
-
-  showError(
-    "Friend request sent."
-  );
-
-});
-
-/* =========================================================
-REQUESTS
-========================================================= */
-
-document.getElementById("friendRequestsButton")
-.addEventListener("click",async()=>{
-
-  const panel =
-  document.getElementById("requestsPanel");
-
-  if(panel.style.display === "block"){
-
-    panel.style.display = "none";
-
-    return;
-
-  }
-
-  panel.style.display = "block";
-
-  await loadFriendRequests();
-
-});
-
-async function loadFriendRequests(){
-
-  if(!user)return;
-
-  const list =
-  document.getElementById("requestsList");
-
-  list.innerHTML = "Loading...";
-
-  const {
-    data:requests,
-    error
-  } =
-  await supabase
-  .from("friend_requests")
-  .select("*")
-  .eq("receiver_id",user.id)
-  .eq("status","pending");
-
-  if(error){
-
-    list.innerHTML =
-    `<div style="color:#ff6666">
-      ${escapeHTML(error.message)}
-    </div>`;
-
-    return;
-
-  }
-
-  if(!requests?.length){
-
-    list.innerHTML =
-    "<p style='font-size:13px;color:#777'>No pending requests.</p>";
-
-    return;
-
-  }
-
-  const ids =
-  requests.map(
-    r => r.sender_id
-  );
-
-  const {data:requestProfiles} =
-  await supabase
-  .from("profiles")
-  .select("id,email,nickname")
-  .in("id",ids);
-
-  list.innerHTML = "";
-
-  requests.forEach(request=>{
-
-    const sender =
-    (requestProfiles || [])
-    .find(
-      p =>
-      String(p.id) ===
-      String(request.sender_id)
-    );
-
-    const row =
-    document.createElement("div");
-
-    row.className = "request";
-
-    row.innerHTML = `
-
-      <div class="request-nickname">
-        ${escapeHTML(
-          sender?.nickname ||
-          sender?.email ||
-          "User"
-        )}
-      </div>
-
-      <div class="request-actions">
-
-        <button
-          data-action="accept"
-          data-id="${escapeHTML(request.id)}"
-        >
-          Accept
-        </button>
-
-        <button
-          data-action="decline"
-          data-id="${escapeHTML(request.id)}"
-        >
-          Decline
-        </button>
-
-      </div>
-
-    `;
-
-    list.appendChild(row);
-
-  });
-
-}
-
-document.getElementById("requestsList")
-.addEventListener("click",async event=>{
-
-  const button =
-  event.target.closest("button");
-
-  if(!button)return;
-
-  const id =
-  button.dataset.id;
-
-  const action =
-  button.dataset.action;
-
-  if(action === "accept"){
-
-    const {error} =
-    await supabase
-    .from("friend_requests")
-    .update({
-      status:"accepted"
-    })
-    .eq("id",id)
-    .eq("receiver_id",user.id);
-
-    if(error){
-
-      showError(error.message);
-
-      return;
-
-    }
-
-    await loadFriends();
-    await loadFriendRequests();
-
-  }
-
-  if(action === "decline"){
-
-    const {error} =
-    await supabase
-    .from("friend_requests")
-    .delete()
-    .eq("id",id)
-    .eq("receiver_id",user.id);
-
-    if(error){
-
-      showError(error.message);
-
-      return;
-
-    }
-
-    await loadFriendRequests();
-
-  }
-
-});
-
-/* =========================================================
-LOAD BOARDS
-========================================================= */
-
 async function loadBoards(){
-
-  if(!user)return;
-
-  const {
-    data,
-    error
-  } =
-  await supabase
-  .from("boxes")
-  .select(`
-    id,
-    owner_id,
-    title,
-    x,
-    y,
-    width,
-    height,
-    created_at,
-    visibility,
-    box_items(
-      id,
-      box_id,
-      title,
-      url,
-      image,
-      visibility,
-      owner_nickname
-    )
-  `)
-  .order("created_at");
-
-  if(error){
-
-    console.error(
-      "Load boards error:",
-      error
-    );
-
-    showError(
-      "Could not load boxes: " +
-      error.message
-    );
-
-    return;
-
-  }
-
-  boards =
-  (data || []).map(box=>{
-
-    const items =
-    Array.isArray(box.box_items)
-    ? box.box_items
-    : [];
-
-    const ownerNickname =
-    getNickname(box.owner_id);
-
-    return {
-      ...box,
-
-      w:Number(box.width) || 430,
-      h:Number(box.height) || 270,
-
-      ownerNickname,
-
-      items:
-      items.filter(
-        item =>
-        item.visibility === "public" ||
-        String(box.owner_id) ===
-        String(user.id)
-      )
-    };
-
-  });
-
-  render();
-
+if(!user)return;
+const {data,error}=await supabase
+.from("boxes")
+.select(`
+id,
+owner_id,
+title,
+x,
+y,
+width,
+height,
+created_at,
+visibility,
+box_items(
+id,
+box_id,
+title,
+url,
+image,
+visibility,
+owner_nickname
+)
+`)
+.order("created_at");
+if(error){
+console.error("Load boards error:",error);
+showError(error.message);
+return;
 }
-
+boards=(data || []).map(box=>{
+const ownerNickname=
+getNickname(box.owner_id);
+const items=
+Array.isArray(box.box_items)
+?box.box_items
+:[];
+return {
+id:box.id,
+owner_id:box.owner_id,
+title:box.title || "New box",
+x:Number(box.x) || 120,
+y:Number(box.y) || 120,
+w:Number(box.width) || 430,
+h:Number(box.height) || 270,
+width:Number(box.width) || 430,
+height:Number(box.height) || 270,
+created_at:box.created_at,
+visibility:box.visibility || "public",
+ownerNickname:ownerNickname || "",
+items:items.filter(item=>
+item.visibility==="public" ||
+String(box.owner_id)===String(user.id)
+)
+};
+});
+render();
+}
 /* =========================================================
 NEW BOX
 ========================================================= */
-
 document.getElementById("newBoxButton")
 .addEventListener("click",async()=>{
-
-  if(!user){
-
-    showError("You must be logged in.");
-
-    return;
-
-  }
-
-  const ownBoards =
-  boards.filter(
-    b =>
-    String(b.owner_id) ===
-    String(user.id)
-  );
-
-  const previous =
-  ownBoards[ownBoards.length - 1];
-
-  let x = 120;
-  let y = 120;
-
-  if(previous){
-
-    x =
-    Number(previous.x) +
-    Number(previous.w) +
-    40;
-
-    y =
-    Number(previous.y);
-
-  }
-
-  const {error} =
-  await supabase
-  .from("boxes")
-  .insert({
-    owner_id:user.id,
-    title:"New box",
-    x,
-    y,
-    width:430,
-    height:270,
-    visibility:"public"
-  });
-
-  if(error){
-
-    showError(
-      "Could not create box: " +
-      error.message
-    );
-
-    return;
-
-  }
-
-  /*
-    Important:
-    We reload the boxes instead of relying on
-    Supabase returning the inserted row.
-  */
-
-  await loadBoards();
-
-  const newest =
-  boards
-  .filter(
-    b =>
-    String(b.owner_id) ===
-    String(user.id)
-  )
-  .sort(
-    (a,b) =>
-    new Date(b.created_at) -
-    new Date(a.created_at)
-  )[0];
-
-  if(newest){
-
-    selectedBoardId =
-    newest.id;
-
-  }
-
-  render();
-
+if(!user){
+showError("You must be logged in.");
+return;
+}
+const ownBoards=
+boards.filter(board=>
+String(board.owner_id)===String(user.id)
+);
+const previous=
+ownBoards.length
+?ownBoards[ownBoards.length-1]
+:null;
+let x=120;
+let y=120;
+if(previous){
+x=
+Number(previous.x)+
+Number(previous.w)+
+40;
+y=Number(previous.y);
+}
+const {data,error}=await supabase
+.from("boxes")
+.insert({
+owner_id:user.id,
+title:"New box",
+x,
+y,
+width:430,
+height:270,
+visibility:"public"
+})
+.select()
+.single();
+if(error){
+showError(
+"Could not create box: "+
+error.message
+);
+return;
+}
+boards.push({
+id:data.id,
+owner_id:data.owner_id,
+title:data.title || "New box",
+x:Number(data.x) || x,
+y:Number(data.y) || y,
+w:Number(data.width) || 430,
+h:Number(data.height) || 270,
+width:Number(data.width) || 430,
+height:Number(data.height) || 270,
+created_at:data.created_at,
+visibility:data.visibility || "public",
+ownerNickname:currentProfile?.nickname || "",
+items:[]
 });
-
-/* =========================================================
-NEW URL
-========================================================= */
-
-document.getElementById("newUrlButton")
-.addEventListener("click",()=>{
-
-  if(!user)return;
-
-  const ownBoxes =
-  boards.filter(
-    board =>
-    String(board.owner_id) ===
-    String(user.id)
-  );
-
-  if(!ownBoxes.length){
-
-    showError(
-      "Create a box first."
-    );
-
-    return;
-
-  }
-
-  openURLModal(
-    ownBoxes[ownBoxes.length - 1]
-  );
-
+selectedBoardId=data.id;
+render();
 });
-
-/* =========================================================
-URL MODAL
-========================================================= */
-
-function openURLModal(board){
-
-  openModal(`
-
-    <h2>Add URL</h2>
-
-    <input
-      id="urlTitle"
-      placeholder="Name (optional)"
-    >
-
-    <input
-      id="urlAddress"
-      placeholder="https://example.com"
-    >
-
-    <input
-      id="urlImage"
-      placeholder="Image URL (optional)"
-    >
-
-    <p>
-      Who should be able to see this URL?
-    </p>
-
-    <div class="choice">
-
-      <button id="publicURLButton">
-        Public
-      </button>
-
-      <button id="privateURLButton">
-        Private
-      </button>
-
-    </div>
-
-    <div class="modal-actions">
-
-      <button id="cancelURLButton">
-        Cancel
-      </button>
-
-    </div>
-
-  `);
-
-  document.getElementById("cancelURLButton")
-  .onclick = closeModal;
-
-  document.getElementById("publicURLButton")
-  .onclick =
-  () => saveURL(board,"public");
-
-  document.getElementById("privateURLButton")
-  .onclick =
-  () => saveURL(board,"private");
-
-}
-
-/* =========================================================
-SAVE URL
-========================================================= */
-
-async function saveURL(board,visibility){
-
-  let url =
-  document.getElementById("urlAddress")
-  .value.trim();
-
-  const title =
-  document.getElementById("urlTitle")
-  .value.trim();
-
-  const image =
-  document.getElementById("urlImage")
-  .value.trim();
-
-  if(!url){
-
-    showError("Enter a URL.");
-
-    return;
-
-  }
-
-  if(!/^https?:\/\//i.test(url)){
-
-    url =
-    "https://" + url;
-
-  }
-
-  const ownerNickname =
-  currentProfile?.nickname ||
-  getNickname(board.owner_id) ||
-  "";
-
-  const {error} =
-  await supabase
-  .from("box_items")
-  .insert({
-    box_id:board.id,
-    title:title || url,
-    url,
-    image:image || null,
-    visibility,
-    owner_nickname:ownerNickname
-  });
-
-  if(error){
-
-    showError(
-      "Could not save URL: " +
-      error.message
-    );
-
-    return;
-
-  }
-
-  closeModal();
-
-  await loadBoards();
-
-}
-
-/* =========================================================
-DELETE URL
-========================================================= */
-
-async function deleteURL(board,itemId){
-
-  if(!confirm("Delete this URL?"))return;
-
-  const {error} =
-  await supabase
-  .from("box_items")
-  .delete()
-  .eq("id",itemId)
-  .eq("box_id",board.id);
-
-  if(error){
-
-    showError(
-      "Could not delete URL: " +
-      error.message
-    );
-
-    return;
-
-  }
-
-  board.items =
-  board.items.filter(
-    item =>
-    String(item.id) !==
-    String(itemId)
-  );
-
-  render();
-
-}
-
 /* =========================================================
 DELETE BOX
 ========================================================= */
-
 async function deleteBoard(board){
-
-  if(!user){
-
-    showError(
-      "You must be logged in."
-    );
-
-    return;
-
-  }
-
-  if(
-    String(board.owner_id) !==
-    String(user.id)
-  ){
-
-    showError(
-      "You can only delete your own boxes."
-    );
-
-    return;
-
-  }
-
-  if(
-    !confirm(
-      "Delete this box and all of its URLs?"
-    )
-  )return;
-
-  /*
-    Delete URLs first.
-  */
-
-  const {error:itemError} =
-  await supabase
-  .from("box_items")
-  .delete()
-  .eq("box_id",board.id);
-
-  if(itemError){
-
-    showError(
-      "Could not delete the URLs: " +
-      itemError.message
-    );
-
-    return;
-
-  }
-
-  /*
-    Do NOT use .select() here.
-    The old version depended on Supabase
-    returning the deleted row.
-  */
-
-  const {error:boxError} =
-  await supabase
-  .from("boxes")
-  .delete()
-  .eq("id",board.id)
-  .eq("owner_id",user.id);
-
-  if(boxError){
-
-    showError(
-      "Could not delete box: " +
-      boxError.message
-    );
-
-    return;
-
-  }
-
-  boards =
-  boards.filter(
-    b =>
-    String(b.id) !==
-    String(board.id)
-  );
-
-  if(
-    String(selectedBoardId) ===
-    String(board.id)
-  ){
-
-    selectedBoardId = null;
-
-  }
-
-  contextBoardId = null;
-
-  render();
-
+if(!user){
+showError("You must be logged in.");
+return;
 }
-
+if(String(board.owner_id)!==String(user.id)){
+showError(
+"You can only delete your own boxes."
+);
+return;
+}
+if(!confirm(
+"Delete this box and all of its URLs?"
+))return;
+/*
+Delete the box itself first.
+The database should normally delete its
+items through ON DELETE CASCADE.
+We also try to remove items first in case
+cascade is not configured.
+*/
+const itemResult=
+await supabase
+.from("box_items")
+.delete()
+.eq("box_id",board.id);
+if(itemResult.error){
+showError(
+"Could not delete the URLs in this box: "+
+itemResult.error.message
+);
+return;
+}
+const result=
+await supabase
+.from("boxes")
+.delete()
+.eq("id",board.id)
+.eq("owner_id",user.id)
+.select("id");
+if(result.error){
+showError(
+"Could not delete box: "+
+result.error.message
+);
+return;
+}
+if(!result.data || result.data.length===0){
+showError(
+"The box was not deleted. Your Supabase DELETE policy may be blocking deletion."
+);
+return;
+}
+boards=
+boards.filter(
+b=>String(b.id)!==String(board.id)
+);
+if(
+String(selectedBoardId)===
+String(board.id)
+){
+selectedBoardId=null;
+}
+if(
+String(contextBoardId)===
+String(board.id)
+){
+contextBoardId=null;
+}
+render();
+}
 /* =========================================================
 RENAME BOX
 ========================================================= */
-
 function openRenameModal(board){
-
-  if(!user)return;
-
-  if(
-    String(board.owner_id) !==
-    String(user.id)
-  ){
-
-    showError(
-      "You can only rename your own boxes."
-    );
-
-    return;
-
-  }
-
-  openModal(`
-
-    <h2>Rename box</h2>
-
-    <input
-      id="renameInput"
-      value="${escapeHTML(board.title)}"
-      maxlength="100"
-      autocomplete="off"
-    >
-
-    <div class="modal-actions">
-
-      <button id="renameCancel">
-        Cancel
-      </button>
-
-      <button id="renameSave">
-        Save
-      </button>
-
-    </div>
-
-  `);
-
-  const input =
-  document.getElementById("renameInput");
-
-  document.getElementById("renameCancel")
-  .onclick = closeModal;
-
-  document.getElementById("renameSave")
-  .onclick = async()=>{
-
-    const title =
-    input.value.trim();
-
-    if(!title){
-
-      input.focus();
-
-      return;
-
-    }
-
-    const {error} =
-    await supabase
-    .from("boxes")
-    .update({
-      title:title
-    })
-    .eq("id",board.id)
-    .eq("owner_id",user.id);
-
-    if(error){
-
-      showError(
-        "Could not rename box: " +
-        error.message
-      );
-
-      return;
-
-    }
-
-    /*
-      Update the local board immediately.
-      No .select() is needed.
-    */
-
-    board.title = title;
-
-    closeModal();
-
-    render();
-
-  };
-
-  input.addEventListener(
-    "keydown",
-    event=>{
-
-      if(event.key === "Enter"){
-
-        event.preventDefault();
-
-        document.getElementById(
-          "renameSave"
-        ).click();
-
-      }
-
-      if(event.key === "Escape"){
-
-        closeModal();
-
-      }
-
-    }
-  );
-
-  setTimeout(()=>{
-
-    input.focus();
-    input.select();
-
-  },50);
-
+if(!user)return;
+if(
+String(board.owner_id)!==
+String(user.id)
+){
+showError(
+"You can only rename your own boxes."
+);
+return;
 }
-
+openModal(`
+<h2>Rename box</h2>
+<input
+id="renameInput"
+type="text"
+value="${escapeHTML(board.title)}"
+maxlength="100"
+>
+<div class="modal-actions">
+<button id="renameCancel">
+Cancel
+</button>
+<button id="renameSave">
+Save
+</button>
+</div>
+`);
+const input=
+document.getElementById("renameInput");
+const save=
+document.getElementById("renameSave");
+const cancel=
+document.getElementById("renameCancel");
+cancel.onclick=closeModal;
+async function saveRename(){
+const title=
+input.value.trim();
+if(!title){
+input.focus();
+return;
+}
+save.disabled=true;
+const {data,error}=
+await supabase
+.from("boxes")
+.update({
+title:title
+})
+.eq("id",board.id)
+.eq("owner_id",user.id)
+.select("id,title");
+if(error){
+save.disabled=false;
+showError(
+"Could not rename box: "+
+error.message
+);
+return;
+}
+if(!data || data.length===0){
+save.disabled=false;
+showError(
+"The box could not be renamed. Check your Supabase UPDATE policy."
+);
+return;
+}
+board.title=title;
+closeModal();
+render();
+}
+save.onclick=saveRename;
+input.addEventListener(
+"keydown",
+event=>{
+if(event.key==="Enter"){
+event.preventDefault();
+saveRename();
+}
+if(event.key==="Escape"){
+event.preventDefault();
+closeModal();
+}
+});
+setTimeout(()=>{
+input.focus();
+input.select();
+},50);
+}
+/* =========================================================
+NEW URL
+========================================================= */
+document.getElementById("newUrlButton")
+.addEventListener("click",()=>{
+if(!user)return;
+const ownBoxes=
+boards.filter(board=>
+String(board.owner_id)===String(user.id)
+);
+if(!ownBoxes.length){
+showError("Create a box first.");
+return;
+}
+openURLModal(
+ownBoxes[ownBoxes.length-1]
+);
+});
+/* =========================================================
+URL MODAL
+========================================================= */
+function openURLModal(board){
+openModal(`
+<h2>Add URL</h2>
+<input id="urlTitle" placeholder="Name (optional)">
+<input id="urlAddress" placeholder="https://example.com">
+<input id="urlImage" placeholder="Image URL (optional)">
+<p>Who should be able to see this URL?</p>
+<div class="choice">
+<button id="publicURLButton">
+Public
+</button>
+<button id="privateURLButton">
+Private
+</button>
+</div>
+<div class="modal-actions">
+<button id="cancelURLButton">
+Cancel
+</button>
+</div>
+`);
+document.getElementById("cancelURLButton")
+.onclick=closeModal;
+document.getElementById("publicURLButton")
+.onclick=
+()=>saveURL(board,"public");
+document.getElementById("privateURLButton")
+.onclick=
+()=>saveURL(board,"private");
+}
+async function saveURL(board,visibility){
+let url=
+document.getElementById("urlAddress")
+.value.trim();
+const title=
+document.getElementById("urlTitle")
+.value.trim();
+const image=
+document.getElementById("urlImage")
+.value.trim();
+if(!url){
+showError("Enter a URL.");
+return;
+}
+if(!/^https?:\/\//i.test(url)){
+url="https://"+url;
+}
+const ownerNickname=
+currentProfile?.nickname ||
+getNickname(board.owner_id) ||
+"";
+let result=
+await supabase
+.from("box_items")
+.insert({
+box_id:board.id,
+title:title || url,
+url,
+image:image || null,
+visibility,
+owner_nickname:ownerNickname
+})
+.select()
+.single();
+if(
+result.error &&
+(
+result.error.code==="42703" ||
+String(result.error.message)
+.toLowerCase()
+.includes("owner_nickname")
+)
+){
+result=
+await supabase
+.from("box_items")
+.insert({
+box_id:board.id,
+title:title || url,
+url,
+image:image || null,
+visibility
+})
+.select()
+.single();
+}
+if(result.error){
+showError(
+"Could not save URL: "+
+result.error.message
+);
+return;
+}
+if(!result.data){
+showError("Could not save URL.");
+return;
+}
+result.data.owner_nickname=
+ownerNickname;
+board.items.push(result.data);
+closeModal();
+render();
+}
+/* =========================================================
+DELETE URL
+========================================================= */
+async function deleteURL(board,itemId){
+if(!confirm("Delete this URL?"))return;
+const {data,error}=await supabase
+.from("box_items")
+.delete()
+.eq("id",itemId)
+.eq("box_id",board.id)
+.select("id");
+if(error){
+showError(
+"Could not delete URL: "+
+error.message
+);
+return;
+}
+if(!data || data.length===0){
+showError(
+"The URL could not be deleted."
+);
+return;
+}
+board.items=
+board.items.filter(
+item=>String(item.id)!==String(itemId)
+);
+render();
+}
 /* =========================================================
 RENDER
 ========================================================= */
-
 function render(){
-
-  const world =
-  document.getElementById("world");
-
-  world.style.transform =
-  `translate(${panX}px,${panY}px) scale(${zoom})`;
-
-  world.innerHTML = "";
-
-  if(!user)return;
-
-  boards.forEach(board=>{
-
-    const element =
-    document.createElement("section");
-
-    element.className =
-    "board" +
-    (
-      String(selectedBoardId) ===
-      String(board.id)
-      ? " selected"
-      : ""
-    );
-
-    element.dataset.id =
-    board.id;
-
-    element.style.left =
-    Number(board.x) + "px";
-
-    element.style.top =
-    Number(board.y) + "px";
-
-    element.style.width =
-    Number(board.w) + "px";
-
-    element.style.height =
-    Number(board.h) + "px";
-
-    const owner =
-    String(board.owner_id) ===
-    String(user.id);
-
-    let boardNickname =
-    board.ownerNickname ||
-    getNickname(board.owner_id) ||
-    "";
-
-    element.innerHTML = `
-
-      <div class="board-title">
-        ${escapeHTML(board.title)}
-      </div>
-
-      ${
-        owner
-        ?
-        `
-        <div class="board-actions">
-
-          <button
-            class="trash-button"
-            title="Delete box"
-            data-delete-board="${escapeHTML(board.id)}"
-          >
-            ×
-          </button>
-
-        </div>
-        `
-        : ""
-      }
-
-      <div class="board-inner">
-
-        ${
-          owner
-          ?
-          `
-          <button
-            class="add-url"
-            data-add-url="${escapeHTML(board.id)}"
-          >
-            + Add URL
-          </button>
-          `
-          : ""
-        }
-
-        ${
-          board.items.map(item=>{
-
-            const itemNickname =
-            item.owner_nickname ||
-            boardNickname ||
-            "";
-
-            return `
-
-              <div
-                class="item"
-                data-item-id="${escapeHTML(item.id)}"
-                data-url="${escapeHTML(item.url)}"
-              >
-
-                ${
-                  item.image
-                  ?
-                  `
-                  <img
-                    src="${escapeHTML(item.image)}"
-                    alt=""
-                    onerror="this.style.display='none'"
-                  >
-                  `
-                  : ""
-                }
-
-                <div class="item-content">
-
-                  <div class="item-nickname">
-                    ${escapeHTML(itemNickname)}
-                  </div>
-
-                  <div class="item-title">
-                    ${escapeHTML(
-                      item.title ||
-                      item.url
-                    )}
-                  </div>
-
-                </div>
-
-                <span class="item-visibility">
-                  ${
-                    item.visibility === "public"
-                    ? "Public"
-                    : "Private"
-                  }
-                </span>
-
-                ${
-                  owner
-                  ?
-                  `
-                  <button
-                    class="item-trash"
-                    title="Delete URL"
-                    data-delete-item="${escapeHTML(item.id)}"
-                  >
-                    ×
-                  </button>
-                  `
-                  : ""
-                }
-
-              </div>
-
-            `;
-
-          }).join("")
-        }
-
-      </div>
-
-      ${
-        owner
-        ?
-        `<div class="resize"></div>`
-        : ""
-      }
-
-    `;
-
-    /* SELECT */
-
-    element.addEventListener(
-      "click",
-      event=>{
-
-        if(event.target.closest(".trash-button"))return;
-        if(event.target.closest(".item-trash"))return;
-        if(event.target.closest(".add-url"))return;
-        if(event.target.closest(".resize"))return;
-
-        selectedBoardId =
-        board.id;
-
-        document
-        .querySelectorAll(".board")
-        .forEach(
-          b => b.classList.remove("selected")
-        );
-
-        element.classList.add("selected");
-
-      }
-    );
-
-    /* DOUBLE CLICK RENAME */
-
-    element.addEventListener(
-      "dblclick",
-      event=>{
-
-        if(!owner)return;
-
-        if(event.target.closest(".item"))return;
-        if(event.target.closest(".add-url"))return;
-        if(event.target.closest(".trash-button"))return;
-        if(event.target.closest(".resize"))return;
-
-        event.preventDefault();
-        event.stopPropagation();
-
-        selectedBoardId =
-        board.id;
-
-        contextBoardId =
-        board.id;
-
-        openRenameModal(board);
-
-      }
-    );
-
-    /* DELETE BUTTON */
-
-    const deleteButton =
-    element.querySelector(
-      "[data-delete-board]"
-    );
-
-    if(deleteButton){
-
-      deleteButton.addEventListener(
-        "click",
-        async event=>{
-
-          event.preventDefault();
-          event.stopPropagation();
-
-          await deleteBoard(board);
-
-        }
-      );
-
-    }
-
-    /* ADD URL */
-
-    const addButton =
-    element.querySelector(
-      "[data-add-url]"
-    );
-
-    if(addButton){
-
-      addButton.addEventListener(
-        "click",
-        event=>{
-
-          event.preventDefault();
-          event.stopPropagation();
-
-          openURLModal(board);
-
-        }
-      );
-
-    }
-
-    /* DELETE URL */
-
-    element
-    .querySelectorAll("[data-delete-item]")
-    .forEach(button=>{
-
-      button.addEventListener(
-        "click",
-        async event=>{
-
-          event.preventDefault();
-          event.stopPropagation();
-
-          await deleteURL(
-            board,
-            button.dataset.deleteItem
-          );
-
-        }
-      );
-
-    });
-
-    /* OPEN URL */
-
-    element
-    .querySelectorAll(".item")
-    .forEach(item=>{
-
-      item.addEventListener(
-        "click",
-        event=>{
-
-          if(
-            event.target.closest(".item-trash")
-          )return;
-
-          const url =
-          item.dataset.url;
-
-          if(url){
-
-            window.open(
-              url,
-              "_blank",
-              "noopener,noreferrer"
-            );
-
-          }
-
-        }
-      );
-
-    });
-
-    /* RIGHT CLICK */
-
-    element.addEventListener(
-      "contextmenu",
-      event=>{
-
-        if(!owner)return;
-
-        event.preventDefault();
-        event.stopPropagation();
-
-        contextBoardId =
-        board.id;
-
-        selectedBoardId =
-        board.id;
-
-        const menu =
-        document.getElementById(
-          "contextMenu"
-        );
-
-        menu.style.display =
-        "block";
-
-        menu.style.left =
-        event.clientX + "px";
-
-        menu.style.top =
-        event.clientY + "px";
-
-      }
-    );
-
-    /* MOVE + RESIZE */
-
-    if(owner){
-
-      element.addEventListener(
-        "pointerdown",
-        event=>{
-
-          if(event.pointerType === "touch")return;
-
-          if(event.target.closest(".item"))return;
-          if(event.target.closest(".add-url"))return;
-          if(event.target.closest(".trash-button"))return;
-
-          selectedBoardId =
-          board.id;
-
-          if(event.target.closest(".resize")){
-
-            resizing = {
-
-              id:board.id,
-
-              startX:event.clientX,
-              startY:event.clientY,
-
-              width:board.w,
-              height:board.h
-
-            };
-
-            element.setPointerCapture(
-              event.pointerId
-            );
-
-            event.preventDefault();
-
-            return;
-
-          }
-
-          moving = {
-
-            id:board.id,
-
-            startX:event.clientX,
-            startY:event.clientY,
-
-            x:Number(board.x),
-            y:Number(board.y)
-
-          };
-
-          element.setPointerCapture(
-            event.pointerId
-          );
-
-          event.preventDefault();
-
-        }
-      );
-
-      element.addEventListener(
-        "pointermove",
-        event=>{
-
-          if(
-            resizing &&
-            resizing.id === board.id
-          ){
-
-            board.w =
-            Math.max(
-              180,
-              resizing.width +
-              (
-                event.clientX -
-                resizing.startX
-              ) / zoom
-            );
-
-            board.h =
-            Math.max(
-              120,
-              resizing.height +
-              (
-                event.clientY -
-                resizing.startY
-              ) / zoom
-            );
-
-            element.style.width =
-            board.w + "px";
-
-            element.style.height =
-            board.h + "px";
-
-            return;
-
-          }
-
-          if(
-            moving &&
-            moving.id === board.id
-          ){
-
-            board.x =
-            moving.x +
-            (
-              event.clientX -
-              moving.startX
-            ) / zoom;
-
-            board.y =
-            moving.y +
-            (
-              event.clientY -
-              moving.startY
-            ) / zoom;
-
-            element.style.left =
-            board.x + "px";
-
-            element.style.top =
-            board.y + "px";
-
-          }
-
-        }
-      );
-
-      element.addEventListener(
-        "pointerup",
-        async event=>{
-
-          if(
-            moving &&
-            moving.id === board.id
-          ){
-
-            const finalX =
-            board.x;
-
-            const finalY =
-            board.y;
-
-            moving = null;
-
-            const {error} =
-            await supabase
-            .from("boxes")
-            .update({
-              x:finalX,
-              y:finalY
-            })
-            .eq("id",board.id)
-            .eq("owner_id",user.id);
-
-            if(error){
-
-              console.error(
-                "Move save error:",
-                error
-              );
-
-            }
-
-          }
-
-          if(
-            resizing &&
-            resizing.id === board.id
-          ){
-
-            const finalWidth =
-            board.w;
-
-            const finalHeight =
-            board.h;
-
-            resizing = null;
-
-            const {error} =
-            await supabase
-            .from("boxes")
-            .update({
-              width:finalWidth,
-              height:finalHeight
-            })
-            .eq("id",board.id)
-            .eq("owner_id",user.id);
-
-            if(error){
-
-              console.error(
-                "Resize save error:",
-                error
-              );
-
-            }
-
-          }
-
-        }
-      );
-
-      element.addEventListener(
-        "pointercancel",
-        ()=>{
-          moving = null;
-          resizing = null;
-        }
-      );
-
-    }
-
-    world.appendChild(element);
-
-  });
-
-}
-
-/* =========================================================
-CONTEXT MENU
-========================================================= */
-
-document.getElementById("renameOption")
-.addEventListener("click",()=>{
-
-  document.getElementById("contextMenu")
-  .style.display = "none";
-
-  const board =
-  boards.find(
-    b =>
-    String(b.id) ===
-    String(contextBoardId)
-  );
-
-  if(!board)return;
-
-  openRenameModal(board);
-
-});
-
-document.getElementById("deleteOption")
-.addEventListener("click",async()=>{
-
-  document.getElementById("contextMenu")
-  .style.display = "none";
-
-  const board =
-  boards.find(
-    b =>
-    String(b.id) ===
-    String(contextBoardId)
-  );
-
-  if(board){
-
-    await deleteBoard(board);
-
-  }
-
-});
-
-document.addEventListener(
-  "pointerdown",
-  event=>{
-
-    if(
-      !event.target.closest("#contextMenu")
-    ){
-
-      document.getElementById(
-        "contextMenu"
-      ).style.display = "none";
-
-    }
-
-  }
+const world=
+document.getElementById("world");
+world.style.transform=
+`translate(${panX}px,${panY}px) scale(${zoom})`;
+world.innerHTML="";
+if(!user)return;
+boards.forEach(board=>{
+const element=
+document.createElement("section");
+element.className=
+"board"+
+(
+String(selectedBoardId)===String(board.id)
+?" selected"
+:""
 );
-
+element.dataset.id=String(board.id);
+element.style.left=
+Number(board.x)+"px";
+element.style.top=
+Number(board.y)+"px";
+element.style.width=
+Number(board.w)+"px";
+element.style.height=
+Number(board.h)+"px";
+const owner=
+String(board.owner_id)===
+String(user.id);
+const boardNickname=
+board.ownerNickname ||
+getNickname(board.owner_id) ||
+"";
+element.innerHTML=`
+<div class="board-title">
+${escapeHTML(board.title)}
+</div>
+${
+owner
+?
+`
+<div class="board-actions">
+<button
+class="trash-button"
+title="Delete box"
+data-delete-board="${escapeHTML(board.id)}"
+>
+×
+</button>
+</div>
+`
+:""
+}
+<div class="board-inner">
+${
+owner
+?
+`
+<button
+class="add-url"
+data-add-url="${escapeHTML(board.id)}"
+>
++ Add URL
+</button>
+`
+:""
+}
+${board.items.map(item=>{
+const itemNickname=
+item.owner_nickname ||
+boardNickname ||
+"";
+return `
+<div
+class="item"
+data-item-id="${escapeHTML(item.id)}"
+data-url="${escapeHTML(item.url)}"
+>
+${
+item.image
+?
+`
+<img
+src="${escapeHTML(item.image)}"
+alt=""
+onerror="this.style.display='none'"
+>
+`
+:""
+}
+<div class="item-content">
+<div class="item-nickname">
+${escapeHTML(itemNickname)}
+</div>
+<div class="item-title">
+${escapeHTML(item.title || item.url)}
+</div>
+</div>
+<span class="item-visibility">
+${item.visibility==="public"?"Public":"Private"}
+</span>
+${
+owner
+?
+`
+<button
+class="item-trash"
+title="Delete URL"
+data-delete-item="${escapeHTML(item.id)}"
+>
+×
+</button>
+`
+:""
+}
+</div>
+`;
+}).join("")}
+</div>
+${
+owner
+?
+`<div class="resize"></div>`
+:""
+}
+`;
+/* =========================================================
+BOARD CLICK
+========================================================= */
+element.addEventListener(
+"click",
+event=>{
+if(event.target.closest("button"))return;
+if(event.target.closest(".item"))return;
+if(event.target.closest(".resize"))return;
+selectedBoardId=board.id;
+document
+.querySelectorAll(".board")
+.forEach(b=>
+b.classList.remove("selected")
+);
+element.classList.add("selected");
+});
+/* =========================================================
+DOUBLE CLICK RENAME
+========================================================= */
+element.addEventListener(
+"dblclick",
+event=>{
+if(!owner)return;
+if(event.target.closest(".item"))return;
+if(event.target.closest("button"))return;
+if(event.target.closest(".resize"))return;
+event.preventDefault();
+event.stopPropagation();
+selectedBoardId=board.id;
+openRenameModal(board);
+});
+/* =========================================================
+DELETE BOX BUTTON
+========================================================= */
+const deleteButton=
+element.querySelector(
+"[data-delete-board]"
+);
+if(deleteButton){
+deleteButton.addEventListener(
+"click",
+async event=>{
+event.preventDefault();
+event.stopPropagation();
+await deleteBoard(board);
+});
+}
+/* =========================================================
+ADD URL
+========================================================= */
+const addButton=
+element.querySelector(
+"[data-add-url]"
+);
+if(addButton){
+addButton.addEventListener(
+"click",
+event=>{
+event.preventDefault();
+event.stopPropagation();
+openURLModal(board);
+});
+}
+/* =========================================================
+DELETE URL
+========================================================= */
+element
+.querySelectorAll("[data-delete-item]")
+.forEach(button=>{
+button.addEventListener(
+"click",
+async event=>{
+event.preventDefault();
+event.stopPropagation();
+await deleteURL(
+board,
+button.dataset.deleteItem
+);
+});
+});
+/* =========================================================
+OPEN URL
+========================================================= */
+element
+.querySelectorAll(".item")
+.forEach(item=>{
+item.addEventListener(
+"click",
+event=>{
+if(event.target.closest("button"))return;
+const url=item.dataset.url;
+if(url){
+window.open(
+url,
+"_blank",
+"noopener,noreferrer"
+);
+}
+});
+});
+/* =========================================================
+RIGHT CLICK CONTEXT MENU
+========================================================= */
+element.addEventListener(
+"contextmenu",
+event=>{
+if(!owner)return;
+if(event.target.closest(".item"))return;
+if(event.target.closest("button"))return;
+if(event.target.closest(".resize"))return;
+event.preventDefault();
+event.stopPropagation();
+contextBoardId=board.id;
+const menu=
+document.getElementById("contextMenu");
+menu.style.display="block";
+let x=event.clientX;
+let y=event.clientY;
+if(x+150>window.innerWidth){
+x=window.innerWidth-155;
+}
+if(y+84>window.innerHeight){
+y=window.innerHeight-90;
+}
+menu.style.left=x+"px";
+menu.style.top=y+"px";
+});
+/* =========================================================
+MOVE / RESIZE
+========================================================= */
+if(owner){
+element.addEventListener(
+"pointerdown",
+event=>{
+if(event.button!==0)return;
+if(event.target.closest("button"))return;
+if(event.target.closest(".item"))return;
+if(event.target.closest(".resize")){
+resizing={
+id:board.id,
+startX:event.clientX,
+startY:event.clientY,
+width:Number(board.w),
+height:Number(board.h)
+};
+element.setPointerCapture(
+event.pointerId
+);
+event.preventDefault();
+return;
+}
+moving={
+id:board.id,
+startX:event.clientX,
+startY:event.clientY,
+x:Number(board.x),
+y:Number(board.y)
+};
+element.setPointerCapture(
+event.pointerId
+);
+event.preventDefault();
+});
+element.addEventListener(
+"pointermove",
+event=>{
+if(
+resizing &&
+resizing.id===board.id
+){
+board.w=
+Math.max(
+180,
+resizing.width+
+(event.clientX-resizing.startX)/zoom
+);
+board.h=
+Math.max(
+120,
+resizing.height+
+(event.clientY-resizing.startY)/zoom
+);
+element.style.width=
+board.w+"px";
+element.style.height=
+board.h+"px";
+return;
+}
+if(
+moving &&
+moving.id===board.id
+){
+board.x=
+moving.x+
+(event.clientX-moving.startX)/zoom;
+board.y=
+moving.y+
+(event.clientY-moving.startY)/zoom;
+element.style.left=
+board.x+"px";
+element.style.top=
+board.y+"px";
+}
+});
+element.addEventListener(
+"pointerup",
+async event=>{
+if(
+moving &&
+moving.id===board.id
+){
+const finalX=Number(board.x);
+const finalY=Number(board.y);
+moving=null;
+const {error}=await supabase
+.from("boxes")
+.update({
+x:finalX,
+y:finalY
+})
+.eq("id",board.id)
+.eq("owner_id",user.id);
+if(error){
+console.error(
+"Move save error:",
+error
+);
+}
+}
+if(
+resizing &&
+resizing.id===board.id
+){
+const finalWidth=Number(board.w);
+const finalHeight=Number(board.h);
+resizing=null;
+const {error}=await supabase
+.from("boxes")
+.update({
+width:finalWidth,
+height:finalHeight
+})
+.eq("id",board.id)
+.eq("owner_id",user.id);
+if(error){
+console.error(
+"Resize save error:",
+error
+);
+}
+}
+});
+element.addEventListener(
+"pointercancel",
+()=>{
+moving=null;
+resizing=null;
+});
+}
+world.appendChild(element);
+});
+}
+/* =========================================================
+CONTEXT MENU ACTIONS
+========================================================= */
+document.getElementById("renameOption")
+.addEventListener(
+"click",
+()=>{
+const board=
+boards.find(
+b=>String(b.id)===String(contextBoardId)
+);
+document.getElementById("contextMenu")
+.style.display="none";
+if(!board)return;
+openRenameModal(board);
+});
+document.getElementById("deleteOption")
+.addEventListener(
+"click",
+async()=>{
+const board=
+boards.find(
+b=>String(b.id)===String(contextBoardId)
+);
+document.getElementById("contextMenu")
+.style.display="none";
+if(!board)return;
+await deleteBoard(board);
+});
+document.addEventListener(
+"pointerdown",
+event=>{
+if(
+!event.target.closest("#contextMenu")
+){
+document.getElementById("contextMenu")
+.style.display="none";
+}
+});
 /* =========================================================
 DESKTOP PAN
 ========================================================= */
-
-const workspace =
-document.getElementById(
-  "workspace"
-);
-
+const workspace=
+document.getElementById("workspace");
 workspace.addEventListener(
-  "pointerdown",
-  event=>{
-
-    if(event.pointerType === "touch")return;
-
-    if(event.target.closest(".board"))return;
-    if(event.target.closest("button"))return;
-
-    panning = {
-
-      x:event.clientX,
-      y:event.clientY,
-
-      panX,
-      panY
-
-    };
-
-    workspace.setPointerCapture?.(
-      event.pointerId
-    );
-
-  }
+"pointerdown",
+event=>{
+if(event.pointerType==="touch")return;
+if(event.target.closest(".board"))return;
+if(event.target.closest("button"))return;
+panning={
+x:event.clientX,
+y:event.clientY,
+panX,
+panY
+};
+workspace.setPointerCapture?.(
+event.pointerId
 );
-
+});
 workspace.addEventListener(
-  "pointermove",
-  event=>{
-
-    if(!panning)return;
-
-    panX =
-    panning.panX +
-    event.clientX -
-    panning.x;
-
-    panY =
-    panning.panY +
-    event.clientY -
-    panning.y;
-
-    document.getElementById(
-      "world"
-    ).style.transform =
-    `translate(${panX}px,${panY}px) scale(${zoom})`;
-
-  }
-);
-
+"pointermove",
+event=>{
+if(!panning)return;
+panX=
+panning.panX+
+event.clientX-
+panning.x;
+panY=
+panning.panY+
+event.clientY-
+panning.y;
+document.getElementById("world")
+.style.transform=
+`translate(${panX}px,${panY}px) scale(${zoom})`;
+});
 workspace.addEventListener(
-  "pointerup",
-  ()=>{
-    panning = null;
-  }
+"pointerup",
+()=>panning=null
 );
-
 workspace.addEventListener(
-  "pointercancel",
-  ()=>{
-    panning = null;
-  }
+"pointercancel",
+()=>panning=null
 );
-
 /* =========================================================
-TOUCH
+TOUCH PAN / PINCH
 ========================================================= */
-
 function distance(a,b){
-
-  return Math.hypot(
-    a.clientX - b.clientX,
-    a.clientY - b.clientY
-  );
-
+return Math.hypot(
+a.clientX-b.clientX,
+a.clientY-b.clientY
+);
 }
-
 function midpoint(a,b){
-
-  return {
-
-    x:
-    (a.clientX + b.clientX) / 2,
-
-    y:
-    (a.clientY + b.clientY) / 2
-
-  };
-
+return{
+x:(a.clientX+b.clientX)/2,
+y:(a.clientY+b.clientY)/2
+};
 }
-
 workspace.addEventListener(
-  "pointerdown",
-  event=>{
-
-    if(event.pointerType !== "touch")return;
-
-    pointers.set(
-      event.pointerId,
-      {
-        clientX:event.clientX,
-        clientY:event.clientY
-      }
-    );
-
-    if(pointers.size === 1){
-
-      if(!event.target.closest(".board")){
-
-        panning = {
-
-          x:event.clientX,
-          y:event.clientY,
-
-          panX,
-          panY
-
-        };
-
-      }
-
-    }
-
-    if(pointers.size === 2){
-
-      panning = null;
-
-      const points =
-      [...pointers.values()];
-
-      pinchStartDistance =
-      distance(
-        points[0],
-        points[1]
-      );
-
-      pinchStartZoom =
-      zoom;
-
-      pinchStartCenter =
-      midpoint(
-        points[0],
-        points[1]
-      );
-
-      pinchStartPanX =
-      panX;
-
-      pinchStartPanY =
-      panY;
-
-    }
-
-  }
+"pointerdown",
+event=>{
+if(event.pointerType!=="touch")return;
+pointers.set(
+event.pointerId,
+{
+clientX:event.clientX,
+clientY:event.clientY
+}
 );
-
+if(pointers.size===1){
+if(!event.target.closest(".board")){
+panning={
+x:event.clientX,
+y:event.clientY,
+panX,
+panY
+};
+}
+}
+if(pointers.size===2){
+panning=null;
+const points=
+[...pointers.values()];
+pinchStartDistance=
+distance(points[0],points[1]);
+pinchStartZoom=zoom;
+pinchStartCenter=
+midpoint(points[0],points[1]);
+pinchStartPanX=panX;
+pinchStartPanY=panY;
+}
+});
 workspace.addEventListener(
-  "pointermove",
-  event=>{
-
-    if(event.pointerType !== "touch")return;
-
-    if(!pointers.has(event.pointerId))return;
-
-    pointers.set(
-      event.pointerId,
-      {
-        clientX:event.clientX,
-        clientY:event.clientY
-      }
-    );
-
-    if(
-      pointers.size === 1 &&
-      panning
-    ){
-
-      panX =
-      panning.panX +
-      event.clientX -
-      panning.x;
-
-      panY =
-      panning.panY +
-      event.clientY -
-      panning.y;
-
-      document.getElementById(
-        "world"
-      ).style.transform =
-      `translate(${panX}px,${panY}px) scale(${zoom})`;
-
-      return;
-
-    }
-
-    if(pointers.size === 2){
-
-      const points =
-      [...pointers.values()];
-
-      const currentDistance =
-      distance(
-        points[0],
-        points[1]
-      );
-
-      if(!pinchStartDistance)return;
-
-      let newZoom =
-      pinchStartZoom *
-      (
-        currentDistance /
-        pinchStartDistance
-      );
-
-      newZoom =
-      Math.max(
-        0.25,
-        Math.min(3,newZoom)
-      );
-
-      const center =
-      midpoint(
-        points[0],
-        points[1]
-      );
-
-      const rect =
-      workspace.getBoundingClientRect();
-
-      const worldX =
-      (
-        pinchStartCenter.x -
-        rect.left -
-        pinchStartPanX
-      ) /
-      pinchStartZoom;
-
-      const worldY =
-      (
-        pinchStartCenter.y -
-        rect.top -
-        pinchStartPanY
-      ) /
-      pinchStartZoom;
-
-      panX =
-      center.x -
-      rect.left -
-      worldX * newZoom;
-
-      panY =
-      center.y -
-      rect.top -
-      worldY * newZoom;
-
-      zoom =
-      newZoom;
-
-      document.getElementById(
-        "world"
-      ).style.transform =
-      `translate(${panX}px,${panY}px) scale(${zoom})`;
-
-    }
-
-  }
+"pointermove",
+event=>{
+if(event.pointerType!=="touch")return;
+if(!pointers.has(event.pointerId))return;
+pointers.set(
+event.pointerId,
+{
+clientX:event.clientX,
+clientY:event.clientY
+}
 );
-
+if(
+pointers.size===1 &&
+panning
+){
+panX=
+panning.panX+
+event.clientX-
+panning.x;
+panY=
+panning.panY+
+event.clientY-
+panning.y;
+document.getElementById("world")
+.style.transform=
+`translate(${panX}px,${panY}px) scale(${zoom})`;
+return;
+}
+if(pointers.size===2){
+const points=
+[...pointers.values()];
+const currentDistance=
+distance(points[0],points[1]);
+if(!pinchStartDistance)return;
+let newZoom=
+pinchStartZoom*
+(currentDistance/pinchStartDistance);
+newZoom=
+Math.max(
+0.25,
+Math.min(3,newZoom)
+);
+const center=
+midpoint(points[0],points[1]);
+const rect=
+workspace.getBoundingClientRect();
+const worldX=
+(
+pinchStartCenter.x-
+rect.left-
+pinchStartPanX
+)/
+pinchStartZoom;
+const worldY=
+(
+pinchStartCenter.y-
+rect.top-
+pinchStartPanY
+)/
+pinchStartZoom;
+panX=
+center.x-
+rect.left-
+worldX*newZoom;
+panY=
+center.y-
+rect.top-
+worldY*newZoom;
+zoom=newZoom;
+document.getElementById("world")
+.style.transform=
+`translate(${panX}px,${panY}px) scale(${zoom})`;
+}
+});
 function endTouch(event){
-
-  if(event.pointerType !== "touch")return;
-
-  pointers.delete(
-    event.pointerId
-  );
-
-  if(pointers.size < 2){
-
-    pinchStartDistance = null;
-
-  }
-
-  if(pointers.size === 0){
-
-    panning = null;
-
-  }
-
+if(event.pointerType!=="touch")return;
+pointers.delete(event.pointerId);
+if(pointers.size<2){
+pinchStartDistance=null;
 }
-
+if(pointers.size===0){
+panning=null;
+}
+}
 workspace.addEventListener(
-  "pointerup",
-  endTouch
+"pointerup",
+endTouch
 );
-
 workspace.addEventListener(
-  "pointercancel",
-  endTouch
+"pointercancel",
+endTouch
 );
-
 /* =========================================================
 ZOOM
 ========================================================= */
-
 workspace.addEventListener(
-  "wheel",
-  event=>{
-
-    event.preventDefault();
-
-    const rect =
-    workspace.getBoundingClientRect();
-
-    const mouseX =
-    event.clientX -
-    rect.left;
-
-    const mouseY =
-    event.clientY -
-    rect.top;
-
-    const worldX =
-    (mouseX - panX) /
-    zoom;
-
-    const worldY =
-    (mouseY - panY) /
-    zoom;
-
-    const factor =
-    event.deltaY < 0
-    ? 1.1
-    : 0.9;
-
-    zoom =
-    Math.max(
-      0.25,
-      Math.min(
-        3,
-        zoom * factor
-      )
-    );
-
-    panX =
-    mouseX -
-    worldX * zoom;
-
-    panY =
-    mouseY -
-    worldY * zoom;
-
-    document.getElementById(
-      "world"
-    ).style.transform =
-    `translate(${panX}px,${panY}px) scale(${zoom})`;
-
-  },
-  {
-    passive:false
-  }
+"wheel",
+event=>{
+event.preventDefault();
+const rect=
+workspace.getBoundingClientRect();
+const mouseX=
+event.clientX-rect.left;
+const mouseY=
+event.clientY-rect.top;
+const worldX=
+(mouseX-panX)/zoom;
+const worldY=
+(mouseY-panY)/zoom;
+const factor=
+event.deltaY<0
+?1.1
+:0.9;
+zoom=
+Math.max(
+0.25,
+Math.min(
+3,
+zoom*factor
+)
 );
-
+panX=
+mouseX-worldX*zoom;
+panY=
+mouseY-worldY*zoom;
+document.getElementById("world")
+.style.transform=
+`translate(${panX}px,${panY}px) scale(${zoom})`;
+},{
+passive:false
+});
 /* =========================================================
 SEARCH
 ========================================================= */
-
 document.getElementById("searchInput")
 .addEventListener(
-  "input",
-  event=>{
-
-    const query =
-    event.target.value
-    .toLowerCase()
-    .trim();
-
-    document
-    .querySelectorAll(".board")
-    .forEach(element=>{
-
-      const board =
-      boards.find(
-        b =>
-        String(b.id) ===
-        String(element.dataset.id)
-      );
-
-      if(!board)return;
-
-      const matches =
-      !query ||
-
-      String(board.title || "")
-      .toLowerCase()
-      .includes(query) ||
-
-      board.items.some(
-        item =>
-
-        String(item.title || "")
-        .toLowerCase()
-        .includes(query) ||
-
-        String(item.url || "")
-        .toLowerCase()
-        .includes(query)
-      );
-
-      element.style.opacity =
-      matches
-      ? "1"
-      : "0.2";
-
-    });
-
-  }
+"input",
+event=>{
+const query=
+event.target.value
+.toLowerCase()
+.trim();
+document
+.querySelectorAll(".board")
+.forEach(element=>{
+const board=
+boards.find(
+b=>String(b.id)===
+String(element.dataset.id)
 );
-
+if(!board)return;
+const matches=
+!query ||
+String(board.title || "")
+.toLowerCase()
+.includes(query) ||
+board.items.some(item=>
+String(item.title || "")
+.toLowerCase()
+.includes(query) ||
+String(item.url || "")
+.toLowerCase()
+.includes(query)
+);
+element.style.opacity=
+matches?"1":"0.2";
+});
+});
+/* =========================================================
+FRIENDS
+========================================================= */
+async function loadFriends(){
+if(!user)return;
+const {data,error}=await supabase
+.from("friend_requests")
+.select("*")
+.or(
+`sender_id.eq.${user.id},receiver_id.eq.${user.id}`
+);
+if(error){
+console.error(error);
+return;
+}
+const accepted=
+(data || []).filter(
+r=>r.status==="accepted"
+);
+const ids=
+accepted.map(
+r=>r.sender_id===user.id
+?r.receiver_id
+:r.sender_id
+);
+if(!ids.length){
+friends=[];
+renderFriends();
+return;
+}
+const {data:friendProfiles}=await supabase
+.from("profiles")
+.select("id,email,nickname")
+.in("id",ids);
+friends=friendProfiles || [];
+friends.forEach(friend=>{
+profilesCache.set(
+String(friend.id),
+friend
+);
+});
+renderFriends();
+}
+function renderFriends(){
+const list=
+document.getElementById("friendsList");
+if(!list)return;
+list.innerHTML="";
+friends.forEach(friend=>{
+const element=
+document.createElement("div");
+element.className="friend";
+element.textContent=
+friend.nickname ||
+friend.email ||
+"User";
+list.appendChild(element);
+});
+}
+document.getElementById("addFriendButton")
+.addEventListener(
+"click",
+async()=>{
+const input=
+document.getElementById("addFriendInput");
+const email=
+input.value.trim().toLowerCase();
+if(!email){
+showError(
+"Enter your friend's email."
+);
+return;
+}
+const {data:profile,error}=await supabase
+.from("profiles")
+.select("id,email,nickname")
+.eq("email",email)
+.maybeSingle();
+if(error){
+showError(error.message);
+return;
+}
+if(!profile){
+showError(
+"No user with that email was found."
+);
+return;
+}
+if(profile.id===user.id){
+showError(
+"You cannot add yourself."
+);
+return;
+}
+const {data:existing,error:existingError}=
+await supabase
+.from("friend_requests")
+.select("id,status")
+.or(
+`and(sender_id.eq.${user.id},receiver_id.eq.${profile.id}),and(sender_id.eq.${profile.id},receiver_id.eq.${user.id})`
+);
+if(existingError){
+showError(existingError.message);
+return;
+}
+if(
+existing?.some(
+request=>request.status==="accepted"
+)
+){
+showError(
+"You are already friends with this user."
+);
+return;
+}
+if(
+existing?.some(
+request=>request.status==="pending"
+)
+){
+showError(
+"A friend request already exists."
+);
+return;
+}
+const {error:insertError}=await supabase
+.from("friend_requests")
+.insert({
+sender_id:user.id,
+receiver_id:profile.id,
+status:"pending"
+});
+if(insertError){
+showError(insertError.message);
+return;
+}
+input.value="";
+showError(
+"Friend request sent."
+);
+});
+/* =========================================================
+REQUESTS
+========================================================= */
+async function loadFriendRequests(){
+if(!user)return;
+const list=
+document.getElementById("requestsList");
+list.innerHTML="Loading...";
+const {data:requests,error}=await supabase
+.from("friend_requests")
+.select("*")
+.eq("receiver_id",user.id)
+.eq("status","pending");
+if(error){
+list.innerHTML=
+`<div style="color:#ff6666">
+${escapeHTML(error.message)}
+</div>`;
+return;
+}
+if(!requests?.length){
+list.innerHTML=
+"<p style='font-size:13px;color:#777'>No pending requests.</p>";
+return;
+}
+const ids=
+requests.map(request=>request.sender_id);
+const {data:requestProfiles}=await supabase
+.from("profiles")
+.select("id,email,nickname")
+.in("id",ids);
+list.innerHTML="";
+requests.forEach(request=>{
+const sender=
+(requestProfiles || []).find(
+profile=>
+String(profile.id)===
+String(request.sender_id)
+);
+const row=
+document.createElement("div");
+row.className="request";
+row.innerHTML=`
+<div class="request-nickname">
+${escapeHTML(
+sender?.nickname ||
+sender?.email ||
+"User"
+)}
+</div>
+<div class="request-actions">
+<button
+data-action="accept"
+data-id="${escapeHTML(request.id)}"
+>
+Accept
+</button>
+<button
+data-action="decline"
+data-id="${escapeHTML(request.id)}"
+>
+Decline
+</button>
+</div>
+`;
+list.appendChild(row);
+});
+}
+document.getElementById("friendRequestsButton")
+.addEventListener(
+"click",
+async()=>{
+const panel=
+document.getElementById("requestsPanel");
+if(panel.style.display==="block"){
+panel.style.display="none";
+}else{
+panel.style.display="block";
+await loadFriendRequests();
+}
+});
+document.getElementById("requestsList")
+.addEventListener(
+"click",
+async event=>{
+const button=
+event.target.closest("button");
+if(!button)return;
+const id=button.dataset.id;
+const action=button.dataset.action;
+if(action==="accept"){
+const {error}=await supabase
+.from("friend_requests")
+.update({
+status:"accepted"
+})
+.eq("id",id)
+.eq("receiver_id",user.id);
+if(error){
+showError(error.message);
+return;
+}
+await loadProfiles();
+await loadFriends();
+await loadFriendRequests();
+}
+if(action==="decline"){
+const {error}=await supabase
+.from("friend_requests")
+.delete()
+.eq("id",id)
+.eq("receiver_id",user.id);
+if(error){
+showError(error.message);
+return;
+}
+await loadFriendRequests();
+}
+});
 /* =========================================================
 SHARE
 ========================================================= */
-
 document.getElementById("shareButton")
-.addEventListener("click",async()=>{
-
-  const data = {
-
-    title:"Spaceboards",
-
-    text:"Check out my Spaceboards!",
-
-    url:window.location.href
-
-  };
-
-  try{
-
-    if(navigator.share){
-
-      await navigator.share(data);
-
-    }else{
-
-      await navigator.clipboard.writeText(
-        window.location.href
-      );
-
-      alert(
-        "Website link copied to clipboard."
-      );
-
-    }
-
-  }catch(error){
-
-    if(error.name !== "AbortError"){
-
-      try{
-
-        await navigator.clipboard.writeText(
-          window.location.href
-        );
-
-        alert(
-          "Website link copied to clipboard."
-        );
-
-      }catch(e){
-
-        prompt(
-          "Copy this link:",
-          window.location.href
-        );
-
-      }
-
-    }
-
-  }
-
+.addEventListener(
+"click",
+async()=>{
+try{
+if(navigator.share){
+await navigator.share({
+title:"Spaceboards",
+text:"Check out my Spaceboards!",
+url:window.location.href
 });
-
+}else{
+await navigator.clipboard.writeText(
+window.location.href
+);
+alert("Website link copied to clipboard.");
+}
+}catch(error){
+if(error.name!=="AbortError"){
+try{
+await navigator.clipboard.writeText(
+window.location.href
+);
+alert(
+"Website link copied to clipboard."
+);
+}catch(e){
+prompt(
+"Copy this link:",
+window.location.href
+);
+}
+}
+});
 /* =========================================================
-MODAL CLOSE
+MODAL / PANELS
 ========================================================= */
-
 document.getElementById("modalBackground")
 .addEventListener(
-  "click",
-  event=>{
-
-    if(
-      event.target.id ===
-      "modalBackground"
-    ){
-
-      closeModal();
-
-    }
-
-  }
-);
-
-/* =========================================================
-FRIENDS CLOSE
-========================================================= */
-
-document.getElementById(
-  "closeFriendsButton"
-)
-.addEventListener(
-  "click",
-  ()=>{
-
-    document.getElementById(
-      "friendsPanel"
-    ).style.display = "none";
-
-  }
-);
-
-/* =========================================================
-REQUESTS CLOSE
-========================================================= */
-
-document.getElementById(
-  "closeRequestsButton"
-)
-.addEventListener(
-  "click",
-  ()=>{
-
-    document.getElementById(
-      "requestsPanel"
-    ).style.display = "none";
-
-  }
-);
-
-/* =========================================================
-INITIALIZE
-========================================================= */
-
-updateAuthUI();
-
-const initialSession =
-await supabase.auth.getSession();
-
-if(initialSession.data.session){
-
-  user =
-  initialSession.data.session.user;
-
-  document.getElementById(
-    "authScreen"
-  ).style.display = "none";
-
-  await loadCurrentProfile();
-  await loadProfiles();
-  await loadFriends();
-  await loadBoards();
-  await loadFriendRequests();
-
-  updateProfileDisplay();
-
-}else{
-
-  user = null;
-
-  document.getElementById(
-    "authScreen"
-  ).style.display = "flex";
-
+"click",
+event=>{
+if(event.target.id==="modalBackground"){
+closeModal();
 }
-
+});
+document.getElementById("closeFriendsButton")
+.addEventListener(
+"click",
+()=>{
+document.getElementById("friendsPanel")
+.style.display="none";
+});
+document.getElementById("closeRequestsButton")
+.addEventListener(
+"click",
+()=>{
+document.getElementById("requestsPanel")
+.style.display="none";
+});
+/* =========================================================
+START
+========================================================= */
+updateAuthUI();
 render();
-
 </script>
-
 </body>
 </html>
