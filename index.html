@@ -2393,17 +2393,20 @@ String(user.id)
 const previous=
 ownBoards[ownBoards.length-1];
 
-const boxWidth = 430;
-const boxHeight = 270;
-const gap = 40;
+let x=120;
+let y=120;
 
-const index = ownBoards.length;
+if(previous){
 
-const column = index % 3;
-const row = Math.floor(index / 3);
+x=
+Number(previous.x)+
+Number(previous.w)+
+40;
 
-let x = 120 + column * (boxWidth + gap);
-let y = 120 + row * (boxHeight + gap);
+y=
+Number(previous.y);
+
+}
 
 const {
 data,
@@ -3197,7 +3200,6 @@ event.clientY+"px";
 
 });
 
-
 /* MOVE + RESIZE */
 
 if(owner){
@@ -3212,8 +3214,6 @@ if(event.target.closest(".item"))return;
 if(event.target.closest(".add-url"))return;
 if(event.target.closest(".trash-button"))return;
 
-event.stopPropagation();
-
 if(event.target.closest(".resize")){
 
 resizing={
@@ -3221,14 +3221,18 @@ resizing={
 id:board.id,
 
 startX:event.clientX,
+
 startY:event.clientY,
 
 width:board.w,
+
 height:board.h
 
 };
 
-element.setPointerCapture(event.pointerId);
+element.setPointerCapture(
+event.pointerId
+);
 
 event.preventDefault();
 
@@ -3241,79 +3245,108 @@ moving={
 id:board.id,
 
 startX:event.clientX,
+
 startY:event.clientY,
 
 x:board.x,
+
 y:board.y
 
 };
 
-element.setPointerCapture(event.pointerId);
+element.setPointerCapture(
+event.pointerId
+);
 
 event.preventDefault();
 
 });
 
-
 element.addEventListener(
 "pointermove",
 event=>{
 
-if(resizing && resizing.id===board.id){
+if(
+resizing &&
+resizing.id===board.id
+){
 
 board.w=
 Math.max(
 180,
 resizing.width+
-(event.clientX-resizing.startX)/zoom
+(
+event.clientX-
+resizing.startX
+)/zoom
 );
 
 board.h=
 Math.max(
 120,
 resizing.height+
-(event.clientY-resizing.startY)/zoom
+(
+event.clientY-
+resizing.startY
+)/zoom
 );
 
-element.style.width=board.w+"px";
-element.style.height=board.h+"px";
+element.style.width=
+board.w+"px";
+
+element.style.height=
+board.h+"px";
 
 return;
 
 }
 
-
-if(moving && moving.id===board.id){
+if(
+moving &&
+moving.id===board.id
+){
 
 board.x=
 moving.x+
-(event.clientX-moving.startX)/zoom;
+(
+event.clientX-
+moving.startX
+)/zoom;
 
 board.y=
 moving.y+
-(event.clientY-moving.startY)/zoom;
+(
+event.clientY-
+moving.startY
+)/zoom;
 
-element.style.left=board.x+"px";
-element.style.top=board.y+"px";
+element.style.left=
+board.x+"px";
+
+element.style.top=
+board.y+"px";
 
 }
 
 });
 
-
 element.addEventListener(
 "pointerup",
 async event=>{
 
-event.stopPropagation();
-
-if(moving && moving.id===board.id){
+if(
+moving &&
+moving.id===board.id
+){
 
 const finalX=board.x;
 const finalY=board.y;
 
 moving=null;
 
+const {
+error
+}=
 await supabase
 .from("boxes")
 .update({
@@ -3323,16 +3356,30 @@ y:finalY
 .eq("id",board.id)
 .eq("owner_id",user.id);
 
+if(error){
+
+console.error(
+"Move save error:",
+error
+);
+
 }
 
+}
 
-if(resizing && resizing.id===board.id){
+if(
+resizing &&
+resizing.id===board.id
+){
 
 const finalWidth=board.w;
 const finalHeight=board.h;
 
 resizing=null;
 
+const {
+error
+}=
 await supabase
 .from("boxes")
 .update({
@@ -3342,16 +3389,22 @@ height:finalHeight
 .eq("id",board.id)
 .eq("owner_id",user.id);
 
+if(error){
+
+console.error(
+"Resize save error:",
+error
+);
+
+}
+
 }
 
 });
 
-
 element.addEventListener(
 "pointercancel",
-event=>{
-
-event.stopPropagation();
+()=>{
 
 moving=null;
 resizing=null;
@@ -3360,6 +3413,11 @@ resizing=null;
 
 }
 
+world.appendChild(element);
+
+});
+
+}
 
 /* =========================================================
 DESKTOP PAN
