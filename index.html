@@ -1,3 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+>
+
+<title>Spaceboards</title>
+
+<style>
+
+*{
+box-sizing:border-box;
+}
+
+html,
+body{
+margin:0;
+width:100%;
+height:100%;
+font-family:Arial,Helvetica,sans-serif;
+overflow:hidden;
+background:#0b0b0d;
+color:#e8e8e8;
+}
+
+button,
+input{
+font-family:inherit;
+}
+
+button{
+cursor:pointer;
+border:0;
+}
+
+.hidden{
+display:none!important;
+}
+
+/* AUTH */
+
+#authScreen{
+position:fixed;
+inset:0;
+display:flex;
+align-items:center;
+justify-content:center;
+background:#0b0b0d;
+z-index:10000;
+}
+
+.auth-card{
+width:min(420px,calc(100% - 30px));
+background:#161618;
+border:1px solid #29292d;
+border-radius:18px;
+padding:32px;
+box-shadow:0 15px 50px rgba(0,0,0,.65);
+}
+
+.auth-card h1{
+margin:0 0 8px;
+font-size:30px;
+color:#f5f5f5;
+}
+
+.auth-description{
+margin:0 0 24px;
+color:#999;
+font-size:15px;
+}
+
+.auth-card input{
+display:block;
+width:100%;
+height:46px;
+margin-bottom:12px;
+padding:0 14px;
+border:1px solid #343438;
+border-radius:9px;
+font-size:15px;
+outline:none;
+background:#0f0f11;
+color:#eee;
+}
+
+.auth-card input::placeholder{
+color:#666;
+}
+
+.auth-card input:focus{
+border-color:#777;
+}
+
+.auth-buttons{
+display:flex;
+gap:10px;
+margin-top:8px;
+}
+
+.auth-buttons button{
+flex:1;
+height:46px;
+border-radius:9px;
+font-weight:600;
+}
+
+#loginButton{
+background:#eeeeee;
+color:#111;
+}
+
+#loginButton:hover{
+background:#d5d5d5;
+}
+
+#signupButton{
+background:#29292d;
+color:#eee;
+}
+
+#signupButton:hover{
+background:#38383d;
+}
+
+.auth-error{
+min-height:20px;
+margin-top:14px;
+font-size:13px;
+color:#ff6666;
+}
+
+/* TOP BAR */
+
+#app{
+position:fixed;
+inset:0;
+display:flex;
+flex-direction:column;
+}
+
+#topbar{
+height:64px;
+background:#111113;
+border-bottom:1px solid #29292d;
+display:flex;
+align-items:center;
+gap:10px;
+padding:0 14px;
+z-index:500;
+flex-shrink:0;
+}
+
+.logo{
+font-size:21px;
+font-weight:800;
+margin-right:8px;
+white-space:nowrap;
+color:#f2f2f2;
+}
+
+#searchInput{
+height:40px;
+width:240px;
+max-width:30vw;
+border:1px solid #36363b;
+border-radius:9px;
+padding:0 13px;
+outline:none;
+background:#1a1a1d;
+color:#eee;
+}
+
+#searchInput::placeholder{
+color:#666;
+}
+
+#searchInput:focus{
+border-color:#777;
+}
+
+.top-button{
+height:40px;
+padding:0 14px;
+border-radius:9px;
+background:#29292d;
+color:#ddd;
+font-weight:600;
+white-space:nowrap;
+}
+
+.top-button:hover{
+background:#39393e;
+}
+
+#newBoxButton{
+background:#eeeeee;
+color:#111;
+}
+
+#newBoxButton:hover{
+background:#d5d5d5;
+}
+
+.spacer{
+flex:1;
+}
+
+#profileName{
+font-size:14px;
+color:#aaa;
+max-width:180px;
+overflow:hidden;
+text-overflow:ellipsis;
+white-space:nowrap;
+}
+
+/* WORKSPACE */
+
+#workspace{
+position:relative;
+flex:1;
+overflow:hidden;
+touch-action:none;
+background-color:#0b0b0d;
+background-image:
+radial-gradient(#29292d 1px,transparent 1px);
+background-size:24px 24px;
+}
+
+#world{
+position:absolute;
+left:0;
+top:0;
+width:1px;
+height:1px;
+transform-origin:0 0;
+}
+
+/* BOARDS */
+
+.board{
+position:absolute;
+background:#171719;
+border:1px solid #343438;
+border-radius:14px;
+box-shadow:0 8px 30px rgba(0,0,0,.55);
+overflow:visible;
+user-select:none;
+touch-action:none;
+}
+
+.board.selected{
+border:2px solid #aaa;
+}
+
+.board-title{
+position:absolute;
+left:0;
+top:-38px;
+font-size:16px;
+font-weight:700;
+white-space:nowrap;
+max-width:350px;
+overflow:hidden;
+text-overflow:ellipsis;
+color:#ddd;
+}
+
+.board-actions{
+position:absolute;
+right:8px;
+top:8px;
+z-index:20;
+}
+
+.trash-button,
+.item-trash{
+width:30px;
+height:30px;
+border-radius:7px;
+background:#29292d;
+color:#ddd;
+font-size:14px;
+}
+
+.trash-button:hover,
+.item-trash:hover{
+background:#492929;
+color:#ff7777;
+}
+
+.board-inner{
+position:absolute;
+inset:14px;
+overflow:auto;
+padding-top:2px;
+}
+
+.add-url{
+width:100%;
+height:38px;
+border-radius:8px;
+background:#e8e8e8;
+color:#111;
+font-weight:600;
+margin-bottom:10px;
+}
+
+.add-url:hover{
+background:#ccc;
+}
+
+/* ITEMS */
+
+.item{
+position:relative;
+display:flex;
+align-items:center;
+gap:10px;
+min-height:58px;
+padding:8px 42px 8px 9px;
+margin-bottom:8px;
+border:1px solid #343438;
+border-radius:9px;
+background:#202023;
+color:#eee;
+cursor:pointer;
+}
+
+.item:hover{
+background:#2a2a2e;
+}
+
+.item img{
+width:42px;
+height:42px;
+object-fit:cover;
+border-radius:7px;
+flex-shrink:0;
+}
+
+.item-content{
+min-width:0;
+flex:1;
+}
+
+.item-nickname{
+font-size:11px;
+color:#888;
+margin-bottom:2px;
+}
+
+.item-title{
+font-size:14px;
+font-weight:600;
+overflow:hidden;
+text-overflow:ellipsis;
+white-space:nowrap;
+color:#eee;
+}
+
+.item-visibility{
+position:absolute;
+right:8px;
+top:7px;
+font-size:9px;
+color:#888;
+}
+
+.item-trash{
+position:absolute;
+right:7px;
+bottom:7px;
+width:25px;
+height:25px;
+font-size:11px;
+}
+
+/* RESIZE */
+
+.resize{
+position:absolute;
+right:0;
+bottom:0;
+width:22px;
+height:22px;
+cursor:nwse-resize;
+touch-action:none;
+}
+
+.resize::after{
+content:"";
+position:absolute;
+right:5px;
+bottom:5px;
+width:10px;
+height:10px;
+border-right:2px solid #777;
+border-bottom:2px solid #777;
+}
+
+/* FRIENDS */
+
+#friendsPanel{
+position:absolute;
+right:14px;
+top:78px;
+width:260px;
+max-height:calc(100% - 92px);
+background:#171719;
+border:1px solid #343438;
+border-radius:12px;
+box-shadow:0 10px 35px rgba(0,0,0,.6);
+z-index:400;
+overflow:hidden;
+}
+
+.friends-header{
+padding:14px;
+font-weight:700;
+border-bottom:1px solid #303035;
+display:flex;
+align-items:center;
+justify-content:space-between;
+color:#eee;
+}
+
+#closeFriendsButton{
+width:30px;
+height:30px;
+border-radius:7px;
+background:#29292d;
+color:#ddd;
+font-size:20px;
+line-height:30px;
+text-align:center;
+padding:0;
+}
+
+#closeFriendsButton:hover{
+background:#3a3a3f;
+}
+
+#addFriendArea{
+padding:10px;
+border-bottom:1px solid #303035;
+}
+
+#addFriendInput{
+width:100%;
+height:38px;
+border:1px solid #35353a;
+border-radius:8px;
+padding:0 10px;
+margin-bottom:7px;
+background:#0f0f11;
+color:#eee;
+outline:none;
+}
+
+#addFriendInput::placeholder{
+color:#666;
+}
+
+#addFriendButton{
+width:100%;
+height:36px;
+border-radius:8px;
+background:#e8e8e8;
+color:#111;
+font-weight:600;
+}
+
+#addFriendButton:hover{
+background:#ccc;
+}
+
+#friendsList{
+padding:8px;
+max-height:180px;
+overflow:auto;
+}
+
+.friend{
+padding:9px;
+border-radius:7px;
+font-size:14px;
+color:#ddd;
+}
+
+.friend:hover{
+background:#29292d;
+}
+
+/* REQUESTS */
+
+#requestsPanel{
+display:none;
+position:absolute;
+right:14px;
+top:78px;
+width:300px;
+max-height:calc(100% - 92px);
+overflow:auto;
+background:#171719;
+border:1px solid #343438;
+border-radius:12px;
+box-shadow:0 10px 35px rgba(0,0,0,.6);
+z-index:450;
+}
+
+.requests-header{
+padding:14px;
+font-weight:700;
+border-bottom:1px solid #303035;
+display:flex;
+align-items:center;
+justify-content:space-between;
+color:#eee;
+}
+
+#closeRequestsButton{
+width:30px;
+height:30px;
+border-radius:7px;
+background:#29292d;
+color:#ddd;
+font-size:20px;
+line-height:30px;
+text-align:center;
+padding:0;
+}
+
+#requestsList{
+padding:10px;
+}
+
+.request{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:10px;
+padding:10px 0;
+border-bottom:1px solid #303035;
+}
+
+.request-nickname{
+font-weight:600;
+font-size:14px;
+overflow:hidden;
+text-overflow:ellipsis;
+color:#ddd;
+}
+
+.request-actions{
+display:flex;
+gap:5px;
+}
+
+.request-actions button{
+padding:6px 8px;
+border-radius:6px;
+font-size:12px;
+}
+
+.request-actions button[data-action="accept"]{
+background:#e8e8e8;
+color:#111;
+}
+
+.request-actions button[data-action="decline"]{
+background:#29292d;
+color:#ddd;
+}
+
+/* MODAL */
+
+#modalBackground{
+position:fixed;
+inset:0;
+display:none;
+align-items:center;
+justify-content:center;
+background:rgba(0,0,0,.78);
+z-index:9000;
+}
+
+#modal{
+width:min(430px,calc(100% - 30px));
+background:#171719;
+border:1px solid #343438;
+border-radius:15px;
+padding:24px;
+box-shadow:0 20px 60px rgba(0,0,0,.7);
+}
+
+#modal h2{
+margin:0 0 18px;
+color:#eee;
+}
+
+#modal input{
+width:100%;
+height:44px;
+margin-bottom:10px;
+padding:0 12px;
+border:1px solid #35353a;
+border-radius:8px;
+outline:none;
+background:#0f0f11;
+color:#eee;
+}
+
+#modal p{
+font-size:14px;
+color:#999;
+}
+
+.choice{
+display:flex;
+gap:8px;
+margin-bottom:15px;
+}
+
+.choice button{
+flex:1;
+height:40px;
+border-radius:8px;
+background:#e8e8e8;
+color:#111;
+font-weight:600;
+}
+
+.modal-actions{
+display:flex;
+justify-content:flex-end;
+gap:8px;
+margin-top:16px;
+}
+
+.modal-actions button{
+height:38px;
+padding:0 14px;
+border-radius:8px;
+background:#29292d;
+color:#ddd;
+font-weight:600;
+}
+
+.modal-actions button:last-child{
+background:#e8e8e8;
+color:#111;
+}
+
+/* CONTEXT MENU */
+
+#contextMenu{
+display:none;
+position:fixed;
+width:150px;
+background:#171719;
+border:1px solid #343438;
+border-radius:9px;
+box-shadow:0 10px 30px rgba(0,0,0,.6);
+overflow:hidden;
+z-index:9500;
+}
+
+.context-option{
+width:100%;
+height:42px;
+text-align:left;
+padding:0 13px;
+background:#171719;
+color:#ddd;
+}
+
+.context-option:hover{
+background:#29292d;
+}
+
+/* SCROLLBARS */
+
+*{
+scrollbar-width:thin;
+scrollbar-color:#444 #171719;
+}
+
+::-webkit-scrollbar{
+width:8px;
+height:8px;
+}
+
+::-webkit-scrollbar-track{
+background:#171719;
+}
+
+::-webkit-scrollbar-thumb{
+background:#444;
+border-radius:10px;
+}
+
+/* MOBILE */
+
+@media(max-width:700px){
+
+#topbar{
+height:auto;
+min-height:60px;
+padding:10px;
+flex-wrap:wrap;
+}
+
+.logo{
+width:100%;
+}
+
+#searchInput{
+max-width:none;
+width:100%;
+order:5;
+}
+
+#profileName{
+display:none;
+}
+
+.top-button{
+padding:0 10px;
+}
+
+#friendsPanel,
+#requestsPanel{
+top:120px;
+right:10px;
+width:calc(100% - 20px);
+}
+
+.board-title{
+font-size:14px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="authScreen">
+
+<div class="auth-card">
+
+<h1>Spaceboards</h1>
+
+<p id="authDescription" class="auth-description">
+Log in to Spaceboards.
+</p>
+
+<input
+id="authEmail"
+type="email"
+placeholder="Email"
+autocomplete="email"
+>
+
+<input
+id="authNickname"
+type="text"
+placeholder="Nickname"
+autocomplete="nickname"
+>
+
+<input
+id="authPassword"
+type="password"
+placeholder="Password"
+autocomplete="current-password"
+>
+
+<div class="auth-buttons">
+
+<button id="loginButton">
+Log in
+</button>
+
+<button id="signupButton">
+Create account
+</button>
+
+</div>
+
+<div id="authError" class="auth-error"></div>
+
+</div>
+
+</div>
+
+<div id="app">
+
+<div id="topbar">
+
+<div class="logo">Spaceboards</div>
+
+<input
+id="searchInput"
+type="text"
+placeholder="Search..."
+>
+
+<button id="newBoxButton" class="top-button">New</button>
+
+<button id="newUrlButton" class="top-button">Add URL</button>
+
+<button id="friendRequestsButton" class="top-button">
+Requests
+</button>
+
+<button id="shareButton" class="top-button">
+Share
+</button>
+
+<div class="spacer"></div>
+
+<div id="profileName"></div>
+
+<button id="logoutButton" class="top-button">
+Log out
+</button>
+
+</div>
+
+<div id="workspace">
+
+<div id="world"></div>
+
+<div id="friendsPanel">
+
+<div class="friends-header">
+<span>Friends</span>
+<button id="closeFriendsButton" type="button">×</button>
+</div>
+
+<div id="addFriendArea">
+
+<input
+id="addFriendInput"
+type="email"
+placeholder="Friend's email"
+>
+
+<button id="addFriendButton">
+Add friend
+</button>
+
+</div>
+
+<div id="friendsList"></div>
+
+</div>
+
+<div id="requestsPanel">
+
+<div class="requests-header">
+
+<span>Friend requests</span>
+
+<button id="closeRequestsButton" type="button">
+×
+</button>
+
+</div>
+
+<div id="requestsList"></div>
+
+</div>
+
+</div>
+
+</div>
+
+<div id="contextMenu">
+
+<button id="renameOption" class="context-option">
+Rename
+</button>
+
+<button id="deleteOption" class="context-option">
+Delete
+</button>
+
+</div>
+
+<div id="modalBackground">
+
+<div id="modal"></div>
+
+</div>
+
 <script type="module">
 
 import {
@@ -60,9 +964,8 @@ let pinchStartPanX=0;
 let pinchStartPanY=0;
 
 let authLoading=false;
-
-/* Prevent multiple simultaneous login/session loads */
-let loginPromise=null;
+let appInitialized=false;
+let loginRequestId=0;
 
 /* =========================================================
 HELPERS
@@ -98,6 +1001,27 @@ window.closeModal=closeModal;
 function showError(message){
 
 alert(message);
+
+}
+
+function setAuthError(message){
+
+document.getElementById("authError").textContent=
+message||"";
+
+}
+
+function showAuthScreen(){
+
+document.getElementById("authScreen").style.display=
+"flex";
+
+}
+
+function hideAuthScreen(){
+
+document.getElementById("authScreen").style.display=
+"none";
 
 }
 
@@ -143,36 +1067,14 @@ loginButton.style.display="inline-block";
 signupButton.textContent=
 "Create account";
 
-/*
-Nickname is not required for login.
-Hide it while logging in.
-*/
-nickname.style.display="none";
+nickname.style.display="block";
 
 }
 
 }
 
 /* =========================================================
-SHOW / HIDE AUTH SCREEN
-========================================================= */
-
-function showAuthScreen(){
-
-document.getElementById("authScreen")
-.style.display="flex";
-
-}
-
-function hideAuthScreen(){
-
-document.getElementById("authScreen")
-.style.display="none";
-
-}
-
-/* =========================================================
-PROFILE DISPLAY
+PROFILE
 ========================================================= */
 
 function updateProfileDisplay(){
@@ -191,6 +1093,7 @@ user?.email||
 
 /* =========================================================
 LOGIN
+FIXED AUTHENTICATION FLOW
 ========================================================= */
 
 document.getElementById("loginButton")
@@ -212,21 +1115,38 @@ const password=
 document.getElementById("authPassword")
 .value;
 
-const errorBox=
-document.getElementById("authError");
+setAuthError("");
 
-errorBox.textContent="";
+if(!email){
 
-if(!email||!password){
-
-errorBox.textContent=
-"Enter your email and password.";
+setAuthError(
+"Enter your email."
+);
 
 authLoading=false;
-
 return;
 
 }
+
+if(!password){
+
+setAuthError(
+"Enter your password."
+);
+
+authLoading=false;
+return;
+
+}
+
+const button=
+document.getElementById("loginButton");
+
+const oldText=
+button.textContent;
+
+button.disabled=true;
+button.textContent="Logging in...";
 
 try{
 
@@ -244,10 +1164,9 @@ password:password
 
 if(error){
 
-errorBox.textContent=
-error.message;
-
-authLoading=false;
+setAuthError(
+error.message
+);
 
 return;
 
@@ -255,10 +1174,9 @@ return;
 
 if(!data?.user){
 
-errorBox.textContent=
-"Login failed. No user was returned.";
-
-authLoading=false;
+setAuthError(
+"Login failed. No user was returned."
+);
 
 return;
 
@@ -266,20 +1184,19 @@ return;
 
 /*
 IMPORTANT:
-Use the user returned directly by Supabase.
-Do not wait for onAuthStateChange.
+Do not wait for finishLogin here.
+
+Supabase's onAuthStateChange callback will
+handle the authenticated session.
+
+This prevents duplicate session loading.
 */
+
 user=data.user;
 
-/*
-Hide the login screen immediately after successful
-authentication. Database loading must not prevent login.
-*/
-hideAuthScreen();
+setAuthError("");
 
-await finishLogin();
-
-authLoading=false;
+await finishLogin(data.user);
 
 }catch(error){
 
@@ -288,13 +1205,17 @@ console.error(
 error
 );
 
-errorBox.textContent=
+setAuthError(
 error?.message||
-"An unexpected error occurred while logging in.";
+"Unable to log in. Please try again."
+);
 
-showAuthScreen();
+}finally{
 
 authLoading=false;
+
+button.disabled=false;
+button.textContent=oldText;
 
 }
 
@@ -302,29 +1223,30 @@ authLoading=false;
 
 /* =========================================================
 FINISH LOGIN
+FIXED TO NEVER BLOCK AUTH SCREEN
 ========================================================= */
 
-async function finishLogin(){
+async function finishLogin(authUser=null){
 
-if(!user)return;
+const loggedUser=
+authUser||
+user;
 
-/*
-If another finishLogin() is already running,
-wait for that one instead of running everything twice.
-*/
-if(loginPromise){
+if(!loggedUser)return;
 
-return loginPromise;
+user=loggedUser;
 
-}
-
-loginPromise=(async()=>{
+const requestId=
+++loginRequestId;
 
 try{
 
 /*
-Do not let a database/RLS problem make authentication
-look like it failed.
+The authentication itself is already successful.
+
+Load profile/data separately. If one database table
+has an RLS problem, the user is still allowed into
+the application instead of being stuck on login.
 */
 
 try{
@@ -334,11 +1256,13 @@ await loadCurrentProfile();
 }catch(error){
 
 console.error(
-"Profile loading error:",
+"Profile loading failed:",
 error
 );
 
 }
+
+if(requestId!==loginRequestId)return;
 
 try{
 
@@ -347,11 +1271,13 @@ await loadProfiles();
 }catch(error){
 
 console.error(
-"Profiles loading error:",
+"Profiles loading failed:",
 error
 );
 
 }
+
+if(requestId!==loginRequestId)return;
 
 try{
 
@@ -360,11 +1286,13 @@ await loadFriends();
 }catch(error){
 
 console.error(
-"Friends loading error:",
+"Friends loading failed:",
 error
 );
 
 }
+
+if(requestId!==loginRequestId)return;
 
 try{
 
@@ -373,11 +1301,13 @@ await loadBoards();
 }catch(error){
 
 console.error(
-"Boards loading error:",
+"Boards loading failed:",
 error
 );
 
 }
+
+if(requestId!==loginRequestId)return;
 
 try{
 
@@ -386,11 +1316,13 @@ await loadFriendRequests();
 }catch(error){
 
 console.error(
-"Friend requests loading error:",
+"Friend requests loading failed:",
 error
 );
 
 }
+
+if(requestId!==loginRequestId)return;
 
 updateProfileDisplay();
 
@@ -403,29 +1335,24 @@ renderFriends();
 }catch(error){
 
 console.error(
-"Finish login error:",
+"finishLogin error:",
 error
 );
 
 /*
-The user is still authenticated even if some
-database operation failed.
+The account is authenticated even if loading one
+of the application tables fails.
 */
+
+updateProfileDisplay();
+
 hideAuthScreen();
 
 render();
 
 renderFriends();
 
-}finally{
-
-loginPromise=null;
-
 }
-
-})();
-
-return loginPromise;
 
 }
 
@@ -442,11 +1369,9 @@ if(!signupMode){
 
 signupMode=true;
 
-updateAuthUI();
+setAuthError("");
 
-document
-.getElementById("authNickname")
-.focus();
+updateAuthUI();
 
 return;
 
@@ -471,19 +1396,24 @@ const password=
 document.getElementById("authPassword")
 .value;
 
-const errorBox=
-document.getElementById("authError");
+setAuthError("");
 
-errorBox.textContent="";
+const button=
+document.getElementById("signupButton");
+
+const oldText=
+button.textContent;
+
+button.disabled=true;
+button.textContent="Creating...";
 
 try{
 
 if(!email||!nickname||!password){
 
-errorBox.textContent=
-"Enter your email, nickname and password.";
-
-authLoading=false;
+setAuthError(
+"Enter your email, nickname and password."
+);
 
 return;
 
@@ -491,10 +1421,9 @@ return;
 
 if(nickname.length<2){
 
-errorBox.textContent=
-"Nickname must be at least 2 characters.";
-
-authLoading=false;
+setAuthError(
+"Nickname must be at least 2 characters."
+);
 
 return;
 
@@ -502,10 +1431,9 @@ return;
 
 if(nickname.length>30){
 
-errorBox.textContent=
-"Nickname must be 30 characters or less.";
-
-authLoading=false;
+setAuthError(
+"Nickname must be 30 characters or less."
+);
 
 return;
 
@@ -513,18 +1441,19 @@ return;
 
 if(password.length<6){
 
-errorBox.textContent=
-"Password must be at least 6 characters.";
-
-authLoading=false;
+setAuthError(
+"Password must be at least 6 characters."
+);
 
 return;
 
 }
 
 /*
-Check nickname.
+Do not let a failure in the profiles table prevent
+Supabase from creating the authentication account.
 */
+
 const {
 data:existingNickname,
 error:nicknameError
@@ -538,8 +1467,8 @@ await supabase
 
 if(nicknameError){
 
-console.error(
-"Nickname check error:",
+console.warn(
+"Nickname check failed:",
 nicknameError
 );
 
@@ -547,18 +1476,14 @@ nicknameError
 
 if(existingNickname){
 
-errorBox.textContent=
-"That nickname is already taken.";
-
-authLoading=false;
+setAuthError(
+"That nickname is already taken."
+);
 
 return;
 
 }
 
-/*
-Create Supabase Auth account.
-*/
 const {
 data,
 error
@@ -573,10 +1498,9 @@ password:password
 
 if(error){
 
-errorBox.textContent=
-error.message;
-
-authLoading=false;
+setAuthError(
+error.message
+);
 
 return;
 
@@ -584,18 +1508,21 @@ return;
 
 if(!data?.user){
 
-errorBox.textContent=
-"Account could not be created.";
-
-authLoading=false;
+setAuthError(
+"Account could not be created."
+);
 
 return;
 
 }
 
 /*
-Create profile.
+Only create the profile when Supabase returned a user.
+If email confirmation is enabled, there may be no session yet.
 */
+
+try{
+
 const {
 data:profile,
 error:profileError
@@ -614,60 +1541,48 @@ onConflict:"id"
 
 if(profileError){
 
-console.error(
-"Profile creation error:",
+console.warn(
+"Profile creation warning:",
 profileError
 );
 
-errorBox.textContent=
-"Account was created, but the profile could not be saved: "+
-profileError.message;
-
-authLoading=false;
-
-return;
-
-}
+}else if(profile){
 
 currentProfile=profile;
 
 profilesCache.set(
-String(data.user.id),
+String(profile.id),
 profile
 );
 
-updateProfileDisplay();
+}
 
-/*
-If email confirmation is disabled, Supabase gives us
-a session immediately.
-*/
+}catch(error){
+
+console.warn(
+"Profile creation failed:",
+error
+);
+
+}
+
 if(data.session){
 
 user=data.user;
 
-hideAuthScreen();
+await finishLogin(data.user);
 
-await finishLogin();
+}else{
 
-authLoading=false;
-
-return;
-
-}
-
-/*
-If email confirmation is enabled, there is no session yet.
-*/
-errorBox.textContent=
-"Account created. Check your email to confirm your account, then log in.";
+setAuthError(
+"Account created. Check your email if email confirmation is required."
+);
 
 signupMode=false;
 
-document.getElementById("authPassword")
-.value="";
-
 updateAuthUI();
+
+}
 
 }catch(error){
 
@@ -676,13 +1591,17 @@ console.error(
 error
 );
 
-errorBox.textContent=
+setAuthError(
 error?.message||
-"An unexpected error occurred while creating the account.";
+"Unable to create the account."
+);
 
 }finally{
 
 authLoading=false;
+
+button.disabled=false;
+button.textContent=oldText;
 
 }
 
@@ -699,19 +1618,9 @@ event=>{
 
 if(event.key==="Enter"){
 
-if(signupMode){
-
 document
 .getElementById("authNickname")
 .focus();
-
-}else{
-
-document
-.getElementById("authPassword")
-.focus();
-
-}
 
 }
 
@@ -759,21 +1668,15 @@ document
 
 /* =========================================================
 AUTH STATE CHANGE
+FIXED
 ========================================================= */
-
-/*
-IMPORTANT:
-Do not make the callback itself async.
-Do not await Supabase database queries directly inside it.
-*/
 
 supabase.auth.onAuthStateChange(
 (event,session)=>{
 
 console.log(
-"Auth state:",
-event,
-session?.user?.email || "no user"
+"Supabase auth event:",
+event
 );
 
 user=
@@ -783,22 +1686,22 @@ null;
 if(user){
 
 /*
-Run after the callback has returned.
+Never await Supabase database requests directly inside
+the auth callback.
 */
+
 setTimeout(
 ()=>{
 
-finishLogin()
-.catch(error=>{
-
+finishLogin(user)
+.catch(
+error=>{
 console.error(
 "Session loading error:",
 error
 );
-
-hideAuthScreen();
-
-});
+}
+);
 
 },
 0
@@ -806,23 +1709,20 @@ hideAuthScreen();
 
 }else{
 
-loginPromise=null;
+loginRequestId++;
 
-document.getElementById("authError")
-.textContent="";
-
-showAuthScreen();
+currentProfile=null;
 
 boards=[];
 friends=[];
 
 selectedBoardId=null;
 
-currentProfile=null;
-
 profilesCache.clear();
 
 updateProfileDisplay();
+
+showAuthScreen();
 
 render();
 
@@ -834,16 +1734,16 @@ renderFriends();
 
 /* =========================================================
 INITIAL SESSION
+FIXED
 ========================================================= */
 
 async function initializeApp(){
 
-try{
+if(appInitialized)return;
 
-/*
-Always start by showing the authentication screen.
-*/
-showAuthScreen();
+appInitialized=true;
+
+try{
 
 const {
 data,
@@ -858,6 +1758,8 @@ console.error(
 error
 );
 
+user=null;
+
 showAuthScreen();
 
 return;
@@ -866,15 +1768,14 @@ return;
 
 if(data?.session?.user){
 
+/*
+Do not rely on onAuthStateChange to initialize the
+application. Explicitly initialize the current session.
+*/
+
 user=data.session.user;
 
-/*
-A valid existing session means the user is already
-logged in. Hide auth immediately.
-*/
-hideAuthScreen();
-
-await finishLogin();
+await finishLogin(user);
 
 }else{
 
@@ -892,6 +1793,8 @@ console.error(
 "Initialization error:",
 error
 );
+
+user=null;
 
 showAuthScreen();
 
@@ -919,7 +1822,7 @@ await supabase
 
 if(error){
 
-console.error(
+console.warn(
 "Current profile error:",
 error
 );
@@ -943,10 +1846,6 @@ return;
 
 }
 
-/*
-If the user exists in Auth but has no profile,
-create a fallback profile.
-*/
 const fallbackNickname=
 user.email?.split("@")[0]||
 "User";
@@ -977,13 +1876,6 @@ newProfile
 );
 
 updateProfileDisplay();
-
-}else if(newError){
-
-console.error(
-"Could not create fallback profile:",
-newError
-);
 
 }
 
@@ -1020,7 +1912,7 @@ await supabase
 
 if(error){
 
-console.error(
+console.warn(
 "Could not load profiles:",
 error
 );
@@ -1118,7 +2010,7 @@ await supabase
 
 if(error){
 
-console.error(error);
+console.warn(error);
 
 return;
 
@@ -1160,7 +2052,7 @@ await supabase
 
 if(profilesError){
 
-console.error(profilesError);
+console.warn(profilesError);
 
 return;
 
@@ -1241,7 +2133,7 @@ return;
 }
 
 if(
-user.email &&
+user?.email &&
 email===user.email.toLowerCase()
 ){
 
@@ -1475,7 +2367,7 @@ const sender=
 (requestProfiles||[])
 .find(
 profile=>
-String(profile.id) ===
+String(profile.id)===
 String(request.sender_id)
 );
 
@@ -1629,7 +2521,7 @@ owner_nickname
 
 if(error){
 
-console.error(
+console.warn(
 "Load boards error:",
 error
 );
@@ -2811,7 +3703,7 @@ panning=null;
 });
 
 /* =========================================================
-TOUCH PAN + PINCH
+TOUCH
 ========================================================= */
 
 function distance(a,b){
@@ -3043,7 +3935,7 @@ endTouch
 );
 
 /* =========================================================
-MOUSE WHEEL ZOOM
+WHEEL ZOOM
 ========================================================= */
 
 workspace.addEventListener(
@@ -3104,7 +3996,7 @@ passive:false
 );
 
 /* =========================================================
-CONTEXT MENU CLOSE
+CONTEXT MENU
 ========================================================= */
 
 document.addEventListener(
@@ -3433,3 +4325,6 @@ START
 initializeApp();
 
 </script>
+
+</body>
+</html>
