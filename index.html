@@ -2453,6 +2453,10 @@ function openURLModal(board){
       placeholder="Image URL (optional)"
     >
 
+    <p id="previewStatus" style="display:none;color:#888;font-size:13px;margin-top:-4px;">
+      Fetching preview...
+    </p>
+
     <p>
       Who should be able to see this URL?
     </p>
@@ -2503,7 +2507,53 @@ function openURLModal(board){
     .onclick =
       ()=>saveURL(board,"private");
 
+  document
+    .getElementById("urlAddress")
+    .addEventListener("blur", async ()=>{
+
+      const titleInput =
+        document.getElementById("urlTitle");
+
+      const imageInput =
+        document.getElementById("urlImage");
+
+      const statusText =
+        document.getElementById("previewStatus");
+
+      let url =
+        document.getElementById("urlAddress").value.trim();
+
+      if(!url)return;
+
+      if(!/^https?:\/\//i.test(url)){
+        url = "https://" + url;
+      }
+
+      if(titleInput.value || imageInput.value)return;
+
+      statusText.style.display = "block";
+
+      const preview =
+        await fetchURLPreview(url);
+
+      statusText.style.display = "none";
+
+      if(preview){
+
+        if(!titleInput.value && preview.title){
+          titleInput.value = preview.title;
+        }
+
+        if(!imageInput.value && preview.image){
+          imageInput.value = preview.image;
+        }
+
+      }
+
+    });
+
 }
+
 
 /* =========================================================
 SAVE URL
