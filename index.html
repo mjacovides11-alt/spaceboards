@@ -334,6 +334,16 @@ BOARDS
   background:#ccc;
 }
 
+.empty-state{
+  padding:24px 10px;
+  text-align:center;
+  font-size:13px;
+  color:#777;
+  border:1px dashed #343438;
+  border-radius:10px;
+}
+
+
 /* =========================================================
 ITEMS
 ========================================================= */
@@ -3192,7 +3202,7 @@ function render(){
 
       <div class="board-inner">
 
-        ${
+                ${
           owner
             ? `
               <button
@@ -3207,9 +3217,24 @@ function render(){
         }
 
         ${
+          board.items.length === 0
+            ? `
+              <div class="empty-state">
+                ${
+                  owner
+                    ? "No links yet — tap + Add URL to get started"
+                    : "No links here yet"
+                }
+              </div>
+            `
+            : ""
+        }
+
+        ${
           board.items
             .map(item=>{
 
+        
               const itemNickname =
                 item.owner_nickname ||
                 boardNickname ||
