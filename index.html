@@ -655,27 +655,28 @@ overflow:hidden;
 }
 
 .friends-header{
-
-padding:14px;
-
-font-weight:700;
-
-border-bottom:1px solid #eee;
-
+    padding:14px;
+    font-weight:700;
+    border-bottom:1px solid #eee;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
 }
 
 #closeFriendsButton{
-float:right;
-width:26px;
-height:26px;
-border-radius:6px;
-background:#eee;
-font-size:18px;
-line-height:26px;
+    width:30px;
+    height:30px;
+    border-radius:7px;
+    background:#eee;
+    color:#111;
+    font-size:20px;
+    line-height:30px;
+    text-align:center;
+    padding:0;
 }
 
 #closeFriendsButton:hover{
-background:#ddd;
+    background:#ddd;
 }
 
 #addFriendArea{
@@ -1228,13 +1229,11 @@ Log out
 <div id="world"></div>
 
 
-<div
-id="friendsPanel"
->
+<div id="friendsPanel">
 
 <div class="friends-header">
-Friends
-<button id="closeFriendsButton">×</button>
+    <span>Friends</span>
+    <button id="closeFriendsButton" type="button">×</button>
 </div>
 
 <div id="addFriendArea">
@@ -2191,13 +2190,6 @@ await supabase.auth.signOut();
 FRIENDS
 ========================================================= */
 
-document.getElementById("closeFriendsButton")
-.addEventListener(
-"click",
-()=>{
-    document.getElementById("friendsPanel")
-    .style.display="none";
-});
 
 async function loadFriends(){
 
@@ -4859,6 +4851,10 @@ closeModal();
 
 });
 
+document.getElementById("closeFriendsButton")
+.addEventListener("click",()=>{
+    document.getElementById("friendsPanel").style.display="none";
+});
 
 /* =========================================================
 INITIAL AUTH UI
