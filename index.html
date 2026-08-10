@@ -2456,16 +2456,14 @@ async function fetchURLPreview(url){
 
     };
 
-  }catch(error){
+}catch(error){
 
-    console.error(
-      "Preview fetch failed:",
-      error
-    );
+    alert("Preview fetch failed: " + error.message);
 
     return null;
 
   }
+
 
 }
 
