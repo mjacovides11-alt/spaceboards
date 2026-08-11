@@ -1736,8 +1736,106 @@ document
   );
 
 /* =========================================================
+FORGOT PASSWORD
+========================================================= */
+
+document
+  .getElementById("forgotPasswordButton")
+  .addEventListener(
+    "click",
+    ()=>{
+
+      const currentEmail =
+        document
+          .getElementById("authEmail")
+          .value
+          .trim();
+
+      openModal(`
+
+        <h2>Reset password</h2>
+
+        <p>
+          Enter your email and we'll send you a reset link.
+        </p>
+
+        <input
+          id="resetEmailInput"
+          type="email"
+          placeholder="Email"
+          value="${escapeHTML(currentEmail)}"
+        >
+
+        <div class="modal-actions">
+
+          <button id="resetCancel" type="button">
+            Cancel
+          </button>
+
+          <button id="resetSend" type="button">
+            Send link
+          </button>
+
+        </div>
+
+      `);
+
+      document
+        .getElementById("resetCancel")
+        .onclick = closeModal;
+
+      document
+        .getElementById("resetSend")
+        .onclick = async()=>{
+
+          const email =
+            document
+              .getElementById("resetEmailInput")
+              .value
+              .trim()
+              .toLowerCase();
+
+          if(!email){
+
+            showError("Enter your email.");
+
+            return;
+
+          }
+
+          const {
+            error
+          } =
+            await supabase.auth.resetPasswordForEmail(
+              email,
+              {
+                redirectTo: window.location.origin
+              }
+            );
+
+          if(error){
+
+            showError(error.message);
+
+            return;
+
+          }
+
+          closeModal();
+
+          alert(
+            "If an account exists for that email, a reset link has been sent."
+          );
+
+        };
+
+    }
+  );
+
+/* =========================================================
 AUTH KEYBOARD
 ========================================================= */
+
 
 document
   .getElementById("authEmail")
