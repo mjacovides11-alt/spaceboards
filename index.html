@@ -2156,16 +2156,70 @@ function renderFriends(){
 
     element.className = "friend";
 
-    element.textContent =
-      friend.nickname ||
-      friend.email ||
-      "User";
+    element.style.display = "flex";
+    element.style.alignItems = "center";
+    element.style.justifyContent = "space-between";
+    element.style.gap = "8px";
+
+    element.innerHTML = `
+      <span>${escapeHTML(
+        friend.nickname ||
+        friend.email ||
+        "User"
+      )}</span>
+      <button
+        type="button"
+        class="remove-friend-button"
+        data-friend-id="${escapeHTML(friend.id)}"
+        style="width:24px;height:24px;border-radius:6px;background:#29292d;color:#ddd;font-size:12px;flex-shrink:0;"
+      >×</button>
+    `;
 
     list.appendChild(element);
 
   });
 
+  list
+    .querySelectorAll(".remove-friend-button")
+    .forEach(button=>{
+
+      button.addEventListener(
+        "click",
+        async()=>{
+
+          const friendId =
+            button.dataset.friendId;
+
+          const {
+            error
+          } =
+            await supabase
+              .from("friend_requests")
+              .delete()
+              .or(
+                `and(sender_id.eq.${user.id},receiver_id.eq.${friendId}),and(sender_id.eq.${friendId},receiver_id.eq.${user.id})`
+              );
+
+          if(error){
+
+            showError(
+              "Could not remove friend: " +
+              error.message
+            );
+
+            return;
+
+          }
+
+          await loadFriends();
+
+        }
+      );
+
+    });
+
 }
+
 
 /* =========================================================
 ADD FRIEND
