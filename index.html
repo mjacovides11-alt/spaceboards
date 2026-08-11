@@ -1903,10 +1903,77 @@ SESSION
 supabase.auth.onAuthStateChange(
   async(event,session)=>{
 
+    if(event === "PASSWORD_RECOVERY"){
+
+      openModal(`
+
+        <h2>Set new password</h2>
+
+        <input
+          id="newPasswordInput"
+          type="password"
+          placeholder="New password"
+        >
+
+        <div class="modal-actions">
+
+          <button id="newPasswordSave" type="button">
+            Save
+          </button>
+
+        </div>
+
+      `);
+
+      document
+        .getElementById("newPasswordSave")
+        .onclick = async()=>{
+
+          const newPassword =
+            document
+              .getElementById("newPasswordInput")
+              .value;
+
+          if(newPassword.length < 6){
+
+            showError(
+              "Password must be at least 6 characters."
+            );
+
+            return;
+
+          }
+
+          const {
+            error
+          } =
+            await supabase.auth.updateUser({
+              password: newPassword
+            });
+
+          if(error){
+
+            showError(error.message);
+
+            return;
+
+          }
+
+          closeModal();
+
+          alert("Password updated. You're now logged in.");
+
+        };
+
+      return;
+
+    }
+
     user =
       session?.user || null;
 
     if(user){
+
 
       document.getElementById("authScreen")
         .style.display = "none";
