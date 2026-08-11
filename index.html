@@ -972,12 +972,21 @@ APP
 
       <div id="profileName"></div>
 
-            <button
+          <button
         id="changePasswordButton"
         class="top-button"
         type="button"
       >
         Change Password
+      </button>
+
+      <button
+        id="deleteAccountButton"
+        class="top-button"
+        type="button"
+        style="background:#3a2020;color:#ff8888;"
+      >
+        Delete Account
       </button>
 
       <button
@@ -989,6 +998,7 @@ APP
       </button>
 
     </div>
+
 
 
     <div id="topbarControlsRow">
@@ -2304,6 +2314,153 @@ document
           closeModal();
 
           alert("Password changed successfully.");
+
+        };
+
+    }
+  );
+
+/* =========================================================
+DELETE ACCOUNT
+========================================================= */
+
+document
+  .getElementById("deleteAccountButton")
+  .addEventListener(
+    "click",
+    ()=>{
+
+      openModal(`
+
+        <h2>Delete account</h2>
+
+        <p>
+          This permanently deletes your account, boxes, URLs, and
+          friend connections. This cannot be undone.
+        </p>
+
+        <p>
+          Type DELETE below to confirm.
+        </p>
+
+        <input
+          id="deleteConfirmInput"
+          type="text"
+          placeholder="DELETE"
+        >
+
+        <div class="modal-actions">
+
+          <button id="deleteAccountCancel" type="button">
+            Cancel
+          </button>
+
+          <button id="deleteAccountConfirm" type="button">
+            Delete my account
+          </button>
+
+        </div>
+
+      `);
+
+      document
+        .getElementById("deleteAccountCancel")
+        .onclick = closeModal;
+
+      document
+        .getElementById("deleteAccountConfirm")
+        .onclick = async()=>{
+
+          const confirmText =
+            document
+              .getElementById("deleteConfirmInput")
+              .value
+              .trim();
+
+          if(confirmText !== "DELETE"){
+
+            showError(
+              "Type DELETE exactly to confirm."
+            );
+
+            return;
+
+          }
+
+          const confirmButton =
+            document.getElementById("deleteAccountConfirm");
+
+          confirmButton.disabled = true;
+
+          confirmButton.textContent = "Deleting...";
+
+          const {
+            data:sessionData
+          } =
+            await supabase.auth.getSession();
+
+          const accessToken =
+            sessionData?.session?.access_token;
+
+          if(!accessToken){
+
+            showError(
+              "Could not verify your session. Please log in again."
+            );
+
+            return;
+
+          }
+
+          try{
+
+            const response =
+              await fetch(
+                `${SUPABASE_URL}/functions/v1/delete-account`,
+                {
+                  method:"POST",
+                  headers:{
+                    "Authorization":`Bearer ${accessToken}`
+                  }
+                }
+              );
+
+            const result =
+              await response.json();
+
+            if(!response.ok || result.error){
+
+              showError(
+                "Could not delete account: " +
+                (result.error || "Unknown error")
+              );
+
+              confirmButton.disabled = false;
+
+              confirmButton.textContent = "Delete my account";
+
+              return;
+
+            }
+
+            closeModal();
+
+            alert("Your account has been deleted.");
+
+            await supabase.auth.signOut();
+
+          }catch(error){
+
+            showError(
+              "Could not delete account: " +
+              error.message
+            );
+
+            confirmButton.disabled = false;
+
+            confirmButton.textContent = "Delete my account";
+
+          }
 
         };
 
