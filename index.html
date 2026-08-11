@@ -1043,9 +1043,59 @@ APP
 
 </div>
 
-<!-- =========================================================
+/* =========================================================
+TOAST
+========================================================= */
+
+#toastContainer{
+  position:fixed;
+  left:50%;
+  bottom:24px;
+  transform:translateX(-50%);
+  z-index:9800;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  align-items:center;
+}
+
+.toast{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  background:#232326;
+  border:1px solid #3a3a3f;
+  border-radius:10px;
+  padding:12px 16px;
+  color:#eee;
+  font-size:14px;
+  box-shadow:0 10px 30px rgba(0,0,0,.5);
+  animation:toastIn .2s ease;
+  white-space:nowrap;
+}
+
+@keyframes toastIn{
+  from{opacity:0;transform:translateY(10px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+.toast-undo{
+  background:var(--accent);
+  color:#fff;
+  padding:6px 12px;
+  border-radius:7px;
+  font-weight:600;
+  font-size:13px;
+}
+
+.toast-undo:hover{
+  background:var(--accent-hover);
+}
+
+/* =========================================================
 CONTEXT MENU
-========================================================= -->
+========================================================= */
+
 
 <div id="contextMenu">
 
@@ -1076,6 +1126,9 @@ MODAL
   <div id="modal"></div>
 
 </div>
+
+<div id="toastContainer"></div>
+
 
 <script type="module">
 
@@ -1195,6 +1248,52 @@ function showError(message){
   alert(String(message));
 
 }
+
+function showUndoToast(message,onUndo,onCommit,duration){
+
+  duration = duration || 5000;
+
+  const container =
+    document.getElementById("toastContainer");
+
+  const toast =
+    document.createElement("div");
+
+  toast.className = "toast";
+
+  toast.innerHTML = `
+    <span>${escapeHTML(message)}</span>
+    <button type="button" class="toast-undo">Undo</button>
+  `;
+
+  container.appendChild(toast);
+
+  const timer =
+    setTimeout(
+      ()=>{
+
+        toast.remove();
+
+        onCommit();
+
+      },
+      duration
+    );
+
+  toast
+    .querySelector(".toast-undo")
+    .onclick = ()=>{
+
+      clearTimeout(timer);
+
+      toast.remove();
+
+      onUndo();
+
+    };
+
+}
+
 
 function maybeAskMobileMode(){
 
@@ -3022,51 +3121,65 @@ async function saveURL(
 DELETE URL
 ========================================================= */
 
-async function deleteURL(
+function deleteURL(
   board,
   itemId
 ){
 
-  if(
-    !confirm(
-      "Delete this URL?"
-    )
-  ){
-
-    return;
-
-  }
-
-  const {
-    error
-  } =
-    await supabase
-      .from("box_items")
-      .delete()
-      .eq("id",itemId)
-      .eq("box_id",board.id);
-
-  if(error){
-
-    showError(
-      "Could not delete URL: " +
-      error.message
-    );
-
-    return;
-
-  }
-
-  board.items =
-    board.items.filter(
+  const index =
+    board.items.findIndex(
       item =>
-        String(item.id) !==
+        String(item.id) ===
         String(itemId)
     );
 
+  if(index === -1)return;
+
+  const removedItem =
+    board.items[index];
+
+  board.items.splice(index,1);
+
   render();
 
+  showUndoToast(
+    "URL deleted",
+    ()=>{
+
+      board.items.splice(
+        index,
+        0,
+        removedItem
+      );
+
+      render();
+
+    },
+    async()=>{
+
+      const {
+        error
+      } =
+        await supabase
+          .from("box_items")
+          .delete()
+          .eq("id",itemId)
+          .eq("box_id",board.id);
+
+      if(error){
+
+        console.error(
+          "Could not delete URL:",
+          error
+        );
+
+      }
+
+    }
+  );
+
 }
+
 
 /* =========================================================
 DELETE BOX
@@ -3075,7 +3188,7 @@ console.log("CURRENT USER:", user);
 console.log("CURRENT USER ID:", user?.id);
 
 
-async function deleteBoard(board){
+function deleteBoard(board){
 
     if(!user){
         showError("You must be logged in.");
@@ -3087,43 +3200,14 @@ async function deleteBoard(board){
         return;
     }
 
-    if(!confirm("Delete this box and all of its URLs?")){
-        return;
-    }
+    const index =
+      boards.findIndex(
+        b => String(b.id) === String(board.id)
+      );
 
-    // Delete the URLs first
-    const {
-        error: itemError
-    } = await supabase
-        .from("box_items")
-        .delete()
-        .eq("box_id", board.id);
+    if(index === -1)return;
 
-    if(itemError){
-        console.error("Delete items error:", itemError);
-        showError("Could not delete the URLs: " + itemError.message);
-        return;
-    }
-
-    // Delete the box
-    const {
-        error: boxError
-    } = await supabase
-        .from("boxes")
-        .delete()
-        .eq("id", board.id)
-        .eq("owner_id", user.id);
-
-    if(boxError){
-        console.error("Delete box error:", boxError);
-        showError("Could not delete box: " + boxError.message);
-        return;
-    }
-
-    // Remove it locally
-    boards = boards.filter(
-        b => String(b.id) !== String(board.id)
-    );
+    boards.splice(index,1);
 
     if(String(selectedBoardId) === String(board.id)){
         selectedBoardId = null;
@@ -3132,7 +3216,46 @@ async function deleteBoard(board){
     contextBoardId = null;
 
     render();
+
+    showUndoToast(
+      "Box deleted",
+      ()=>{
+
+        boards.splice(index,0,board);
+
+        render();
+
+      },
+      async()=>{
+
+        const {
+            error: itemError
+        } = await supabase
+            .from("box_items")
+            .delete()
+            .eq("box_id", board.id);
+
+        if(itemError){
+            console.error("Delete items error:", itemError);
+        }
+
+        const {
+            error: boxError
+        } = await supabase
+            .from("boxes")
+            .delete()
+            .eq("id", board.id)
+            .eq("owner_id", user.id);
+
+        if(boxError){
+            console.error("Delete box error:", boxError);
+        }
+
+      }
+    );
+
 }
+
 
 /* =========================================================
 UPDATE BOARD ELEMENT
