@@ -2221,8 +2221,90 @@ function getNickname(ownerId){
 }
 
 /* =========================================================
+CHANGE PASSWORD
+========================================================= */
+
+document
+  .getElementById("changePasswordButton")
+  .addEventListener(
+    "click",
+    ()=>{
+
+      openModal(`
+
+        <h2>Change password</h2>
+
+        <input
+          id="changePasswordInput"
+          type="password"
+          placeholder="New password"
+        >
+
+        <div class="modal-actions">
+
+          <button id="changePasswordCancel" type="button">
+            Cancel
+          </button>
+
+          <button id="changePasswordSave" type="button">
+            Save
+          </button>
+
+        </div>
+
+      `);
+
+      document
+        .getElementById("changePasswordCancel")
+        .onclick = closeModal;
+
+      document
+        .getElementById("changePasswordSave")
+        .onclick = async()=>{
+
+          const newPassword =
+            document
+              .getElementById("changePasswordInput")
+              .value;
+
+          if(newPassword.length < 6){
+
+            showError(
+              "Password must be at least 6 characters."
+            );
+
+            return;
+
+          }
+
+          const {
+            error
+          } =
+            await supabase.auth.updateUser({
+              password: newPassword
+            });
+
+          if(error){
+
+            showError(error.message);
+
+            return;
+
+          }
+
+          closeModal();
+
+          alert("Password changed successfully.");
+
+        };
+
+    }
+  );
+
+/* =========================================================
 LOGOUT
 ========================================================= */
+
 
 document
   .getElementById("logoutButton")
