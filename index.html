@@ -2899,10 +2899,13 @@ function openURLModal(board){
     .onclick =
       closeModal;
 
-  document
+    document
     .getElementById("saveURLButton")
     .onclick =
-      ()=>{
+      async()=>{
+
+        const saveButton =
+          document.getElementById("saveURLButton");
 
         const keepPrivate =
           document
@@ -2918,9 +2921,22 @@ function openURLModal(board){
             ? "private"
             : "shared";
 
-        saveURL(board,visibility,sharedWith);
+        saveButton.disabled = true;
+
+        saveButton.textContent = "Saving...";
+
+        await saveURL(board,visibility,sharedWith);
+
+        if(document.getElementById("saveURLButton")){
+
+          saveButton.disabled = false;
+
+          saveButton.textContent = "Save";
+
+        }
 
       };
+
 
 
   document
