@@ -1001,9 +1001,15 @@ APP
           id="friendRequestsButton"
           class="top-button"
           type="button"
+          style="position:relative;"
         >
           Requests
+          <span
+            id="requestsBadge"
+            style="display:none;position:absolute;top:-6px;right:-6px;background:#ff5555;color:#fff;font-size:11px;font-weight:700;min-width:18px;height:18px;border-radius:9px;align-items:center;justify-content:center;padding:0 4px;"
+          ></span>
         </button>
+
 
         <button
           id="shareButton"
@@ -2428,6 +2434,32 @@ async function loadFriendRequests(){
 
   }
 
+  const badge =
+    document.getElementById("requestsBadge");
+
+  if(badge){
+
+    const count =
+      (requests || []).length;
+
+    if(count > 0){
+
+      badge.textContent =
+        count > 9 ? "9+" : String(count);
+
+      badge.style.display = "flex";
+
+    }else{
+
+      badge.style.display = "none";
+
+    }
+
+  }
+
+
+  }
+
   if(
     !requests ||
     requests.length === 0
@@ -3720,7 +3752,20 @@ function render(){
 
                   </div>
 
-                                    <span class="item-visibility">
+            <span
+                    class="item-visibility"
+                    title="${
+                      item.visibility === "shared" &&
+                      Array.isArray(item.shared_with) &&
+                      item.shared_with.length
+                        ? escapeHTML(
+                            item.shared_with
+                              .map(id => getNickname(id) || "Friend")
+                              .join(", ")
+                          )
+                        : ""
+                    }"
+                  >
                     ${
                       item.visibility === "public"
                         ? "Public"
@@ -3729,6 +3774,7 @@ function render(){
                           : "Private"
                     }
                   </span>
+
 
 
                   ${
