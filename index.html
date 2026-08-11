@@ -154,16 +154,26 @@ TOP BAR
 }
 
 #topbar{
-  min-height:64px;
   background:#111113;
   border-bottom:1px solid #29292d;
+  z-index:500;
+  flex-shrink:0;
+  padding:10px 14px;
+}
+
+#topbarHeaderRow{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  height:34px;
+}
+
+#topbarControlsRow{
   display:flex;
   align-items:center;
   flex-wrap:wrap;
   gap:10px;
-  padding:10px 14px;
-  z-index:500;
-  flex-shrink:0;
+  margin-top:10px;
 }
 
 .button-group{
@@ -171,6 +181,7 @@ TOP BAR
   flex-wrap:wrap;
   gap:8px;
 }
+
 
 
 .logo{
@@ -748,30 +759,17 @@ MOBILE
 @media(max-width:700px){
 
   #topbar{
-    height:auto;
-    min-height:60px;
     padding:10px;
-    flex-wrap:wrap;
-  }
-
-  .logo{
-    width:100%;
   }
 
   #searchInput{
     max-width:none;
     width:100%;
-    order:5;
   }
 
   .button-group{
     width:100%;
-    order:6;
     justify-content:flex-start;
-  }
-
-  .spacer{
-    display:none;
   }
 
   #profileName{
@@ -782,6 +780,7 @@ MOBILE
     padding:0 10px;
     font-size:13px;
   }
+
 
 
   #friendsPanel,
@@ -903,71 +902,82 @@ APP
 
   <div id="topbar">
 
-    <div class="logo">
-      Spaceboards
-    </div>
+    <div id="topbarHeaderRow">
 
-       <input
-      id="searchInput"
-      type="text"
-      placeholder="Search..."
-    >
+      <div class="logo">
+        Spaceboards
+      </div>
 
-    <div class="button-group">
+      <div class="spacer"></div>
+
+      <div id="profileName"></div>
 
       <button
-        id="newBoxButton"
+        id="logoutButton"
         class="top-button"
         type="button"
       >
-        New Box
-      </button>
-
-      <button
-        id="addFriendsPanelButton"
-        class="top-button"
-        type="button"
-      >
-        Add Friends
-      </button>
-
-      <button
-        id="friendRequestsButton"
-        class="top-button"
-        type="button"
-      >
-        Requests
-      </button>
-
-      <button
-        id="shareButton"
-        class="top-button"
-        type="button"
-      >
-        Share
-      </button>
-
-      <button
-        id="mobileModeButton"
-        class="top-button"
-        type="button"
-      >
-        Mobile
+        Log out
       </button>
 
     </div>
 
-    <div class="spacer"></div>
+    <div id="topbarControlsRow">
 
-    <div id="profileName"></div>
+      <input
+        id="searchInput"
+        type="text"
+        placeholder="Search..."
+      >
 
-    <button
-      id="logoutButton"
-      class="top-button"
-      type="button"
-    >
-      Log out
-    </button>
+      <div class="button-group">
+
+        <button
+          id="newBoxButton"
+          class="top-button"
+          type="button"
+        >
+          New Box
+        </button>
+
+        <button
+          id="addFriendsPanelButton"
+          class="top-button"
+          type="button"
+        >
+          Add Friends
+        </button>
+
+        <button
+          id="friendRequestsButton"
+          class="top-button"
+          type="button"
+        >
+          Requests
+        </button>
+
+        <button
+          id="shareButton"
+          class="top-button"
+          type="button"
+        >
+          Share
+        </button>
+
+        <button
+          id="mobileModeButton"
+          class="top-button"
+          type="button"
+        >
+          Mobile
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
 
 
   </div>
