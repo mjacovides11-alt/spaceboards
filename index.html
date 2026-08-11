@@ -3737,7 +3737,7 @@ function render(){
                       : ""
                   }
 
-                  <div class="item-content">
+                                   <div class="item-content">
 
                     <div class="item-nickname">
                       ${escapeHTML(itemNickname)}
@@ -3749,22 +3749,25 @@ function render(){
                       )}
                     </div>
 
-                  </div>
-
-            <span
-                    class="item-visibility"
-                    title="${
+                    ${
                       item.visibility === "shared" &&
                       Array.isArray(item.shared_with) &&
                       item.shared_with.length
-                        ? escapeHTML(
-                            item.shared_with
-                              .map(id => getNickname(id) || "Friend")
-                              .join(", ")
-                          )
+                        ? `
+                          <div style="font-size:11px;color:#888;margin-top:2px;">
+                            Shared with: ${escapeHTML(
+                              item.shared_with
+                                .map(id => getNickname(id) || "Friend")
+                                .join(", ")
+                            )}
+                          </div>
+                        `
                         : ""
-                    }"
-                  >
+                    }
+
+                  </div>
+
+                  <span class="item-visibility">
                     ${
                       item.visibility === "public"
                         ? "Public"
@@ -3774,8 +3777,7 @@ function render(){
                     }
                   </span>
 
-
-
+                
                   ${
                     owner
                       ? `
