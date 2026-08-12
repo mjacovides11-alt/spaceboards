@@ -3086,12 +3086,15 @@ box_items(
         )
 
       `)
-      .order(
-        "created_at",
+      
+            .order(
+        "sort_order",
         {
-          ascending:true
+          ascending:true,
+          nullsFirst:false
         }
       );
+
 
   if(error){
 
