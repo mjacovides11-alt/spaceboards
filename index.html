@@ -3208,6 +3208,18 @@ document
 
       }
 
+            const ownBoardsForOrder =
+        boards.filter(
+          b => String(b.owner_id) === String(user.id)
+        );
+
+      const nextSortOrder =
+        ownBoardsForOrder.length
+          ? Math.max(
+              ...ownBoardsForOrder.map(b => Number(b.sort_order) || 0)
+            ) + 1
+          : 1;
+
       const {
         data,
         error
@@ -3221,10 +3233,12 @@ document
             y,
             width:430,
             height:270,
-            visibility:"public"
+            visibility:"public",
+            sort_order:nextSortOrder
           })
           .select()
           .single();
+
 
       if(error){
 
