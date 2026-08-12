@@ -361,6 +361,26 @@ BOARDS
   cursor:text;
 }
 
+.drag-handle{
+  display:inline-block;
+  margin-right:8px;
+  cursor:grab;
+  color:#888;
+  touch-action:none;
+}
+
+.board.dragging{
+  opacity:0.5;
+}
+
+.board-drop-indicator{
+  height:3px;
+  background:var(--accent);
+  border-radius:2px;
+  margin:0 14px;
+}
+
+
 .board-actions{
   position:absolute;
   right:8px;
@@ -4022,9 +4042,46 @@ async function saveBoardName(board){
 
 }
 
+function getDragAfterElement(container, y){
+
+  const draggableElements =
+    [...container.querySelectorAll(".board:not(.dragging)")];
+
+  return draggableElements.reduce(
+    (closest, child)=>{
+
+      const box =
+        child.getBoundingClientRect();
+
+      const offset =
+        y - box.top - box.height / 2;
+
+      if(offset < 0 && offset > closest.offset){
+
+        return {
+          offset:offset,
+          element:child
+        };
+
+      }else{
+
+        return closest;
+
+      }
+
+    },
+    {
+      offset:Number.NEGATIVE_INFINITY,
+      element:null
+    }
+  ).element;
+
+}
+
 /* =========================================================
 RENDER
 ========================================================= */
+
 
 function render(){
 
@@ -4097,9 +4154,15 @@ function render(){
 
     element.innerHTML = `
 
-      <div class="board-title" data-action="rename-title">
+           <div class="board-title" data-action="rename-title">
+        ${
+          mobileListMode && owner
+            ? `<span class="drag-handle" data-action="drag-handle">☰</span>`
+            : ""
+        }
         ${escapeHTML(board.title || "Untitled")}
       </div>
+
 
 
       ${
@@ -4360,7 +4423,7 @@ function render(){
 
         }
 
-        selectedBoardId =
+                selectedBoardId =
           board.id;
 
         document
@@ -4375,7 +4438,173 @@ function render(){
       }
     );
 
+    /*
+      ========================================================
+      MOBILE DRAG REORDER
+      ========================================================
+    */
+
+    if(mobileListMode && owner){
+
+      const dragHandle =
+        element.querySelector(
+          '[data-action="drag-handle"]'
+        );
+
+      if(dragHandle){
+
+        dragHandle.addEventListener(
+          "pointerdown",
+          event=>{
+
+            event.preventDefault();
+
+            event.stopPropagation();
+
+            const draggedId =
+              board.id;
+
+            element.classList.add("dragging");
+
+            element.setPointerCapture(
+              event.pointerId
+            );
+
+            const onMove = moveEvent=>{
+
+              const afterElement =
+                getDragAfterElement(
+                  world,
+                  moveEvent.clientY
+                );
+
+              document
+                .querySelectorAll(".board-drop-indicator")
+                .forEach(el => el.remove());
+
+              const indicator =
+                document.createElement("div");
+
+              indicator.className =
+                "board-drop-indicator";
+
+              if(afterElement == null){
+
+                world.appendChild(indicator);
+
+              }else{
+
+                world.insertBefore(
+                  indicator,
+                  afterElement
+                );
+
+              }
+
+            };
+
+            const onUp = async upEvent=>{
+
+              element.removeEventListener(
+                "pointermove",
+                onMove
+              );
+
+              element.removeEventListener(
+                "pointerup",
+                onUp
+              );
+
+              element.classList.remove("dragging");
+
+              document
+                .querySelectorAll(".board-drop-indicator")
+                .forEach(el => el.remove());
+
+              const afterElement =
+                getDragAfterElement(
+                  world,
+                  upEvent.clientY
+                );
+
+              const ownBoardsList =
+                boards.filter(
+                  b => String(b.owner_id) === String(user.id)
+                );
+
+              const draggedIndex =
+                boards.findIndex(
+                  b => String(b.id) === String(draggedId)
+                );
+
+              const draggedBoard =
+                boards[draggedIndex];
+
+              boards.splice(draggedIndex,1);
+
+              let insertIndex =
+                boards.length;
+
+              if(afterElement){
+
+                const afterId =
+                  afterElement.dataset.id;
+
+                insertIndex =
+                  boards.findIndex(
+                    b => String(b.id) === String(afterId)
+                  );
+
+              }
+
+              boards.splice(
+                insertIndex,
+                0,
+                draggedBoard
+              );
+
+              render();
+
+              const updatedOwnBoards =
+                boards.filter(
+                  b => String(b.owner_id) === String(user.id)
+                );
+
+              for(let i=0;i<updatedOwnBoards.length;i++){
+
+                updatedOwnBoards[i].sort_order = i + 1;
+
+                await supabase
+                  .from("boxes")
+                  .update({
+                    sort_order:i + 1
+                  })
+                  .eq("id",updatedOwnBoards[i].id)
+                  .eq("owner_id",user.id);
+
+              }
+
+            };
+
+            element.addEventListener(
+              "pointermove",
+              onMove
+            );
+
+            element.addEventListener(
+              "pointerup",
+              onUp
+            );
+
+          }
+        );
+
+      }
+
+    }
+
   /* DOUBLE CLICK TO RENAME */
+
 
 element.addEventListener("dblclick", event => {
 
