@@ -4665,12 +4665,28 @@ function render(){
               event.pointerId
             );
 
-            const onMove = moveEvent=>{
+                        const startY =
+              event.clientY;
+
+            let latestClientY =
+              event.clientY;
+
+            let rafPending = false;
+
+            const updateDragVisuals = ()=>{
+
+              rafPending = false;
+
+              const deltaY =
+                latestClientY - startY;
+
+              element.style.transform =
+                `translateY(${deltaY}px)`;
 
               const afterElement =
                 getDragAfterElement(
                   world,
-                  moveEvent.clientY
+                  latestClientY
                 );
 
               document
@@ -4697,6 +4713,24 @@ function render(){
               }
 
             };
+
+            const onMove = moveEvent=>{
+
+              latestClientY =
+                moveEvent.clientY;
+
+              if(!rafPending){
+
+                rafPending = true;
+
+                requestAnimationFrame(
+                  updateDragVisuals
+                );
+
+              }
+
+            };
+
 
             const onUp = async upEvent=>{
 
