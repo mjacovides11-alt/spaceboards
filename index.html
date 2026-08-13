@@ -3696,6 +3696,44 @@ async function saveURL(
 
 }
 
+    /*
+      ========================================================
+      EDIT URL SHARING
+      ========================================================
+    */
+
+    element
+      .querySelectorAll(
+        '[data-action="edit-item"]'
+      )
+      .forEach(button=>{
+
+        button.addEventListener(
+          "click",
+          event=>{
+
+            event.preventDefault();
+
+            event.stopPropagation();
+
+            const item =
+              board.items.find(
+                i => String(i.id) === String(button.dataset.itemId)
+              );
+
+            if(item){
+
+              openEditVisibilityModal(board,item);
+
+            }
+
+          }
+        );
+
+      });
+
+
+
 /* =========================================================
 DELETE URL
 ========================================================= */
