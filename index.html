@@ -1193,11 +1193,6 @@ APP
 </div>
 
 
-/* =========================================================
-MODAL
-========================================================= */
-
-
 <div id="modalBackground">
 
   <div id="modal"></div>
@@ -2921,9 +2916,7 @@ async function loadFriendRequests(){
 
       badge.style.display = "none";
 
-
-  }
-
+    }
 
   }
 
@@ -3829,44 +3822,6 @@ async function saveURL(
 
 }
 
-    /*
-      ========================================================
-      EDIT URL SHARING
-      ========================================================
-    */
-
-    element
-      .querySelectorAll(
-        '[data-action="edit-item"]'
-      )
-      .forEach(button=>{
-
-        button.addEventListener(
-          "click",
-          event=>{
-
-            event.preventDefault();
-
-            event.stopPropagation();
-
-            const item =
-              board.items.find(
-                i => String(i.id) === String(button.dataset.itemId)
-              );
-
-            if(item){
-
-              openEditVisibilityModal(board,item);
-
-            }
-
-          }
-        );
-
-      });
-
-
-
 /* =========================================================
 DELETE URL
 ========================================================= */
@@ -3934,9 +3889,6 @@ function deleteURL(
 /* =========================================================
 DELETE BOX
 ========================================================= */
-console.log("CURRENT USER:", user);
-console.log("CURRENT USER ID:", user?.id);
-
 
 function deleteBoard(board){
 
@@ -5088,6 +5040,42 @@ if(deleteBoardButton){
 
     /*
       ========================================================
+      EDIT URL SHARING
+      ========================================================
+    */
+
+    element
+      .querySelectorAll(
+        '[data-action="edit-item"]'
+      )
+      .forEach(button=>{
+
+        button.addEventListener(
+          "click",
+          event=>{
+
+            event.preventDefault();
+
+            event.stopPropagation();
+
+            const item =
+              board.items.find(
+                i => String(i.id) === String(button.dataset.itemId)
+              );
+
+            if(item){
+
+              openEditVisibilityModal(board,item);
+
+            }
+
+          }
+        );
+
+      });
+
+    /*
+      ========================================================
       DELETE URL
       ========================================================
     */
@@ -5132,6 +5120,16 @@ if(deleteBoardButton){
             if(
               event.target.closest(
                 '[data-action="delete-item"]'
+              )
+            ){
+
+              return;
+
+            }
+
+            if(
+              event.target.closest(
+                '[data-action="edit-item"]'
               )
             ){
 
