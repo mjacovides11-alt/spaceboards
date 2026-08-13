@@ -4285,9 +4285,19 @@ function render(){
                   </span>
 
                 
-                  ${
+                                  ${
                     owner
                       ? `
+                        <button
+                          class="item-edit"
+                          type="button"
+                          title="Edit sharing"
+                          data-action="edit-item"
+                          data-item-id="${escapeHTML(item.id)}"
+                        >
+                          ✎
+                        </button>
+
                         <button
                           class="item-trash"
                           type="button"
@@ -4300,6 +4310,7 @@ function render(){
                       `
                       : ""
                   }
+
 
                 </div>
 
