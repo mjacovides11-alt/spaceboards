@@ -3554,11 +3554,140 @@ statusText.style.display = "none";
 
 }
 
+/* =========================================================
+EDIT VISIBILITY MODAL
+========================================================= */
 
+function openEditVisibilityModal(board,item){
+
+  const currentSharedWith =
+    Array.isArray(item.shared_with)
+      ? item.shared_with.map(String)
+      : [];
+
+  openModal(`
+
+    <h2>Edit sharing</h2>
+
+    <p>Choose who can see this:</p>
+
+    <div style="max-height:160px;overflow:auto;margin-bottom:12px;">
+      ${
+        friends.length
+          ? friends.map(friend=>`
+              <label style="display:flex;align-items:center;gap:8px;padding:6px 0;color:#ddd;font-size:14px;">
+                <input
+                  type="checkbox"
+                  class="editShareFriendCheckbox"
+                  value="${escapeHTML(friend.id)}"
+                  ${
+                    currentSharedWith.includes(String(friend.id))
+                      ? "checked"
+                      : ""
+                  }
+                  style="width:16px;height:16px;"
+                >
+                ${escapeHTML(friend.nickname || friend.email || "Friend")}
+              </label>
+            `).join("")
+          : "<p style='font-size:13px;color:#777;'>You have no friends added yet.</p>"
+      }
+    </div>
+
+    <label style="display:flex;align-items:center;gap:8px;color:#aaa;font-size:14px;margin-bottom:14px;">
+      <input
+        id="editKeepPrivateCheckbox"
+        type="checkbox"
+        ${item.visibility === "private" ? "checked" : ""}
+        style="width:16px;height:16px;"
+      >
+      Keep private (only me)
+    </label>
+
+    <div class="modal-actions">
+
+      <button id="editVisibilityCancel" type="button">
+        Cancel
+      </button>
+
+      <button id="editVisibilitySave" type="button">
+        Save
+      </button>
+
+    </div>
+
+  `);
+
+  document
+    .getElementById("editVisibilityCancel")
+    .onclick = closeModal;
+
+  document
+    .getElementById("editVisibilitySave")
+    .onclick = async()=>{
+
+      const saveButton =
+        document.getElementById("editVisibilitySave");
+
+      const keepPrivate =
+        document
+          .getElementById("editKeepPrivateCheckbox")
+          .checked;
+
+      const sharedWith =
+        [...document.querySelectorAll(".editShareFriendCheckbox:checked")]
+          .map(box=>box.value);
+
+      const visibility =
+        keepPrivate ? "private" : "shared";
+
+      saveButton.disabled = true;
+
+      saveButton.textContent = "Saving...";
+
+      const {
+        error
+      } =
+        await supabase
+          .from("box_items")
+          .update({
+            visibility:visibility,
+            shared_with:sharedWith
+          })
+          .eq("id",item.id)
+          .eq("box_id",board.id);
+
+      if(error){
+
+        showError(
+          "Could not update sharing: " +
+          error.message
+        );
+
+        saveButton.disabled = false;
+
+        saveButton.textContent = "Save";
+
+        return;
+
+      }
+
+      item.visibility = visibility;
+
+      item.shared_with = sharedWith;
+
+      closeModal();
+
+      render();
+
+    };
+
+}
 
 /* =========================================================
 SAVE URL
 ========================================================= */
+
 
 async function saveURL(
   board,
