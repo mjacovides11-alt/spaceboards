@@ -4732,7 +4732,7 @@ function render(){
             };
 
 
-            const onUp = async upEvent=>{
+                        const onUp = async upEvent=>{
 
               element.removeEventListener(
                 "pointermove",
@@ -4746,6 +4746,8 @@ function render(){
 
               element.classList.remove("dragging");
 
+              element.style.transform = "";
+
               document
                 .querySelectorAll(".board-drop-indicator")
                 .forEach(el => el.remove());
@@ -4755,6 +4757,7 @@ function render(){
                   world,
                   upEvent.clientY
                 );
+
 
               const ownBoardsList =
                 boards.filter(
