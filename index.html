@@ -370,8 +370,12 @@ BOARDS
 }
 
 .board.dragging{
-  opacity:0.5;
+  opacity:0.85;
+  z-index:1000;
+  box-shadow:0 20px 40px rgba(0,0,0,.6);
+  transition:box-shadow .15s ease;
 }
+
 
 .board-drop-indicator{
   height:3px;
